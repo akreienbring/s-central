@@ -96,7 +96,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Box>
 
         <Button
-          href="https://material-ui.com/store/items/minimal-dashboard/"
+          href="https://github.com/akreienbring/Shelly-Central"
           target="_blank"
           variant="contained"
           color="inherit"
