@@ -1,0 +1,30 @@
+/* Attention: css is only loaded once after app restart */
+.rotate90 {
+  transform: rotate(90deg);
+}
+.rotate180 {
+  transform: rotate(180deg);
+}
+.rotate270 {
+  transform: rotate(270deg);
+}
+/* disable the focus outline of tiptap editor */
+.ProseMirror:focus {
+  outline: none !important;
+}
+.ProseMirror-focused {
+  outline: none !important;
+}
+.ProseMirror:focus-visible {
+  outline: none !important;
+}
+.ProseMirror:active {
+  outline: none !important;
+}
+/* Scoped to the editor */
+.tiptap p {
+  margin: 1em 0;
+}
+.tiptap div {
+  margin: 2;
+}

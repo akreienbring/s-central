@@ -1,0 +1,179 @@
+/*
+  Author: André Kreienbring
+  When a websocket client tries to initially upgrade a HTTP request (open a connection)
+  or sends a message it could be a potential attack. 
+  Therefor the message is validated before forwarding it to the ws-handler.
+*/
+
+const config = require("config");
+const db = require("@db/db.js");
+const shellyGen2Conn = require("@http/shellyGen2Conn.js");
+const digest = require("@src/utils/digest.js");
+
+const UNBLOCK_INTERVAL = config.get("ws-server.unblock-interval") * 1000;
+const MESSAGELIMIT = config.get("ws-server.messagelimit");
+const SECRET = config.get("ws-server.secret");
+
+/*
+  IPs that send wrong (or too many messages) will be blocked for the 
+  configured amount of time.
+*/
+const blockedIPs = [];
+
+/*
+  When a client opens a connection his IP is added to this object.
+  The entry is of the form { count: 0, startTime: Date.now() }
+  Messages from the client will be counted. If the configured limit / minute
+  is reached the client will be blocked.
+*/
+const clientLimits = {};
+
+/*
+  These events are not forced to send the secret.
+  The secret is only send to clients that logged in 
+  successfully with 'user validate'.
+*/
+const WITHOUT_SECRET = [
+  "user reconnect",
+  "user validate",
+  "pong",
+  "blogposts get public",
+];
+
+/*
+  @param {json} message The message that was send by a client.
+    Message MUST contain event and data or src!
+  @param {object} ws The websocket that was used to send the message.
+  @param {string} clientIP The IP of the client that sent a message.
+*/
+function validateMessage(message, ws) {
+  if (blockedIPs.includes(ws.clientIP)) {
+    console.error(`${ws.clientIP} is currently blocked. Message not accepted`);
+    ws.close(4013, "Client is blocked.");
+    return null;
+  }
+
+  // Limit the the number of messages / minute a client can sent in the configured time
+  if (!clientLimits[ws.clientIP]) {
+    clientLimits[ws.clientIP] = {
+      count: 0,
+      startTime: Date.now(),
+    };
+  } else {
+    const clientLimit = clientLimits[ws.clientIP];
+    if (Date.now() - clientLimit.startTime < 60000) {
+      clientLimit.count++;
+      if (clientLimit.count > MESSAGELIMIT) {
+        console.error(`${ws.clientIP} reached the message limit`);
+        ws.close(4013, "Message limit reached");
+        delete clientLimits[ws.clientIP];
+        if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+        return null;
+      }
+    } else {
+      clientLimit.count = 1;
+      clientLimit.startTime = Date.now();
+    }
+  }
+
+  if (message === null || typeof message === "undefined") {
+    console.error(`${ws.clientIP} send an undefined message`);
+    if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+    ws.close(4003, "Invalid message!");
+    return null;
+  }
+  try {
+    msg = JSON.parse(message);
+    if (!msg.src && (!msg.event || !msg.data)) {
+      console.error(`${ws.clientIP} send an invalid message: ${message}`);
+      if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+      ws.close(4003, "Invalid message!");
+      return null;
+    }
+  } catch (error) {
+    console.error(`Could not parse ws message: ${message} from ${ws.clientIP}`);
+    if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+    ws.close(4003, "Invalid message!");
+    return null;
+  }
+
+  if (msg.event === "user validate") {
+    if (
+      typeof msg.data.auth === "undefined" &&
+      typeof msg.data.error === "undefined"
+    ) {
+      // if auth information is not attached: start the challenge / response cicle
+      msg.data.error = digest.getChallengeError();
+      ws.send(JSON.stringify(msg));
+      return null;
+    } else {
+      // if auth information is  attached: check the response
+      const dbUser = db.getUser(
+        `SELECT HA1, alias FROM users WHERE email = ?`,
+        msg.data.user.email
+      );
+      if (dbUser && digest.validate(dbUser, msg.data.auth)) {
+        console.log(`Successfully validated user ${dbUser.alias}`);
+        delete msg.data.auth;
+        msg.data.secret = SECRET;
+      } else {
+        console.error(`Got invalid credentials from: ${msg.data.user.email}`);
+        msg.data.user.password = "";
+      }
+    }
+  } else if (msg.event === "user reconnect") {
+    // the client wants to reconnect with an existing user.
+    if (msg.data.user !== null && db.isExistingUser(msg.data.user)) {
+      console.log(`Successfully reconnected user ${msg.data.user.alias}`);
+      msg.data.secret = SECRET;
+    } else {
+      console.error(
+        `A client with IP '${ws.clientIP}' tried to reconnect without an existing user`
+      );
+      // TODO: Decide if this case shoud be closed and blocked
+      // if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+      // ws.close(4000, "Reconnect is not allowed");
+      // return null;
+    }
+  } else if (typeof msg.src !== "undefined") {
+    // check if the device exists
+    const device = shellyGen2Conn.findDeviceById(msg.src);
+    if (typeof device === "undefined") {
+      console.error(`Message from a non existing device: ${msg.src}`);
+      if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+      ws.close(4003, "Device doesn't exist");
+      return null;
+    }
+  } else if (
+    !WITHOUT_SECRET.includes(msg.event) &&
+    !msg.src &&
+    msg.data.secret !== SECRET
+  ) {
+    // all other messages need to have the secret attached.
+    console.error(
+      `Message from client ${ws.clientIP} with event: '${msg.event}' and Text ${msg.data.message} does not have the correct secret.`
+    );
+    console.error(`Wrong Secret is: ${msg.data.secret}`);
+    if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+    ws.close(4000, "Wrong secret!");
+    return null;
+  }
+
+  return msg;
+}
+
+/*
+  This interval unblocks client ips that were added to the blocked list.
+  This way blocked clients can not open / upgrade ws connections for 
+  the configured period of time.
+*/
+if (UNBLOCK_INTERVAL > 0) {
+  setInterval(() => {
+    if (blockedIPs.length > 0) {
+      console.log(`Unblocking IP ${blockedIPs[0]}`);
+      blockedIPs.splice(0, 1);
+    }
+  }, UNBLOCK_INTERVAL);
+}
+
+module.exports = { validateMessage, blockedIPs, clientLimits };

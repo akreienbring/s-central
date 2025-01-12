@@ -1,0 +1,22 @@
+
+{
+    "ClimateControl":{
+        "display": "Klimakontrolle",
+        "style": "color"
+    },
+    "DoorToAction":{
+        "display": "Türlicht",
+        "style": "color"
+    },
+    "IntruderAlarm":{
+        "display": "Alarmanlage",
+        "style": "color"
+    },
+    "MotionToAction":{
+        "display": "Bewegungslicht",
+        "style": "color"
+    },
+    "SystemLanguage":{
+        "display": "Sprache"
+    }
+ }
