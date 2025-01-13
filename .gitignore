@@ -5,3 +5,4 @@ server/.vscode
 client/node_modules/
 client/.vscode
 client/dist/
+client/src/globals.js
