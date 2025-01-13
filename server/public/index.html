@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      window.scconfig = {
+        /*
+          In development websocket communication is not encrypted.
+        */
+        WSURL: 'ws://192.168.1.2:3031',
+        WSSURL: 'wss://192.168.1.2:3031',
+        RECONNECT_DELAY: 2, // in seconds
+        RECONNECT_MAX: 10,
+        LANDING_PAGE: 'blogs', // either 'login' or 'blogs'
+      };
+    </script>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon (generated with https://favycon.vercel.app/) -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/favicon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/favicon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/favicon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/favicon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/favicon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/favicon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/favicon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-180x180.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/favicon-192x192.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/favicon-144x144.png" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Shelly Central</title>
+    <meta name="description" content="Shelly Central for your Shelly devices" />
+    <meta name="keywords" content="react,application,dashboard,admin" />
+    <meta name="author" content="André Kreienbring" />
+    <script type="module" crossorigin src="/assets/index-GrGN-99_.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/scheduler-CylivXx-.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-dom-DZmwVGuR.js">
+    <link rel="modulepreload" crossorigin href="/assets/@remix-run-CqHE3mAX.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-router-tasTa4Vj.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-router-dom-CA8ps9Bc.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-fast-compare-CM_zkQpp.js">
+    <link rel="modulepreload" crossorigin href="/assets/invariant-CIvKPNdx.js">
+    <link rel="modulepreload" crossorigin href="/assets/shallowequal-DZX70yMG.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-helmet-async-CriEgaO2.js">
+    <link rel="modulepreload" crossorigin href="/assets/i18next-B2185GOa.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-i18next-CoPDNcOz.js">
+    <link rel="modulepreload" crossorigin href="/assets/prop-types-LqkKqCXo.js">
+    <link rel="modulepreload" crossorigin href="/assets/hoist-non-react-statics-DQogQWOa.js">
+    <link rel="modulepreload" crossorigin href="/assets/@babel-O59eiFrd.js">
+    <link rel="modulepreload" crossorigin href="/assets/stylis-FDnFs_-n.js">
+    <link rel="modulepreload" crossorigin href="/assets/@emotion-DYR1A0_a.js">
+    <link rel="modulepreload" crossorigin href="/assets/clsx-B-dksMZM.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-transition-group-DuJjeJfi.js">
+    <link rel="modulepreload" crossorigin href="/assets/@popperjs-DzOHQG4g.js">
+    <link rel="modulepreload" crossorigin href="/assets/@mui-CNZuoisg.js">
+    <link rel="modulepreload" crossorigin href="/assets/date-fns-28xL-GjM.js">
+    <link rel="modulepreload" crossorigin href="/assets/lodash-TqZtMuiX.js">
+    <link rel="modulepreload" crossorigin href="/assets/numeral-BQxYRxKa.js">
+    <link rel="modulepreload" crossorigin href="/assets/apexcharts-C7GUJZ0z.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-apexcharts-C0MfEwPK.js">
+    <link rel="modulepreload" crossorigin href="/assets/tslib-D8tfeQ14.js">
+    <link rel="modulepreload" crossorigin href="/assets/hey-listen-Dr6jTbpm.js">
+    <link rel="modulepreload" crossorigin href="/assets/style-value-types-DNGYA_MD.js">
+    <link rel="modulepreload" crossorigin href="/assets/framesync-DhFHr8mH.js">
+    <link rel="modulepreload" crossorigin href="/assets/popmotion-Clx1xIK6.js">
+    <link rel="modulepreload" crossorigin href="/assets/framer-motion-Bm72sw7o.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-is-CjY7idYL.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-material-ui-carousel-DdGE0c8o.js">
+    <link rel="modulepreload" crossorigin href="/assets/orderedmap-C4TimWWB.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-model-CWJw0FAp.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-transform-CmxhxSzP.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-state-CbPVowry.js">
+    <link rel="modulepreload" crossorigin href="/assets/tippy.js-DM9ol-Nf.js">
+    <link rel="modulepreload" crossorigin href="/assets/linkifyjs-CPzQtjSI.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-view-D2u4awtz.js">
+    <link rel="modulepreload" crossorigin href="/assets/w3c-keyname-DEtA-KhA.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-keymap-BAKRQlar.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-tables-D5HyTxhQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-dropcursor-HUb11Unb.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-gapcursor-CHFTFkqk.js">
+    <link rel="modulepreload" crossorigin href="/assets/rope-sequence-2KRK_2Nd.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-history-BjKgugDr.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-commands-B0Mmz6rZ.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-schema-list-DpEpyLDh.js">
+    <link rel="modulepreload" crossorigin href="/assets/@tiptap-vAQNjxgA.js">
+    <link rel="modulepreload" crossorigin href="/assets/highlight.js-CxnXmNOO.js">
+    <link rel="modulepreload" crossorigin href="/assets/lowlight-Car7SGj1.js">
+    <link rel="modulepreload" crossorigin href="/assets/mui-tiptap-editor--08olr_O.js">
+    <link rel="modulepreload" crossorigin href="/assets/es5-ext-B-aRoSt4.js">
+    <link rel="modulepreload" crossorigin href="/assets/websocket-xhLQoM0_.js">
+    <link rel="modulepreload" crossorigin href="/assets/sha256-uint8array-DNUmUZDr.js">
+    <link rel="modulepreload" crossorigin href="/assets/@iconify-DnyQcZ4N.js">
+    <link rel="modulepreload" crossorigin href="/assets/mui-color-input-DgUddL9K.js">
+    <link rel="modulepreload" crossorigin href="/assets/simplebar-core-CWQl2LVS.js">
+    <link rel="modulepreload" crossorigin href="/assets/simplebar-react-CfpzgUXY.js">
+    <link rel="modulepreload" crossorigin href="/assets/index-GrGN-99_.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-BjOUEUJ-.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-DoacBhUI.css">
+    <link rel="stylesheet" crossorigin href="/assets/mui-tiptap-editor-DV_mZdmv.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      const global = globalThis;
+    </script>
+  </body>
+</html>
