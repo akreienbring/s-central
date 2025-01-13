@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
-import { globals } from 'src/globals';
 import { useShelly } from 'src/sccontext';
 import DashboardLayout from 'src/layouts/dashboard';
 
@@ -21,7 +20,7 @@ export default function Router() {
   const routes = useRoutes([
     {
       path: '/',
-      element: globals.LANDING_PAGE === 'login' ? <LoginPage /> : <LandingPage />,
+      element: window.scconfig.LANDING_PAGE === 'login' ? <LoginPage /> : <LandingPage />,
     },
     {
       // only if logged in

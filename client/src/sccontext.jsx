@@ -22,7 +22,6 @@ import {
 import { createUUID } from 'src/utils/general';
 import { getWSCredentials } from 'src/utils/client-auth';
 
-import { globals } from 'src/globals';
 import { publishEvent } from 'src/events/pubsub';
 
 const Context = createContext();
@@ -78,7 +77,7 @@ export const SCProvider = ({ children }) => {
           isReconnecting.current = false;
           return;
         }
-        if (currentRetryCount > globals.RECONNECT_MAX) {
+        if (currentRetryCount > window.scconfig.RECONNECT_MAX) {
           isReconnecting.current = false;
           console.log('Reconnecting makes no sense! Please reload Page');
           publishEvent('lastUpdatedAt', null);
@@ -88,7 +87,7 @@ export const SCProvider = ({ children }) => {
         setRetryCount(currentRetryCount + 1); // this triggers the useEffect Hook
         startRetryTimeout(currentRetryCount + 1, false);
       },
-      currentRetryCount * globals.RECONNECT_DELAY * 1000
+      currentRetryCount * window.scconfig.RECONNECT_DELAY * 1000
     );
   };
 
@@ -110,9 +109,8 @@ export const SCProvider = ({ children }) => {
     // if (validationRequest === null && reconnectMsg.current.data.user === null) return;
     if (ws.current === null || (isReconnecting && ws.current.readyState !== WebSocket.OPEN)) {
       publishEvent('lastUpdatedAt', 'connecting');
-      console.log('Creating a new WebSocket Client!');
       // eslint-disable-next-line new-cap
-      ws.current = new websocket.w3cwebsocket(import.meta.env.DEV ? globals.WSURL : globals.WSSURL);
+      ws.current = new websocket.w3cwebsocket(import.meta.env.DEV ? window.scconfig.WSURL : window.scconfig.WSSURL);
     }
 
     ws.current.onerror = (e) => console.error(e);

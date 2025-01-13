@@ -41,9 +41,10 @@ Managing many Shellies in a network is a challenge. The original Shelly Control 
   In the file _/sb/config/kvsdisplays.json_ you can map KVS values to display names for convenience. An example is included.
 
   **Configure to your needs**<br/>
-  It strongly recommended to change the default values of user, password and secret in _/sb/config/default.json_. Also you need to configure IP
+  It strongly recommended to change atleast the default values of password and secret in _/sb/config/default.json_. Also you need to configure IP
   addresses and ports.<br/>
-  Read the [Configuration details](#server-configuration) below!
+  Read the [Configuration details](#server-configuration) below!<br/>
+  The settings you must / should change before the first run are marked with (!).
 
   **Start the server**<br/>
   - Linux: _npm start_
@@ -84,13 +85,13 @@ File: _/sb/config/devices.json_
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
 | ip              | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device                                     |
-| cname           | e.g. 'Floorlight'| Display name for the client                                       |
+| cname (!)       | e.g. 'Floorlight'| Display name for the client                                       |
 
 File: _/sb/config/kvsdisplays.json_
 
 | Option          | Value            | Description                                                       |
 | --------------  | ---------------- | ----------------------------------------------------------------- |
-| display         | the display name | Mapping the KVS key to a display name                             |
+| display (!)     | the display name | Mapping the KVS key to a display name                             |
 | style           | 'color'          | Style of the KVS value. Omit this to show the value itself        |
 
 File: _/sb/config/default.json_
@@ -98,27 +99,35 @@ File: _/sb/config/default.json_
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
 | HTTP server                                                                                            |
-| host            | xxx.xxx.xxx.xxx  | The IP of the host the HTTP server (nodejs)                       |
+| host (!)        | xxx.xxx.xxx.xxx  | The IP address of the HTTP server (nodejs)                        |
 | port            | TCP Port         | The TCP port of the HTTP server. Defaults to 3031                 |
 | UDP server                                                                                             |
-| host            | xxx.xxx.xxx.xxx  | The IP of the UDP server. Must be configured in the Shelly device |
+| host (!)        | xxx.xxx.xxx.xxx  | The IP of the UDP server. Must be configured in the Shelly device |
 | port            | UDP Port         | The UDP port of the UDP server. Defaults to 3031                  |
 | Websocket server  (Shelly Broker)                                                                      |
-| host            | xxx.xxx.xxx.xxx  | The IP of the Websocket server                                   |
+| host (!)        | xxx.xxx.xxx.xxx  | The IP of the Websocket server                                    |
 | port            | TCP Port         | The TCP port of the Websocket server. Defaults to 3031            |
 | ping-interval   | nr. of seconds   | Websocket keep-alive interval to check if the client is connected |
 | unblock-interval| nr. of seconds   | Security feature. After this time a blocked client is unblocked   |
 | messagelimit    | number           | Security feature. Number of allowed WS messages per minute        |
-| secret          | secret text      | Security feature. Is exchanged between WS client and server       |
+| secret (!)      | secret text      | Security feature. Is exchanged between WS client and server       |
+| Shelly config                                                                                          |
+| set-udp         | true / false     | If true, all shellies are configured to sent UDP Logs             |
+| set-ws          | true / false     | If true, all shellies send ws messages to the server              |
+| Database                                                                                               |
+| standardpw (!)  | text             | Standard password for all created users                           |
+| standardal      | text             | Standard alias for the admin user (Created on first run)          |
+| standardem      | email            | Standard email for the admin user (Created on first run)          |
+| standardhome    | 'dashboard / 'shellies'      | Standard homepage for all created users               |
 
 ## Client Configuration ##
 
-File: _globals.js_ (Please rename _globals_example.js_)
+File: _index.html_
 
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
-| WSURL           | ws://[IP]:[PORT] | Used in (VITE) DEV mode to connect to the Websocket server        |
-| WSSURL          | wss://[IP]:[PORT]| Used in (VITE) PROD mode to connect to the Websocket server       |
+| WSURL (!)       | ws://[IP]:[PORT] | Used in (VITE) DEV mode to connect to the Websocket server        |
+| WSSURL (!)      | wss://[IP]:[PORT]| Used in (VITE) PROD mode to connect to the Websocket server       |
 | RECONNECT_DELAY | nr. of seconds   | When loosing the ws connection to server, reconnect after...      |
 | RECONNECT_MAX   | number           | Number of reconnect attemps after loosing the connection          |
 | LANDING_PAGE    |'login' or 'blogs'| If 'blogs' and public blogs exist, they are shown directly        |
