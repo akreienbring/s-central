@@ -9,7 +9,7 @@ Shelly Dashboard / Monitor for 1. / 2. / 3. generation devices
 Shelly Central is a client (React) / server (nodejs) application to monitor and control your Shelly devices. The server collects all relevant information about your devices by using RPC calls and websocket connections. The client is a webapplication that makes monitoring and controlling your Shellies easy. <br/>
 Shelly Central is cloudless. That means it makes you (sort of) independent from the Shelly Cloud Control Center.
 
-The server must run in your local network and acts like a broker between your Shellies and the client application. The communication with the client is strictly websocket based.
+The server must run in your local network and acts as a broker between your Shellies and the client application. The communication with the client is strictly websocket based.
 
 ## Features
 Shelly Central supports English, Spanish and German.
@@ -17,7 +17,7 @@ Shelly Central supports English, Spanish and German.
 - **Dashboard**<br/>
   Informs you about connected Shellies, current and timelined consumption, running scripts, cloud connection.
 - **Shellies**<br/>
-  Get insights about KVS values, script status, Logs and websocket messages. Control your switches. Get notified when a script error occures.
+  Get insights about KVS values, script status, Logs and websocket messages. Control your switches. Get notified when a script error occurs.
 - **User**<br/>
   Enable additional users to log in to the appplication.
 - **Blog**<br/>
@@ -27,12 +27,13 @@ Shelly Central supports English, Spanish and German.
 
 ## Why use it?
 
-Managing many Shellies in a network is a challenge. The original Shelly Control app is a good choice. But it is cloudbased. Hence you need an internet connection to control your devices. Shelly Central is needs only Wifi and your local network. It is Open Source and transparent. Your welcome to participate and enhance the features.
+Managing many Shellies in a network is a challenge. The original Shelly Control app is a good choice. But it is cloudbased. Hence you need an internet connection to control your devices. Shelly Central needs only Wifi and your local network. It is Open Source and transparent. You are welcome to participate and enhance the features.
 
 ## How to install
 
 - **Prerequisites**<br/>
   Install nodejs. Normally it includes the NPM packet manager. I tested the system with nodejs 20.x.
+
 - **Server (Client included)** <br/>
   Download the server release and unzip it in a directory of your choice. E.g. _/sb_ (Shelly Broker). Normally you run the server on a dedicated always-on-system. Like a NAS, a Rasberry or any other OS that can run nodejs. Navigate to that directory and type _npm install_. It might take a while untill all modules are downloaded. In the meantime you could...
 
@@ -74,11 +75,12 @@ So to get this working you need to preceed every output with the name of the Scr
 
 ## When to restart the server ##
 The server must be restartet when
-- You add / change a device in _/sb/config/devices.json_
+- You add / change / delete a device in _/sb/config/devices.json_
 - You add / delete a script on a device
 - you add / delete a KVS key<br/>
+- you change server configuration values<br/>
 
-because for performance reasons this information is only retrieved once.
+because of performance reasons this information is only retrieved once.
 
 ## Server Configuration ##
 
@@ -100,23 +102,23 @@ File: _/sb/config/default.json_
 
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
-| HTTP server                                                                                            |
+| **HTTP server**                                                                                            |
 | host (!)        | xxx.xxx.xxx.xxx  | The IP address of the HTTP server (nodejs)                        |
 | port            | TCP Port         | The TCP port of the HTTP server. Defaults to 3031                 |
 | UDP server                                                                                             |
 | host (!)        | xxx.xxx.xxx.xxx  | The IP of the UDP server. Must be configured in the Shelly device |
 | port            | UDP Port         | The UDP port of the UDP server. Defaults to 3031                  |
-| Websocket server  (Shelly Broker)                                                                      |
+| **Websocket server**                                                                      |
 | host (!)        | xxx.xxx.xxx.xxx  | The IP of the Websocket server                                    |
 | port            | TCP Port         | The TCP port of the Websocket server. Defaults to 3031            |
 | ping-interval   | nr. of seconds   | Websocket keep-alive interval to check if the client is connected |
 | unblock-interval| nr. of seconds   | Security feature. After this time a blocked client is unblocked   |
 | messagelimit    | number           | Security feature. Number of allowed WS messages per minute        |
 | secret (!)      | secret text      | Security feature. Is exchanged between WS client and server       |
-| Shelly config                                                                                          |
+| **Shelly config**                                                                                          |
 | set-udp         | true / false     | If true, all shellies are configured to sent UDP Logs             |
 | set-ws          | true / false     | If true, all shellies send ws messages to the server              |
-| Database                                                                                               |
+| **Database**                                                                                               |
 | standardpw (!)  | text             | Standard password for all created users                           |
 | standardal      | text             | Standard alias for the admin user (Created on first run)          |
 | standardem      | email            | Standard email for the admin user (Created on first run)          |
@@ -124,7 +126,7 @@ File: _/sb/config/default.json_
 
 ## Client Configuration ##
 
-File: _index.html_
+File: _/sb/public/index.html_
 
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
@@ -157,4 +159,4 @@ The following devices have been tested with Shelly Central:
 ![Users](screens/Users.png)
 
 ## Thanks! ##
-to the [Minimal Dashbard](https://minimal-kit-react.vercel.app/) project: Without it things would have been much harder!
+to the [Minimal Dashbard](https://minimal-kit-react.vercel.app/) project: Without it, things would have been much harder!
