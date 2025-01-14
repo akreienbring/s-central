@@ -132,7 +132,14 @@ File: _index.html_
 | RECONNECT_MAX   | number           | Number of reconnect attemps after loosing the connection          |
 | LANDING_PAGE    |'login' or 'blogs'| If 'blogs' and public blogs exist, they are shown directly        |
 
+## Tested Devices ##
+The following devices have been tested with Shelly Central:
 
+| PM              | Light            | Other            |
+| --------------- | ---------------- | ---------------- |
+| Plus1PMMini     | SHBDUO-1         | PlusI4           |
+| Plus1PM         | PlusRGBWPM       | SHPLG-S          |
+| 1PMMini (Gen3)  |                  |                  |
 
 ## Screenshots ##
 ![Dashboard](screens/Dashboard.png)
