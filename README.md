@@ -22,6 +22,8 @@ Shelly Central supports English, Spanish and German.
   Enable additional users to log in to the appplication.
 - **Blog**<br/>
   A simple interface to write internal articles or notes to be displayed on the landing page.
+- **Webservices**<br/>
+  An API to call essential functions, e.g. from within your scripts.
 
 ## Why use it?
 
