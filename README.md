@@ -90,6 +90,7 @@ File: _/sb/config/devices.json_
 | --------------- | ---------------- | ----------------------------------------------------------------- |
 | ip              | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device                                     |
 | cname (!)       | e.g. 'Floorlight'| Display name for the client                                       |
+| password        | text             | (optional) If the device is protected                                      |
 
 File: _/sb/config/kvsdisplays.json_
 

@@ -2,5 +2,10 @@
   {
     "ip": "xxx.xxx.xxx.xxx",
     "cname": "CustomName"
+  },
+  {
+    "ip": "xxx.xxx.xxx.xxx",
+    "cname": "Protected",
+    "password": "test"
   }
 ]
