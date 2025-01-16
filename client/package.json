@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "vite",
     "start": "vite preview",
-    "build": "vite build",
+    "build": "vite build --mode private",
+    "build release": "vite build --mode release",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",

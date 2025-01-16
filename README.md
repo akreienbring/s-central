@@ -137,6 +137,11 @@ File: _/sb/public/index.html_
 | RECONNECT_MAX   | number           | Number of reconnect attemps after loosing the connection          |
 | LANDING_PAGE    |'login' or 'blogs'| If 'blogs' and public blogs exist, they are shown directly        |
 
+## Building the Client ##
+
+The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses an 
+_env.private_ file. If you create that file next to _env.release_ you can slimline the process by replacing the WSURL and WSSURL placeholders in the build _index.html_.
+
 ## Tested Devices ##
 The following devices have been tested with Shelly Central:
 

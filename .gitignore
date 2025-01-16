@@ -5,4 +5,4 @@ server/.vscode
 client/node_modules/
 client/.vscode
 client/dist/
-client/index.html
+client/.env.private
