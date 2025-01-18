@@ -106,11 +106,12 @@ export const SCProvider = ({ children }) => {
     connect to the server. Rerunning the effect reconnects when the socket was closed.
   */
   useEffect(() => {
-    // if (validationRequest === null && reconnectMsg.current.data.user === null) return;
     if (ws.current === null || (isReconnecting && ws.current.readyState !== WebSocket.OPEN)) {
       publishEvent('lastUpdatedAt', 'connecting');
+      const wsurl = import.meta.env.DEV ? window.scconfig.WSURL : window.scconfig.WSSURL;
+      console.log(`Creating websocket connection to ${wsurl}`);
       // eslint-disable-next-line new-cap
-      ws.current = new websocket.w3cwebsocket(import.meta.env.DEV ? window.scconfig.WSURL : window.scconfig.WSSURL);
+      ws.current = new websocket.w3cwebsocket(wsurl);
     }
 
     ws.current.onerror = (e) => console.error(e);

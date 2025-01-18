@@ -2,7 +2,7 @@
   "author": "André Kreienbring",
   "name": "@shellycentral/node-server",
   "license": "AGPL-3.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Server for Shelly Central",
   "private": false,
   "scripts": {

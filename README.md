@@ -49,15 +49,15 @@ Managing many Shellies in a network is a challenge. The original Shelly Control 
   Read the [Configuration details](#server-configuration) below!<br/>
   The settings you must / should change before the first run are marked with (!).
 
-  **Start the server**<br/>
-  - Linux: _npm start_
-  - Windows: _node shellybroker.js_
-
-  Thats it! Navigate your browser to [YOURSERVERIP]:3031 and log in with *admin@sc.com* and password _undlos_
-
 - **Client**<br/>
   The server release includes the current client version. But if the client version gets updated, you might want to install the newer version.<br/>
   Download the client release and unpack the content into the _/sb/public_ folder.
+
+## Starting / stopping the server<br/>
+- Linux: _npm start_ / _npm stop_
+- Windows: _node shellybroker.js_ / CTRL-C
+
+Thats it! Navigate your browser to [YOURSERVERIP]:3031 and log in with *admin@sc.com* and password _undlos_
 
 ## How to particpate and join the project
 
@@ -132,7 +132,7 @@ File: _/sb/public/index.html_
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
 | WSURL (!)       | ws://[IP]:[PORT] | Used in (VITE) DEV mode to connect to the Websocket server        |
-| WSSURL (!)      | wss://[IP]:[PORT]| Used in (VITE) PROD mode to connect to the Websocket server       |
+| WSSURL (!)      | wss://[IP]:[PORT]| Used in (VITE) PROD mode to connect to the Websocket server. This can also be ws://[IP]:[PORT]|
 | RECONNECT_DELAY | nr. of seconds   | When loosing the ws connection to server, reconnect after...      |
 | RECONNECT_MAX   | number           | Number of reconnect attemps after loosing the connection          |
 | LANDING_PAGE    |'login' or 'blogs'| If 'blogs' and public blogs exist, they are shown directly        |

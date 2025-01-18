@@ -2,7 +2,7 @@
   "author": "André Kreienbring",
   "name": "@shellycentral/react-client",
   "license": "AGPL-3.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Frontend of the Shelly Central",
   "private": false,
   "scripts": {

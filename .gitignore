@@ -6,3 +6,5 @@ client/node_modules/
 client/.vscode
 client/dist/
 client/.env.private
+client/.env.development
+
