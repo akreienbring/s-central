@@ -69,9 +69,27 @@ Add images to the project. The project works with 1. / 2. and 3. generation Shel
 **The Developer way**<br/>
 Fork the whole Github project and start making pullrequests! Your welcome! As with the images I'm sure other devices (I don't own) have special switches, RPC commands, JSON formats etc... Let's enhance this software to support more devices for the sake of all Shelly users!
 
-## The Log feature ##
+## The Log feature for  Shelly scripts
 As of now the log outputs of a Shelly can not directly be associated with the script that produces them :-(
-So to get this working you need to preceed every output with the name of the Script. E.g. "logPrefix: [SCRIPTNAME]" where [SCRIPTNAME] equals the name of an existing script!
+So to get this working you need to preceed every output with the name of the Script. For example you may use a CONFIG Object like
+
+```
+const CONFIG = {
+  // 'MyScriptname' must match the real name of the script!
+  logPrefix: 'MyScriptname (#' + Shelly.getCurrentScriptId() + '): ',
+  verbose: true
+}
+```
+and then a function like
+```
+//log with prefix to console if verbose 
+function log(to_log) {
+  if(CONFIG.verbose) {
+    console.log(CONFIG.logPrefix, to_log);
+  }
+}
+```
+to output messages to the console prefixed by the script name.
 
 ## When to restart the server
 The server must be restartet when
