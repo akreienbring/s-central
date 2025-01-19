@@ -73,7 +73,7 @@ Fork the whole Github project and start making pullrequests! Your welcome! As wi
 As of now the log outputs of a Shelly can not directly be associated with the script that produces them :-(
 So to get this working you need to preceed every output with the name of the Script. E.g. "logPrefix: [SCRIPTNAME]" where [SCRIPTNAME] equals the name of an existing script!
 
-## When to restart the server ##
+## When to restart the server
 The server must be restartet when
 - You add / change / delete a device in _/sb/config/devices.json_
 - You add / delete a script on a device
@@ -82,7 +82,7 @@ The server must be restartet when
 
 because of performance reasons this information is only retrieved once.
 
-## Server Configuration ##
+## Server Configuration
 
 File: _/sb/config/devices.json_
 
@@ -125,7 +125,7 @@ File: _/sb/config/default.json_
 | standardem      | email            | Standard email for the admin user (Created on first run)          |
 | standardhome    | 'dashboard / 'shellies'      | Standard homepage for all created users               |
 
-## Client Configuration ##
+## Client Configuration
 
 File: _/sb/public/index.html_
 
@@ -137,12 +137,23 @@ File: _/sb/public/index.html_
 | RECONNECT_MAX   | number           | Number of reconnect attemps after loosing the connection          |
 | LANDING_PAGE    |'login' or 'blogs'| If 'blogs' and public blogs exist, they are shown directly        |
 
-## Building the Client ##
+## Building the Client
 
 The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses an 
 _env.private_ file. If you create that file next to _env.release_ you can slimline the process by replacing the WSURL and WSSURL placeholders in the build _index.html_.
 
-## Tested Devices ##
+## Troubleshooting
+
+**Client**<br/>
+It's always a good idea to check the browser console (CTRL-SHIFT-I). On a mobile phone (Android) there's a browser called _Eruda_ that also has a console view.
+
+**Server**
+- Windows<br/>
+  The console log is visible in the terminal window  from which you started the server.
+- Linux<br/>
+  The server comes with _pm2_ process management and there is a script to see the console logs which you can run with _npm run logs_
+
+## Tested Devices
 The following devices have been tested with Shelly Central:
 
 | PM              | Light            | Other            |
@@ -151,7 +162,7 @@ The following devices have been tested with Shelly Central:
 | Plus1PM         | PlusRGBWPM       | SHPLG-S          |
 | 1PMMini (Gen3)  |                  |                  |
 
-## Screenshots ##
+## Screenshots
 ![Dashboard](screens/Dashboard.png)
 
 ![Script_KVS](screens/Shellies_Script_KVS.png)
@@ -164,5 +175,5 @@ The following devices have been tested with Shelly Central:
 
 ![Users](screens/Users.png)
 
-## Thanks! ##
+## Thanks!
 to the [Minimal Dashbard](https://minimal-kit-react.vercel.app/) project: Without it, things would have been much harder!
