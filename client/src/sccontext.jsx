@@ -28,7 +28,7 @@ const Context = createContext();
 
 export const useShelly = () => useContext(Context);
 
-/*
+/** 
   A Context Provider that is available in every page of the app by 
   using the exported 'useShelly' hook.
   Once logged in, the user object is stored in (and retrieved from) the
@@ -59,12 +59,14 @@ export const SCProvider = ({ children }) => {
   */
   const WITHOUT_SECRET = useRef(['user validate', 'blogposts get public']);
 
-  /*
+  /**
     Implements a reconnection strategy.
     Tries to reconnect directly after the ws connection was closed.
     If not successful, subsequent tries will be delayed by
     the configured delay time with a factor.
     After the configured max tries the recursion stops.
+    @param {number} currentRetryCount Used to count the number of retries
+    @param {boolean} isInit If true the retry count is reset
   */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const startRetryTimeout = (currentRetryCount, isInit) => {
@@ -270,10 +272,10 @@ export const SCProvider = ({ children }) => {
     };
   }, [validationRequest, startRetryTimeout, retryCount]);
 
-  /*
+  /**
     Put the current user in the context of the application.
     This also adds him to the reconnect message to be send when reconnecting the websocket.
-    @param {object} The user that was provided by the login form.
+    @param {object} theUser The user that was provided by the login form.
   */
   const login = (theUser) => {
     setUser(theUser);
@@ -284,15 +286,14 @@ export const SCProvider = ({ children }) => {
     setUser(null);
   };
 
-  /*
+  /**
     A component subscribes to one or more events.
-    @param: {object} subscription Is of the form:
-      {
-        callback: A function that is called when a msg with an event arrives, 
-        events: An array with events the component needs to receive,
-        all: A boolean value that indicates if the component needs all or only specific (device) events
-      }
-    @ {string} subscriptionID An identifier that is used when a message arrives
+    @typedef {Object} subscription
+    @property {string} subscriptionID An unique ID that identifies the subscription
+    @property {callback} callback A function that is called when a msg with an event arrives
+    @property {boolean} all  A boolean value that indicates if the component needs all or only specific (device) events
+    @param {subscription} subscription The subscription object
+    @param {Array} events An array of websocket events (e.g. 'ShellyUpdate')
   */
   const subscribe = (subscription, events) => {
     events.forEach((event) => {
@@ -309,6 +310,11 @@ export const SCProvider = ({ children }) => {
     });
   };
 
+  /**
+   * Unsubscribe from a former subscription
+   * @param {string} subscriptionID The ID of the registered subscription
+   * @param {Array} events A list of events to unsubscribe from (e.g. 'ShellyUpdate')
+   */
   const unsubscribe = (subscriptionID, events) => {
     events.forEach((event) => {
       if (typeof subscribtions.current[event] !== 'undefined') {
@@ -324,11 +330,11 @@ export const SCProvider = ({ children }) => {
     });
   };
 
-  /*
+  /**
     Components can send messages directly to the websocket server.
     This messages will ONLY be stored in the requests object,
     if the websocket is closed. Each message triggers a reconnection attempt.
-    @param {object} msg The message that will be send to the websocket server
+    @param {Object} msg The message that will be send to the websocket server
  */
   const send = useCallback(
     (msg) => {
@@ -354,13 +360,13 @@ export const SCProvider = ({ children }) => {
     [startRetryTimeout, retryCount]
   );
 
-  /*
+  /**
     A component can request data from the server.
     The requestID is unique an used to identify the request when the data arrives.
     Requests will ALWAYS be stored in the request object.
     Each request triggers a reconnection attempt.
-    @param {object} msg The message with the request that is send to the websocket server
-    @param {function} callback The function to call when the data arrives.
+    @param {Object} msg The message with the request that is send to the websocket server
+    @param {callback} callback The function to call when the data arrives.
   */
   const request = useCallback(
     (msg, callback) => {
