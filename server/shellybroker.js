@@ -75,8 +75,6 @@ httpserver.on("upgrade", function (request, socket, body) {
 /*
   The UDP Server is used to receive log messages from Shelly devices
 */
-
-// Event when receiving an UDP message
 udpServer.on("message", (msg, rinfo) => {
   //console.log(`UDP Server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
   shellyGen2Conn.handleLogMessage(msg, rinfo);

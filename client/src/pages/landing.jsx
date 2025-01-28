@@ -11,7 +11,7 @@ export default function LandingPage() {
   return (
     <>
       <Helmet>
-        <title> Shelly Central</title>
+        <title> S-Central</title>
       </Helmet>
 
       <LandingView />

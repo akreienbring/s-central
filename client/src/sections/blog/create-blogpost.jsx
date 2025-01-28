@@ -17,11 +17,12 @@ import IconButton from '@mui/material/IconButton';
 import Iconify from 'src/components/iconify';
 
 import BlogPostForm from './blogpost-form';
-/*
+
+/**
   @param {boolean} openCreate To determine if the dialog is shown or not
   @param {function} onOpenCreate Handles the open status
   @param {function} onCloseCreate Handles the closed status
-  @param {function} handleUsersReceived Will be passed to the UserForm to update
+  @param {function} handleBlogpostsReceived Will be passed to the UserForm to update
     the list of all users
 */
 export default function CreateBlogpost({

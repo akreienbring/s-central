@@ -15,10 +15,12 @@ import { ColorPreview } from 'src/components/color-utils';
 
 const COLORS = ['#00AB55', '#D22B2B', '#000000'];
 
-/*
+/**
   Before presenting the scripts of a device the array of scripts will be extented
   to 3 scripts. Each indicating with colors if it's running, not running or not used (still available)
-  @param {object} device mandatory The device the scripts are existing on.
+  @param {string} deviceIP The IP of the device the scripts are existing on.
+  @param {boolean} deviceOnline True if the device in online
+  @param {array} scripts The scripts of the device
 */
 const ShellyScriptList = ({ deviceIP, deviceOnline, scripts }) => {
   if (

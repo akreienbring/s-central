@@ -21,15 +21,15 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
-/*
+/**
   The component receives the following props:
   @param {boolean} openFilter To determine if the dialog is shown or not
   @param {function} onOpenFilter This will be called when the dialog was 
     opened to maintain the state in the parent component (ShellyView)
   @param {function} onCloseFilter This will be called when the dialog was 
     closed to maintain the state in the parent component (ShellyView)
-  @filter {object} An object that contains filter options and current states about their settings (checked or not)
-  @handleDeviceFilter {function} Will be called when a filter was selected and must be committed to the parent.
+  @param {object} filter An object that contains filter options and current states about their settings (checked or not)
+  @param {function} handleDeviceFilter Will be called when a filter was selected and must be committed to the parent.
 */
 export default function ShellyFilters({
   openFilter,

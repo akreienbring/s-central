@@ -1,3 +1,6 @@
+/*
+  Author: André Kreienbring
+*/
 import PropTypes from 'prop-types';
 
 import Card from '@mui/material/Card';
@@ -8,6 +11,13 @@ import { fWh } from 'src/utils/format-number';
 
 import Chart from 'src/components/chart';
 
+/**
+ * Component that displays the current consumption circle chart.
+ * @param {string} title The title that is displayed on top of the chart
+ * @param {string} subheader The subheader, shown beneath the title
+ * @param {array} colors contains a color for every device
+ * @param {array} series the consumption data used in the chart
+ */
 export default function CurrentConsumption({ title, subheader, colors, series, ...other }) {
   const theme = useTheme();
 

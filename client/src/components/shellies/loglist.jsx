@@ -13,7 +13,8 @@ import Typography from '@mui/material/Typography';
 
 import { createUUID } from 'src/utils/general';
 
-/*
+/**
+  Display the logs of a device per script
   @param {array} scripts The scripts of a device containing the logmessages for each script.
 */
 const LogList = ({ scripts }) => {

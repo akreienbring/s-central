@@ -3,9 +3,10 @@
   Contains database related functions. 
 */
 
-/*
-  Called when wshandler is loaded. 
-  @param {object} theDB The (already open) database
+/**
+  Called when wshandler is loaded.
+  Creates all tables if they not exist.
+  @param {object} db The (already open) database
 */
 function initDB(db) {
   createConsupmtionTables(db);
@@ -14,10 +15,10 @@ function initDB(db) {
   createBlogpostTable(db);
 }
 
-/*
-  Creates several tables and triggers.
+/**
+  Creates several tables and triggers for the consumption data.
   If they don't exist! Can therefor be called many times.
-  @param {object} theDB The (already open) database
+  @param {object} db The (already open) database
 */
 function createConsupmtionTables(db) {
   /*
@@ -112,7 +113,11 @@ function createConsupmtionTables(db) {
   db.exec(sql);
 }
 
-function createUserTables(db) {
+/**
+  Creates several tables for the user / role data.
+  If they don't exist! Can therefor be called many times.
+  @param {object} db The (already open) database
+*/function createUserTables(db) {
   sql = `CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     uuid TEXT UNIQUE NOT NULL,
@@ -138,7 +143,11 @@ function createUserTables(db) {
   db.exec(sql);
 }
 
-function createNotificationTable(db) {
+/**
+  Creates the table for the notification data.
+  If they don't exist! Can therefor be called many times.
+  @param {object} db The (already open) database
+*/function createNotificationTable(db) {
   sql = `CREATE TABLE IF NOT EXISTS notifications (
       id INTEGER PRIMARY KEY,
       type NOT NULL,
@@ -154,7 +163,11 @@ function createNotificationTable(db) {
   db.exec(sql);
 }
 
-function createBlogpostTable(db) {
+/**
+  Creates the table for the blogposts data.
+  If they don't exist! Can therefor be called many times.
+  @param {object} db The (already open) database
+*/function createBlogpostTable(db) {
   sql = `CREATE TABLE IF NOT EXISTS blogposts (
       id INTEGER PRIMARY KEY,
       title NOT NULL,

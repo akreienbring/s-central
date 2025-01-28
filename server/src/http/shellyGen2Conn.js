@@ -20,7 +20,6 @@ const shellyWSClient = require("@ws/client/shelly-wsclient.js");
 const shellyConfigurator = require("./shellyconfigurator.js");
 const shellyGen1Conn = require("./shellyGen1Conn.js");
 const shellyAxios = require("./shellyAxios.js");
-const wsclient = require("@ws/client/wsclient");
 
 // The images must be stored on the client side
 const clientImagePath = "/assets/images/devices/";
@@ -56,7 +55,7 @@ let isLoaded = false;
   isLoaded = true;
 })();
 
-/*
+/**
   By clicking on a switch in the frontend the 'wsHandler' receives a message
   and will call this method to toggle a switch.
   Dependent on the device generation, the appropriate action will be taken.
@@ -70,20 +69,8 @@ function toggleSwitch(aSwitch) {
     if (device.gen > 1) {
       if (aSwitch.key.startsWith("switch")) {
         shellyWSClient.sendCommand(device, "Switch.Toggle", { id: aSwitch.id });
-        /*
-        getRPCMethod(device, "Switch.Toggle", { id: aSwitch.id }).catch(
-          (err) => {
-            console.error(err.message);
-          }
-        );
-        */
       } else if (aSwitch.key.startsWith("rgbw")) {
         shellyWSClient.sendCommand(device, "RGBW.Toggle", { id: aSwitch.id });
-        /*
-        getRPCMethod(device, "RGBW.Toggle", { id: aSwitch.id }).catch((err) => {
-          console.error(err.message);
-        });
-        */
       }
     } else if (device.gen === 1) {
       shellyGen1Conn.toggleSwitch(device.ip, aSwitch);
@@ -91,7 +78,7 @@ function toggleSwitch(aSwitch) {
   }
 }
 
-/*
+/**
   By altering the values of a switch in the frontend the 'wsHandler' receives a message
   and will call this method to set a switch.
   Dependent on the device generation, the appropriate action will be taken.
@@ -118,17 +105,6 @@ function setSwitch(aSwitch) {
         };
 
         shellyWSClient.sendCommand(device, "RGBW.Set", params);
-        /*
-        getRPCMethod(device, "RGBW.Set", {
-          id: aSwitch.id,
-          turn: aSwitch.output ? "on" : "off", // without this, 'Set' does not work
-          brightness: aSwitch.brightness,
-          white: aSwitch.white,
-          rgb: aSwitch.rgb,
-        }).catch((err) => {
-          console.error(err.message);
-        });
-        */
       }
     } else if (device.gen === 1) {
       shellyGen1Conn.setSwitch(device.ip, aSwitch);
@@ -136,14 +112,14 @@ function setSwitch(aSwitch) {
   }
 }
 
-/*
-  When ShellyBroker receives an UDP message it will be handled by this function.
+/**
+  When ShellyBroker receives an UDP Log message it will be handled by this function.
   If a device exists with the given source address, then the 10 recent log messages 
   will be added to the according script object.
   ATTENTION: This only works correct if the log output contains the name of the script.
   e.g. "logPrefix: [SCRIPTNAME]" where [SCRIPTNAME] equals the name of an existing script!
-  @param {Buffer} msg mandatory A message that was received over UDP
-  @param {Object} rinfo mandatory Holds additional info about the sender e.g. the sender IP
+  @param {Buffer} msg A message that was received over UDP
+  @param {Object} rinfo Holds additional info about the sender e.g. the sender IP
 */
 function handleLogMessage(msg, rinfo) {
   // Only accept logs from configured devices
@@ -153,10 +129,10 @@ function handleLogMessage(msg, rinfo) {
   logHandler.handleLogMessage(device, msg);
 }
 
-/*
+/**
   Searches and returns a device by its Shelly id
   @param {number} id mandatory The Shelly id of a device
-  @returns The device with the given id or 'undefined' if the device was not found.
+  @returns {object} The device with the given id or 'undefined' if the device was not found.
 */
 function findDeviceById(id) {
   return devices.find((device) => {
@@ -164,10 +140,10 @@ function findDeviceById(id) {
   });
 }
 
-/*
+/**
   Searches and returns a device by its ip
-  @param {number} ip mandatory The IP of a device
-  @returns The device with the given ip or 'undefined' if the device was not found.
+  @param {string} ip The IP of a device
+  @returns {object} The device with the given ip or 'undefined' if the device was not found.
 */
 function findDevice(ip) {
   return devices.find((device) => {
@@ -175,11 +151,11 @@ function findDevice(ip) {
   });
 }
 
-/*
+/**
   Searches and returns a script of a device by its id
-  @param {number} ip mandatory The IP of a device
+  @param {string} ip mandatory The IP of a device
   @param {number} id mandatory The ID of a script
-  @returns The script with the given id or 'undefined' if the script was not found.
+  @returns {object} The script with the given id or 'undefined' if the script was not found.
 */
 function findScript(ip, id) {
   const device = findDevice(ip);
@@ -192,8 +168,9 @@ function findScript(ip, id) {
   }
 }
 
-/*
+/**
   Serves the entpoint 'GetDevices' and is called when the module is loaded.
+  Once loaded the devices array is served from memory.
   @returns {array} All the internal devices when all infomation was collected
 */
 async function getDevices() {
@@ -204,11 +181,11 @@ async function getDevices() {
   return devices;
 }
 
-/*
+/**
   Serves the entpoint 'GetDevice' and 'GetScripts'
-  @param {string} ip mandatory The IP of a device
+  @param {string} ip The IP of a device
   @param {boolean} reload. If true the data from the device is refetched.
-  @returns the device created from the response data or
+  @returns {object} the device created from the response data or
     an 'unknown' device if the device could not be connected or it is not supported 
 */
 async function getDevice(ip, reload) {
@@ -239,11 +216,11 @@ async function getDevice(ip, reload) {
   }
 }
 
-/*
+/**
   Is only used internally when a device is created after loading
   Returns all scripts of a given device
-  @param {object} device mandatory The device to get the scripts from
-  @returns the device with the added array of scripts. The array is empty if the 
+  @param {object} device The device to get the scripts from
+  @returns {object} the device with the added array of scripts. The array is empty if the 
   device does not support scripts.
 */
 async function getScripts(device) {
@@ -263,12 +240,12 @@ async function getScripts(device) {
   return device;
 }
 
-/*
+/**
   Is only used internally when a device is created after loading.
   Sets all KVS entries on a given device.
   Every KVS entry is enhanced by the values in kvsdisplay.json
-  @param {object} device mandatory The device to enrich with KVS data
-  @returns the device with the added array of KVS entries. The array is empty if the 
+  @param {object} device The device to enrich with KVS data
+  @returns {object} the device with the added array of KVS entries. The array is empty if the 
   device does not support KVS.
 */
 async function getKVS(device) {
@@ -303,13 +280,13 @@ async function getKVS(device) {
   return device;
 }
 
-/*
+/**
   Is only used internally when a device is created after loading.
   Creates an array with the switches of a device.
   A device can have up to 4 switches. The key in the "GetStatus" result
   is either 'switch:[x]' or 'rgwb:[x]'.
-  @param {object} device mandatory The device to enrich with the array of switches
-  @returns the device with the added array of switches. The array is empty if the 
+  @param {object} device The device to enrich with the array of switches
+  @returns {object}nthe device with the added array of switches. The array is empty if the 
   device does not support switches.
 */
 async function getSwitches(device) {
@@ -350,12 +327,12 @@ async function getSwitches(device) {
   return device;
 }
 
-/*
+/**
   Used when a device could not be connected (is offline) or its gen is 0.
   The gen is considered as 0, when it does not return a 'type' attribute.
   Sets some information that is displayed on the frontend. 
   Empty arrays are added. This way the frontend does not need to check for undefined.
-  @param {object} device mandatory The device that could not be connectd to or that is not supported
+  @param {object} device The device that could not be connected to or that is not supported
   @param {boolean} online The device was connected but has no 'type' attribute.
   @param {string} name The name of the device (maybe 'unknown')
   @returns {object} The updated device
@@ -376,7 +353,7 @@ function createUnknownDevice(device, online, name) {
   return device;
 }
 
-/*
+/**
   After the loading of the main device information the properties of the device
   are transfered to the internal devices array.
   The information is then enhanced by the scripts and the KVS entries of the device
@@ -405,11 +382,11 @@ async function createDevice(device, data) {
   }
 }
 
-/*
-  Calles the devices rpc interfaces
-  @param {object} device mandatory The device the call will be send to.
-  @param {string} method mandatory The RPC method that will be called.
-  @param {object} params If provide this params will be added to the method.
+/**
+  Generic method that calles the devices rpc interfaces by using the POST method.
+  @param {object} device The device the call will be send to.
+  @param {string} method The RPC method that will be called.
+  @param {object} [params] If provide this params will be added to the method.
   @returns {object} The response object.
 */
 async function getRPCMethod(device, method, params) {

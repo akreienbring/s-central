@@ -1,16 +1,16 @@
 /*
   Author: André Kreienbring
-*/
-
-/*
-  Checks a 'NotifyFullStatus' websocket message for changes that must be
-  applied to a device. (Script and Switch status);
-  @param {object} device That is evtl. changed by the data of the message.
-  @param {object} param The 'params' object of a 'NotifyFullStatus' message.
-  @return {device} If the device was changed. If it was not changed null is returned.
+  Updates device values from a received websocket message
 */
 import isEqual from 'lodash/isEqual';
 
+/**
+  Checks a 'NotifyFullStatus' websocket message for changes that must be
+  applied to a device. (Script and Switch status);
+  @param {object} device That is evtl. changed by the data of the message.
+  @param {object} params The 'params' object of a 'NotifyFullStatus' message.
+  @return {object} The device if the device was changed. If it was not changed null is returned.
+*/
 export default function updateDeviceValues(device, params) {
   let isChanged = !device.online; // the device is obviosly online
 

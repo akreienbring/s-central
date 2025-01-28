@@ -14,7 +14,7 @@ import { createUUID } from 'src/utils/general';
 import Notifications from './handler/notifcations';
 import SystemTime from './handler/display/systemtime';
 
-/*
+/**
   The 'wsmessages' object of a device has up to 3 keys (depends on the device)
   - NotifyFullStatus
   - NotifyStatus

@@ -1,3 +1,8 @@
+/*
+  Author: André Kreienbring
+  Lists notifications that are retrieved from the server.
+  Presents functions to manage them.
+*/
 import PropTypes from 'prop-types';
 import { es, de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +42,7 @@ export default function NotificationsPopover() {
   const isNotificationLoaded = useRef(false);
   const { t } = useTranslation();
 
-  /*
+  /**
     Called after a new notification arrived.
     @param {object} msg The message with a new notification.
   */
@@ -61,9 +66,10 @@ export default function NotificationsPopover() {
     [notifications]
   );
 
-  /*
+  /**
     Called when the PopOver is mounted and the list of notifications
     is received from the server.
+    @param {object} msg The message with the initial notifications attached
   */
   const handleNotificationsReceived = useCallback(
     (msg) => {
@@ -89,8 +95,8 @@ export default function NotificationsPopover() {
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*
-    After creation of the page all devices are requested from the websocket server.
-    Further ws messages from the Shelly devices are also handled.
+    After creation of the page all notifications are requested from the websocket server.
+    The components also subscribes to the event 'ScriptError' to receive them as they occur.
     The useEffect is only triggered once and lives as long the page is mounted.
   */
   useEffect(() => {
@@ -125,14 +131,21 @@ export default function NotificationsPopover() {
     };
   }, [handleNotificationsReceived, handleNotificationUpdate, subscribe, unsubscribe, request]);
 
+  /**
+   * Used to open the Popover
+   * @param {*} event 
+   */
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
-
   const handleClose = () => {
     setOpen(null);
   };
 
+  /**
+   * Sets all notifications to read.
+   * Only read notifications can be deleted
+   */
   const handleMarkAllAsRead = () => {
     const readNotifications = [];
     const newNotifications = notifications.map((notification) => {
@@ -153,9 +166,10 @@ export default function NotificationsPopover() {
     });
   };
 
-  /*
+  /**
     When an unread notification is clicked,
-    it will be marked as read.
+    it will be marked as read. An according update is send to the server.
+    @param {object} readNotification The notification that was read
   */
   const handleItemClick = (readNotification) => {
     const readNotifications = [];
@@ -181,6 +195,11 @@ export default function NotificationsPopover() {
     });
   };
 
+  /**
+   * Deletes a notification by sending a request to the server.
+   * The server answers with the remaining list of notifications.
+   * @param {number} id The id of the notification that must be deleted
+   */
   const handleItemDelete = (id) => {
     request(
       {
@@ -283,7 +302,12 @@ export default function NotificationsPopover() {
 }
 
 // ----------------------------------------------------------------------
-
+/**
+ * This components presents a single notification.
+ * @param {object} notification The notification to show
+ * @param {function} handleItemClick Sets the notification to 'read'
+ * @param {function} handleItemDelete Deletes the notification
+*/
 function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
   const { avatar, title } = renderContent(notification);
   const { i18n } = useTranslation();
@@ -358,7 +382,11 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
 }
 
 // ----------------------------------------------------------------------
-
+/**
+ * Renders the content of a notification
+ * @param {object} notification 
+ * @returns 
+ */
 function renderContent(notification) {
   const title = (
     <>

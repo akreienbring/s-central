@@ -1,7 +1,7 @@
 /*
   Author: André Kreienbring
-  Renders the login, profile and create form.
-  Depending on the passed in type property.
+  Renders the create and update form for blogposts
+  depending on the passed in type property.
 */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -22,6 +22,13 @@ import Iconify from 'src/components/iconify';
 
 import BlogEditor from './post-editor';
 
+/**
+ * Component that displays a form to create or update a Blogpost
+ * @param {string} type The type of the form. Either 'create' or 'update'.
+ * @param {function} handleUpdatePost Called when a Blogpost must be updated.
+ * @param {object} A post that will be updated
+ * @param {function} handleBlogpostsReceived Called when a list of blogposts arrives from the server
+ */
 const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsReceived }) => {
   const { user, request } = useShelly();
   const [currentBlogpost, setCurrentBlogpost] = useState(
@@ -36,21 +43,22 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
   const { t } = useTranslation();
   const [requestResult, setRequestResult] = useState({ success: true, message: '' });
 
-  /*
+  /**
     Called when a 'blogpost create' message was received upon a former
-    request that was send by 'handleSubmit'
-    @param {object} msg The mesage that was passed with the answer from the server
+    request that was send by 'handleSubmit'. The new list of blogposts is attached
+    to the message
+    @param {object} msg The message that was passed with the answer from the server
   */
   const handleBlogpostCreate = (msg) => {
     setRequestResult({
       success: msg.data.success,
       message: msg.data.message,
     });
-    // if successful: update the users in UserView
+    // if successful: update the posts in Blogview
     if (msg.data.success) handleBlogpostsReceived(msg);
   };
 
-  /*
+  /**
     Called when a 'blogpost update' message was received upon a former
     request that was send by 'handleSubmit'
     @param {object} msg The mesage that was passed with the answer from the server
@@ -64,7 +72,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
     if (msg.data.success) handleUpdatePost(currentBlogpost);
   };
 
-  /*
+  /**
     All controlled inputs constantly keep the 'currentBlogpost'
     up to date. This way it can be directly submitted to 
     the server without collecting the form entries.
@@ -81,10 +89,10 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
     setCurrentBlogpost(updatedBlogpost);
   };
 
-  /*
+  /**
     Called everytime the content of the RichTextEditor changes.
     Adds the content to the current blogpost
-    @param {string} The HTML content of the editor.
+    @param {string} content The HTML content of the editor.
   */
   const handleContentChange = (content) => {
     const updatedBlogpost = { ...currentBlogpost };
@@ -92,6 +100,11 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
     setCurrentBlogpost(updatedBlogpost);
   };
 
+  /**
+   * Called when the submit button was clicked.
+   * Creates or updates a blogpost by communicating with the server 
+   * @param {object} event  
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (type === 'create') {
@@ -122,6 +135,10 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
     }
   };
 
+  /**
+   * Constantly checking if submit criterias are met.
+   * @returns {boolean} True if the criterias are met, false otherwise
+   */
   const checkSubmitCriterias = () =>
     typeof currentBlogpost.title === 'undefined' ||
     currentBlogpost.title.length === 0 ||

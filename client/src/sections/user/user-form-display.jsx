@@ -1,7 +1,6 @@
 /*
-Author: André Kreienbring  
-Renders the login, profile and create form.
-  Depending on the passed in type property.
+  Author: André Kreienbring  
+  Renders the login, profile, security and create form depending on the passed in type property.
 */
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -24,16 +23,16 @@ import { useShelly } from 'src/sccontext';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  Separates the form components from the UserForm that communicates with the websocket.
+/**
+  Separates the form display components from the UserForm that communicates with the websocket.
   @param {string} type Must be 'login', 'profile', 'security' , or 'create'
   @param {object} requestResult Information about a request result from the websocket server.
   @param {array} roles A list of roles requested from the websocket server.
-  @param {object} Either the currently logged in user OR a user from the UserView / UserTableRow list.
+  @param {object} currentUser Either the currently logged in user OR a user from the UserView / UserTableRow list.
   @param {function} setRequestResult is called when a displayed request result is changed (hidden)
   @param {function} setCurrentUser called everytime an input is changed to reflect the updated user.
   @param {function} handleForgotten called when a password must be reset.
-  @param {function} handleSubmit called when the form is submitted by the user.
+  @param {function} handleCurrentUser called when the user was changed.
 */
 const UserFormDisplay = ({
   type,
@@ -76,7 +75,7 @@ const UserFormDisplay = ({
     setRequestResult({ success: true, message: '' });
   };
 
-  /*
+  /**
     All controlled inputs constantly keep the 'currentUser'
     up to date. This way it can be directly submitted to 
     the server without collecting the form entries.
@@ -101,9 +100,10 @@ const UserFormDisplay = ({
     setCurrentUser(updatedUser);
   };
 
-  /*
+  /**
     Update the origUser to handle changes correctly and
     send the updated user to the websocket server
+    @param {object} e The event
   */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -111,10 +111,10 @@ const UserFormDisplay = ({
     handleCurrentUser(currentUser);
   };
 
-  /*
+  /**
     If entered values are unvalid the submit button is disabled.
     This depends on the type of the form.
-    @return {boolean} true if the button must be disabled.
+    @return {boolean} true if the submit button must be disabled.
   */
   const checkSubmitCriterias = () => {
     if (currentUser === null) return true;

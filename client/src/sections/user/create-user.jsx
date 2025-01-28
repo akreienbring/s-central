@@ -18,7 +18,8 @@ import Iconify from 'src/components/iconify';
 
 import UserForm from './user-form';
 
-/*
+/**
+  Component the presents a dialog to create a new user
   @param {boolean} openCreate To determine if the dialog is shown or not
   @param {function} onOpenCreate Handles the open status
   @param {function} onCloseCreate Handles the closed status

@@ -4,7 +4,6 @@
   It shows several values, calculated from current websocket notifications 
   of the shelly devices.
   It implements a Websocket client that receives either an array of devices or a single device (update)
-  This websocket is independent from the socket that is implemented by the 'ShellyView' component.
 */
 /*
   icon sources:
@@ -57,7 +56,7 @@ export default function AppView() {
   const chartColors = useChartColors();
   const subscriptionID = useRef(createUUID());
 
-  /*
+  /**
     Called when requested timeline data arrives.
     Build the apex charts and rerenders the timeline
     @param {object} msg The message with timeline data.
@@ -92,10 +91,10 @@ export default function AppView() {
     [devices]
   );
 
-  /*
+  /**
     Called after an update from the websocket server for one device.
     Calculates various values for the dashboard
-    @param {array} wsDevices The (updated) devices received from the websocket.
+    @param {array} wsDevices The (updated) devices received from the websocket server.
   */
   const handleDevicesUpdate = useCallback(
     (wsDevices) => {
@@ -129,14 +128,14 @@ export default function AppView() {
     [request, handleTimelineUpdate]
   );
 
-  /*
+  /**
   Called when the wsmessages of a device were updated.
   Creates a new array with the replaces received device
   and calls the handler that calculates the changes for the Dashboard
   The message with event of:
     - 'ShellyUpdate' contains an updated single device
     - 'timeline' contains requested timeline data
-    @param {object} msg mandatory The message that contains a single device or the timeline data
+    @param {object} msg The message that contains a single device or the timeline data
   */
   const handleDeviceUpdate = useCallback(
     (msg) => {
@@ -159,7 +158,7 @@ export default function AppView() {
     [handleDevicesUpdate, devices, chartColors]
   );
 
-  /*
+  /**
     Gets called from the timeline chart, when the dropdown selection changes.
     Sends a request to the websocket server to send the selected timeline.
     Based on the selected timeline some format options are set.
@@ -181,9 +180,10 @@ export default function AppView() {
     );
   };
 
-  /*
+  /**
     Called when the AppView is mounted and the list of devices 
     and timeline data is received from the server.
+    @param {object} msg The message that contains an array of devices
   */
   const handleDevicesReceived = useCallback(
     (msg) => {
@@ -232,13 +232,13 @@ export default function AppView() {
 
     /*
       Clean up the websocket subscription when unmounting the component.
-     */
-    // eslint-disable-next-line consistent-return
+    */
     return () => {
       unsubscribe(currentSubscriptionID, ['ShellyUpdate']);
     };
   }, [devices.length, handleDevicesReceived, handleDeviceUpdate, unsubscribe, subscribe, request]);
   // --------------------- Websocket Implementation END------------------
+  
   if (devices.length === 0) return null;
   return (
     <Container maxWidth="xl">

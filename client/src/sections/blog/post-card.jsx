@@ -1,3 +1,8 @@
+/*
+  Author: André Kreienbring
+  A PostCard displays a single blog post. All PostCard's are
+  embedded in the BlogView Component
+*/
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +29,13 @@ import SvgColor from 'src/components/svg-color';
 import UpdateBlogpost from './update-blogpost';
 
 // ----------------------------------------------------------------------
-
+/**
+ * A Component to display one single blogpost object with 
+ * available functions like e.g. a menue.
+ * @param {object} blogpost The blogpost to display in the card
+ * @param {number} index The index of the post in the blogpost array (determines size and design)
+ * @param {function} handleDeletePost Called when the post must be deleted
+ */
 export default function PostCard({ blogpost, index, handleDeletePost }) {
   const [openMenue, setOpenMenue] = useState(null);
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -39,9 +50,8 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
 
-  /*
-    Called when a post was updated. Updates the
-    list of blogposts.
+  /**
+    Called when a post was updated.
     @param {object} formpost The post that was updated using the form
   */
   const handleUpdatePost = (formpost) => {
@@ -71,6 +81,9 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
     setOpenMenue(null);
   };
 
+  /**
+   * Display a menue entry if the user clicks on 'delete'
+   */
   const handleShowReally = () => {
     setShowReallyDelete(true);
   };

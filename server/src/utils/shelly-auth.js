@@ -16,7 +16,7 @@ const match_coma_space_re = /,? /;
 const static_noise_sha256 =
   ":auth:6370ec69915103833b5222b368555393393f098bfbfbb59f47e0590af135f062"; // = ':auth:'+hexHash("dummy_method:dummy_uri")
 
-/*
+/**
   CURRENTLY UNUSED, BECAUSE SHELLY AUTHENTICATION DOES NOT REQUIRE A HEADER
   Creates a Digest Authorization header.
   @param {object} authParams Must already contain the valid credential properties
@@ -48,7 +48,7 @@ function buildHTTPAuthHeader(authParams, headers) {
   return headers;
 }
 
-/*
+/**
   Used to check if the values, that were extracted from an Authentication
   header, are valid.
   @param {object} authParams An object with the extracted values
@@ -64,10 +64,10 @@ function isauthParams(authParams) {
   );
 }
 
-/*
-  Build the digest credentials that will be passed to the device
+/**
+  Build the websocket digest credentials that will be passed to the device
   @param {object} message The message with the challenge information
-  @param (string) password The password that protects the device
+  @param {string} password The password that protects the device
   @return {object} The authentication parameters
 */
 function getWSCredentials(message, password) {
@@ -88,11 +88,11 @@ function getWSCredentials(message, password) {
   return complementAuthParams(authParams, password);
 }
 
-/*
-  Build the digest credentials that will be passed to the device
+/**
+  Build the http digest credentials that will be passed to the device
   as a response to the authentication callenge in the header
   @param {array} headers The headers with the challenge information
-  @param (string) password The password that protects the device
+  @param {string} password The password that protects the device
   @return {object} The authentication parameters
 */
 function getHTTPCredentials(headers, password) {
@@ -112,7 +112,7 @@ function getHTTPCredentials(headers, password) {
   return complementAuthParams(authParams, password);
 }
 
-/*
+/**
   After the extraction of values from the Authentication header
   that was send by a protected Shelly device, the user credentials
   are added. Implements the documented way to create the credentials.
@@ -135,9 +135,9 @@ function complementAuthParams(authParams, password) {
   return authParams;
 }
 
-/*
-  An access to a protected Shelly device results in an "not authorized" errer 
-  with code 401. The header of the respons contains details of the used real 
+/**
+  An access to a protected Shelly device results in an "not authorized" error 
+  with code 401. The header of the response contains details of the used real 
   (Shelly ID) and the used protection algorithm.
   This function extracs the relevant values that will then be used to initialize
   the authentication process.

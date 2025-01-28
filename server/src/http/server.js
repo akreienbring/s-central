@@ -16,7 +16,7 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-/*
+/**
   'Main' webservice that returns all configured devices.
   @returns  {json} All devices after they were enriched with Shelly device data
 */
@@ -43,10 +43,10 @@ server.get("/ws/v1/GetDevices", (req, res) => {
   }
 });
 
-/*
-  returns script information of a device.
-  @param {string}  ip - mandatory The IP adress of a device
-  @param {number}  id - optional  The ID of a script
+/**
+  Returns script information of a device.
+  @param {string}  ip The IP adress of a device
+  @param {number}  [id] The ID of a script
   @returns {json} If id was not provided all scripts are returned. Else the script with the given id
 */
 server.get("/ws/v1/GetScripts", (req, res) => {
@@ -83,10 +83,10 @@ server.get("/ws/v1/GetScripts", (req, res) => {
   }
 });
 
-/*
+/**
   'Updates' properties (such as script status or KVS keys) of a configured device. 
-  @param {string}  ip - mandatory The IP adress of a device
-  @param {json}  body - mandatory The property to update as json object
+  @param {string}  ip The IP adress of a device
+  @param {json}  body The property to update as json object
   @returns {json} The updated device
 */
 server.post("/ws/v1/SetDevice", (req, res) => {
@@ -103,11 +103,11 @@ server.post("/ws/v1/SetDevice", (req, res) => {
   }
 });
 
-/*
+/**
   'Updates' the status of a script of a configured device. 
-  @param {string}  ip - mandatory The IP adress of a device
-  @param {number}  id - mandatory  The ID of a script
-  @param {json}  body - mandatory The status of the script as json object
+  @param {string}  ip The IP adress of a device
+  @param {number}  id The ID of a script
+  @param {json}  body The status of the script as json object
   @returns {json} The updated script
 */
 server.post("/ws/v1/SetScript", (req, res) => {
@@ -130,10 +130,10 @@ server.post("/ws/v1/SetScript", (req, res) => {
   }
 });
 
-/*
+/**
   'Updates' valus of a KVS key of a configured device. 
-  @param {number}  id - mandatory  The ID of a device (ID is a Shelly system setting)
-  @param {json}  body - mandatory Key and value of the KVS entry as json object
+  @param {number}  id The ID of a device (ID is a Shelly system setting)
+  @param {json}  body Key and value of the KVS entry as json object
   @returns {json} The updated device
 */
 server.post("/ws/v1/SetKVS", (req, res) => {
@@ -151,8 +151,7 @@ server.post("/ws/v1/SetKVS", (req, res) => {
 });
 
 server.use(express.static("public"));
-// handle every other route with index.html, which will contain
-// a script tag to your application's JavaScript file(s).
+// handle every other route with index.html
 server.get("*", function (req, res) {
   res.sendFile(path.resolve("./public/index.html"));
 });

@@ -8,11 +8,11 @@
 */
 const shellyAxios = require("./shellyAxios.js");
 
-/*
+/**
   Used when a device was identified as a Gen1 device.
   Some information is set on the device that is displayed on the frontend. 
   Empty arrays are added. This way the frontend does not need to check for undefined.
-  @param {object} device mandatory The device that could not be connectd to or that is not supported
+  @param {object} device The device that could not be connectd to or that is not supported
   @param {object} data The result of a http:/[ip]/shelly call. Contains e.g. the type property
   @param {string} clientImagePath The path to the device images on the client side.
   @returns {object} The updated device
@@ -30,12 +30,11 @@ async function createGen1Device(device, data, clientImagePath) {
   return device;
 }
 
-/*
+/**
   Creates an array with the switches of a Gen1 device.
   'lights' and 'relays' of Gen1 devices are converted to'switch:[X]' where X is the index of the switch.
   @param {object} device mandatory The device to enrich with the array of switches
-  @returns {array} The array of switches. The array is empty if the 
-  device does have switches.
+  @returns {array} The array of switches. The array is empty if the device does have switches.
 */
 async function getSwitches(device) {
   console.log("Getting Switches for the device " + device.cname);
@@ -47,11 +46,13 @@ async function getSwitches(device) {
   return [];
 }
 
-/*
-  As Gen1 devices don't send notifications, this functions builds the parts of
+/**
+  As Gen1 devices don't send notifications, this function builds the parts of
   a 'NotifyFullStatus' the client or websocket server need
   - to show the status of switches and 
-  - create the power consumption values 
+  - create the power consumption values
+  @param {object} device The device used to build a 'NotifyFullStatus' object
+  @returns {object} The 'NotifyFullStatus' object
 */
 async function getNotifyFullStatus(device) {
   const res = await getStatus(device.ip);
@@ -115,7 +116,7 @@ async function getNotifyFullStatus(device) {
   }
 }
 
-/*
+/**
     Create an array of switches from the response of an status request.
     @param {data}  data The result of a status request.
     @return {array} The array with the GEN2 compatible switches.
@@ -151,11 +152,11 @@ function buildSwitches(data) {
   return arrSwitches;
 }
 
-/*
-    Toggle the switch of a GEN1 device.
-    @param {string} ip The IP of the device
-    @param {object} aSwitch The switch that must be toggled.
-      aSwitch.type must be: 'light', 'color' or 'relay'
+/**
+  Toggle the switch of a GEN1 device.
+  @param {string} ip The IP of the device
+  @param {object} aSwitch The switch that must be toggled.
+    aSwitch.type must be: 'light', 'color' or 'relay'
 */
 function toggleSwitch(ip, aSwitch) {
   const url = `http://${ip}/${aSwitch.type}/${aSwitch.id}?turn=toggle`;
@@ -164,11 +165,11 @@ function toggleSwitch(ip, aSwitch) {
   });
 }
 
-/*
-    Set values of the switch of a GEN1 device.
-    @param {string} ip The IP of the device
-    @param {object} aSwitch The switch that must be toggled.
-      aSwitch.type must be: 'light' or 'color'
+/**
+  Set values of the switch of a GEN1 device.
+  @param {string} ip The IP of the device
+  @param {object} aSwitch The switch that must be toggled.
+    aSwitch.type must be: 'light' or 'color'
 */
 function setSwitch(ip, aSwitch) {
   const url = `http://${ip}/${aSwitch.type}/${aSwitch.id}?brightness=${aSwitch.brightness}&white=${aSwitch.white}`;
@@ -177,8 +178,10 @@ function setSwitch(ip, aSwitch) {
   });
 }
 
-/*
-    Get the status of a device
+/**
+  Get the status of a device identified by its IP
+  @param {string} ip The IP used to identify the device
+  @return {object} The status of the Gen1 device
 */
 async function getStatus(ip) {
   const res = await shellyAxios
@@ -196,7 +199,5 @@ module.exports = {
   createGen1Device,
   toggleSwitch,
   setSwitch,
-  getStatus,
-  buildSwitches,
   getNotifyFullStatus,
 };

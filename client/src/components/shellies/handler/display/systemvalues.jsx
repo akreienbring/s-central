@@ -11,7 +11,7 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
+/**
   The values will be displayed in kb
   @param {object} sys mandatory The sys property of a 'NotifyFullStatus' websocket message.
 */

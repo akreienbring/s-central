@@ -1,15 +1,16 @@
 /*
 Author: André Kreienbring
-For the usage of i18next with placholders:
+Lets the user select a language.
+For the usage of i18next with placeholders:
 Use something like
 {
   "translation": {
     "headerTitle": "My {{appName}} Header Title"
   }
 }
-in the locale json file an the use
+in the locale json file an then use
 {t('headerTitle', { appName: "Shelly Monitor" })}
-for the text that needs to be transleted in the components.
+for the text that needs to be translated in the components.
 See 'i18n.js' for the initialization of i18next.
 */
 import { useState } from 'react';
@@ -32,6 +33,12 @@ export default function LanguagePopover() {
   const [currentLanguage, setCurrentLanguage] = useState(language);
   const [languageIndex, setLanguageIndex] = useState(0);
 
+  /**
+   * When the language was changes the according states are set and
+   * i18next is used
+   * @param {string} value 
+   * @param {number} index 
+   */
   const handleChangeLanguage = (value, index) => {
     setCurrentLanguage(value);
     setLanguageIndex(index);

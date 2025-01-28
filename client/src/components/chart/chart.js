@@ -3,9 +3,12 @@ import ApexChart from 'react-apexcharts';
 
 import { alpha, styled, useTheme } from '@mui/material/styles';
 
-import { bgBlur } from 'src/theme/css';
+import { bgBlur } from 'src/theme/css'
 
-// ----------------------------------------------------------------------
+/*
+  These colors are used for the consumption charts.
+  The device color is dependent on the device index in the device array
+*/
 export const useChartColors = () => {
   const theme = useTheme();
   return [

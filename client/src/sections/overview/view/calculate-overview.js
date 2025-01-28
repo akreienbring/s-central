@@ -11,8 +11,9 @@
 */
 import { getDeviceConsumption } from 'src/utils/device-consumption';
 
-/*
-@param {array} devices mandtory An array with devices
+/**
+Calculates several values for the Dashboard
+@param {array} devices An array with devices
 @return {object} An object with the calculated values.
 */
 export default function calculateOverview(devices) {

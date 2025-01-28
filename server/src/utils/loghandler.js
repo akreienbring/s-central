@@ -7,14 +7,15 @@ const wsclient = require("@ws/client/wsclient");
 
 const lastScriptPerDevice = {};
 const errorBuffer = {};
-/*
+
+/**
   When ShellyBroker receives an UDP message it will be handled by this function.
   If a device exists with the given source address, then the 10 recent log messages 
   will be added to the according script object.
   ATTENTION: This only works correct, if the log output contains the name of the script.
   e.g. "logPrefix: [SCRIPTNAME]" where [SCRIPTNAME] equals the name of an existing script!
-  @param {Object} device mandatory The existing device that the log must be added to
-  @param {Buffer} msg mandatory A message that was received over UDP
+  @param {Object} device The existing device that the log must be added to
+  @param {Buffer} msg A message that was received over UDP
 */
 function handleLogMessage(device, msg) {
   if (typeof errorBuffer[device.id] === "undefined")
@@ -107,8 +108,9 @@ function handleLogMessage(device, msg) {
   }
 }
 
-/*
-  Checks if a script was stopped due to an error   
+/**
+  Checks if a script was stopped due to an error by looking for a specific pattern  like
+  shelly_notification:162 Status change of script:1: {"id":1,"running":false}
   If yes, the error text is send as a notification.
   @param {object} device The device that logged a message.
   @param {string} logmessage The logmessage that was logged by the given device.

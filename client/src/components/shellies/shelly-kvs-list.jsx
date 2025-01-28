@@ -2,7 +2,6 @@
   Author: André Kreienbring
   Builds the list of KVS entries of a device shown on a ShellyCard component
 */
-import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
@@ -14,7 +13,7 @@ import { ColorPreview } from 'src/components/color-utils';
 
 const COLORS = ['#00AB55', '#D22B2B', '#000000'];
 
-/*
+/**
   If not undefined the diplay value of an entry is shown on the ShellyCard.
   This value is configured on the Shellybroker and used to convert tecnical
   values into readable ones.
@@ -45,7 +44,6 @@ function ShellyKVSList({ kvs }) {
     };
 
     return (
-      <Fragment key={createUUID()}>
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -61,7 +59,6 @@ function ShellyKVSList({ kvs }) {
             {convertValue()}
           </Typography>
         </Stack>
-      </Fragment>
     );
   });
 }

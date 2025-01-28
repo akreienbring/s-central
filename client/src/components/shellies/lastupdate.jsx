@@ -1,6 +1,7 @@
 /*
     Author: André Kreienbring
-    Displays the time of the last websocket message reception.
+    Displays the time of the last received websocket message.
+    Also indicates if the client is connected to the Shellybroker WS server
 */
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +18,7 @@ import Iconify from 'src/components/iconify';
 
 /*
   When the wbsocket receives data it publishes the custom event 'lastUpdateAt' with the current time.
-  When the websocket is  closed it publishes the event 'lastUpdateAt' with a null value.
+  When the websocket is closed it publishes the event 'lastUpdateAt' with a null value.
   During rendering 'lastUpdateAt' may be undefined.
 */
 const LastUpdate = () => {
@@ -25,7 +26,7 @@ const LastUpdate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  /*
+  /**
     @param {object} event Contains the Date/Time of the last update. Displayd in the Title of the view.
       lastUpdatedAt Can be:
       - {date} The time when the last ws msg was received

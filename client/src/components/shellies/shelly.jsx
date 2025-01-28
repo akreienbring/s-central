@@ -15,13 +15,19 @@ import CardHeader from '@mui/material/CardHeader';
 import ShellyStatus from 'src/components/shellies/shelly-status';
 import ShellySwitchList from 'src/components/shellies/shelly-switch-list';
 
+/**
+ * Component to display the Shelly device
+ * @param {object} device The device to display 
+ * @param {function} handleSwitchToggle handles the click / toggle of a switch 
+ */
 const Shelly = ({ device, handleSwitchToggle }) => {
   const [switches, setSwitches] = useState(device.switches);
 
-  /*
-    When a switch status changed, it altered in the device
+  /**
+    When a switch status changed, it must be changed in the device
     switches array. Doing this here rerenders the switch list and
-    prevents a rerender of the hole Shelly component.
+    prevents a rerender of the whole Shelly component.
+    @param {object} aSwitch The switch that was clicked / toggled
   */
   const handleClick = (aSwitch) => {
     aSwitch.output = !aSwitch.output;

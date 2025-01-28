@@ -16,7 +16,7 @@ import Iconify from 'src/components/iconify';
 import BLEEvent from './ble-event';
 import ButtonEvent from './button-event';
 
-/*
+/**
   @param {array} events mandatory The events sent by on NotifyEvent websocket message
 */
 const NotifyEvents = ({ events }) => {

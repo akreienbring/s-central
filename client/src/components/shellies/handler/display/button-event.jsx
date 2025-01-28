@@ -11,9 +11,8 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  @param {object} event mandatory The event
-    of a 'NotifyEvent' websocket message.
+/**
+  @param {object} event The event of a 'NotifyEvent' websocket message.
 */
 const ButtonEvent = ({ event }) => {
   let degree;

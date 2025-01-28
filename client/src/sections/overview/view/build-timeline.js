@@ -4,10 +4,11 @@
 */
 import { fUnixTime } from 'src/utils/format-time';
 
-/*
+/**
     Based on the selected chart type (minute, hour, day, month, year)
     formats are defined. These will be used for the labels / categories display
     within the chart.
+    @param {number} selectedChart A number that represents the type of the chart
 */
 export function getTimelineOptions(selectedChart) {
   const timeline = {};
@@ -41,7 +42,7 @@ export function getTimelineOptions(selectedChart) {
   return timeline;
 }
 
-/*
+/**
   Builds the Timeline chart out of the received websocket consumption
   data.
   ATTENTION: 'currently stacked charts can NOT be used, because the scaling of the yaxis doesn't work!!!

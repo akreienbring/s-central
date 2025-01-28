@@ -24,8 +24,10 @@ import Firmware from './display/firmware';
 import Brightness from './display/brightness';
 import SystemValues from './display/systemvalues';
 
-/*
-  @param {object} wsMessage mandatory A websocket message from the 
+/**
+  Display the WS messages
+  @param {object} deviceName The name of the device that sent the message
+  @param {object} wsMessage A websocket message from the 
     wsmessages array of the device.
 */
 const Notifications = ({ deviceName, wsMessage }) => {

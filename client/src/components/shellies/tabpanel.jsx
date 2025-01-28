@@ -13,7 +13,7 @@ import { createUUID } from 'src/utils/general';
 
 import ShellyCard from 'src/components/shellies/shelly-card';
 
-/*
+/**
   @param {integer} index The value of the selected Tab
   @param {array} The array with the devices that will be shown on the TabPanel
 */

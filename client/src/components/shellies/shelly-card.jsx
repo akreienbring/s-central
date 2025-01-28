@@ -43,15 +43,16 @@ const ExpandKVS = styled((props) => {
   }),
 }));
 
-/*
+/**
   ShellyCard shows an image of a Shelly device. Device, script, KVS, WS and Log information is presented on a Card
   and Boxes for the device.
   The type of the selected tab panel is indicated by the type prop.
-  @param shelly mandatory The shelly device that will be rendered on the differen tab panels
-  @param {string) type mandatory The current tab panel to show. Can be:
-   'sk' (script/kvs), 
-   'ws' (websocket messages from a shelly device)
-   'log' (log messages)
+  @param shelly The shelly device that will be rendered on the different tab panels
+  @param {string) type The current tab panel to show. Can be:
+   'sk': script/kvs 
+   'ws': websocket messages from a shelly device
+   'log': log messages
+   'ctrl': controls of a shelly device
 */
 const ShellyCard = ({ shelly, type }) => {
   const [expanded, setExpanded] = useState(false);
@@ -61,12 +62,11 @@ const ShellyCard = ({ shelly, type }) => {
   const [kvs, setKVS] = useState(shelly.kvs);
   const { subscribe, unsubscribe, send } = useShelly();
 
-  /*
+  /**
     Will be called when an updated device was received via websocket from shellybroker.
     Depending on the type of the update, some state will be set.
-    @param {object} wsDevice The device that was updated
-    @param {string} updateType The type of the update: 'device', 'script', 'kvs', 'log', 'ws'
-  */
+    @param {object} msg The message with a 'ShellyUpdate' event.
+   */
   const handleDeviceUpdate = useCallback(
     (msg) => {
       const updateType = msg.type;
@@ -123,7 +123,7 @@ const ShellyCard = ({ shelly, type }) => {
           /*
             type = device  
             If a device is updated then the shelly is online or not
-            This is triggered by the shelly sending the information to the SetDevice entpoint
+            This is triggered by a shelly script sending the information to the SetDevice entpoint
             of the shelly broker or if wshandler has reloaded a device
           */
           setDevice((prevDevice) => wsDevice);
@@ -164,9 +164,9 @@ const ShellyCard = ({ shelly, type }) => {
     setExpanded(!expanded);
   };
 
-  /*
+  /**
     When a switch was clicked, this functions sends a message to
-    the WS server. The server will then call the rpc method to 
+    the WS server. The server will then call the rpc method / websocket to 
     switch the switch.
     @param {object} aSwitch The switch that was clicked on.
   */
@@ -184,12 +184,12 @@ const ShellyCard = ({ shelly, type }) => {
     });
   };
 
-  /*
+  /**
     When a switch was altered, this functions sends a message to
-    the WS server. The server will then call the rpc method to 
+    the WS server. The server will then call the rpc method / websocket to 
     set the switch.
     @param {object} aSwitch The switch that was clicked on.
-    */
+  */
   const handleSwitchSet = (aSwitch) => {
     // add a timestamp to prevent sync problems with 'NotifyFullStatus'
     aSwitch.ts = Date.now();

@@ -287,7 +287,7 @@ export const SCProvider = ({ children }) => {
   };
 
   /**
-    A component subscribes to one or more events.
+    A component can subscribe to one or more events.
     @typedef {Object} subscription
     @property {string} subscriptionID An unique ID that identifies the subscription
     @property {callback} callback A function that is called when a msg with an event arrives

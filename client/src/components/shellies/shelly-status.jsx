@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  @param {bool} online mandatory Is the device online or not?
+/**
+  @param {bool} online Is the device online or not?
 */
 const ShellyStatus = ({ online }) => (
   <Iconify

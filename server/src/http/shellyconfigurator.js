@@ -3,7 +3,7 @@
 */
 const config = require("config");
 
-/*
+/**
     After loading the devices, shellyGen2Conn triggers this function once
     to send WebSocket and UDP configuration to all devices.
     @param {array} devices The array with all devices

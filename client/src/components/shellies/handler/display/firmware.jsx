@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Renders the current available firmware update version of a Shelly device.
+  Renders the current available stable firmware update version of a Shelly device.
 */
 import PropTypes from 'prop-types';
 
@@ -11,8 +11,8 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  @param {string} version The available Firmware version of a Shelly device
+/**
+  @param {string} version The available stable Firmware version of a Shelly device
 */
 const Firmware = ({ version }) => (
   <Stack

@@ -23,7 +23,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
     >
       <Box sx={{ display: 'contents' }}>{logo}</Box>
       <Typography variant="h6" sx={{ pt: 3 }}>
-        Shelly Central
+        S-Central
       </Typography>
     </Stack>
   );

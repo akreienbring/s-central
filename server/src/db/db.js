@@ -1,6 +1,7 @@
 /*
   Author: André Kreienbring
-  Contains database related functions. 
+  Contains database related functions. ALL DB commands should be accessed
+  via this wrapper.
 */
 const sqlite3 = require("better-sqlite3");
 const config = require("config");
@@ -11,14 +12,14 @@ const dbutils = require("./db-utils.js");
 
 let db;
 
-/*
+/**
   Called when wshandler is loaded. Opens the database.
   The database is initialized (Tables are created if they don't exist)
   Standard roles and users are created (if they don't exist)
 */
 function open() {
-  db = new sqlite3("./src/db/broker.db", {}, (err) => {
-    // db = new sqlite3("./src/db/broker.db", { verbose: console.log }, (err) => {
+  db = new sqlite3("broker.db", {}, (err) => {
+    // db = new sqlite3("broker.db", { verbose: console.log }, (err) => {
     if (err) {
       return console.error(err.message);
     }
@@ -64,20 +65,20 @@ function close() {
     if (err) {
       return console.error(err.message);
     }
-    console.log("Closeed the database connection.");
+    console.log("Closed the database connection.");
   });
 }
 
-/*
+/**
   A simple wrapper for the exec statement
+  @param {string} The SQL statment to execute
 */
 function execute(sql) {
   db.exec(sql);
 }
 
-/*
-  Checks if a given user exists in the db by using it's email address.
-  The user is validated by comparing its properties.
+/**
+  Checks if a given user exists in the db by using it's uuid.
   @param {object} The user to search for.
   @return {boolean} True if the user exists, false if not.
 */
@@ -91,23 +92,22 @@ function isExistingUser(user) {
   }
   return false;
 }
-/*
+/**
   Get user data from the database by the given UUID.
   The UUID can not be guessed and is used for reconnecting
   a user that was successfully validated before. (see ws-message-validator)
   @param {string} sql The select statement to execute.
   @param {string} uuid The uuid that identifies the user
-  @return If the email is provided the specific user is returned
-    If not all users are returned
+  @return {object} The specific user
 */
 function getUserByUUID(sql, uuid) {
   return db.prepare(sql).get(uuid);
 }
 
-/*
+/**
   Get user data from the database by email.
   @param {string} sql The select statement to execute.
-  @param {string} optional email The email that identifies the user
+  @param {string} [email] The email that identifies the user
   @return If the email is provided the specific user is returned
     If not all users are returned
 */
@@ -119,9 +119,9 @@ function getUser(sql, email) {
   }
 }
 
-/*
+/**
   Reset the password of a user
-  @param: {string} email The user is identified by his email
+  @param:{string} email The user is identified by his email
 */
 function resetPW(email) {
   endecrypt.encrypt(config.get("db.standardpw")).then((secret) => {
@@ -138,23 +138,22 @@ function resetPW(email) {
   });
 }
 
-/*
+/**
   Get data from the database.
   @param {string} sql The select statement to execute.
-  @return The data fetched from the db
+  @return {array} The data fetched from the db
 */
 function get(sql, criterias) {
   if (typeof criterias === "undefined") return db.prepare(sql).all();
   return db.prepare(sql).all(criterias);
 }
 
-/*
+/**
 A generic delete function that build and executes an DELETE statement.
 @param {string} table the table to delete an entry from.
 @param {array} searches Fields that will be used for the WHERE clause
 @param {array} criterias Will be used for the values of the WHERE clause.
-@param {string} logical If more then one search fild is given. Must be:
-  'AND' (default) or 'OR'
+@param {string} logical If more then one search fild is given. Must be: 'AND' (default) or 'OR'
 @return {object} An info object with two properties:
   changes: is the number of changed rows
   lastInsertRowid: Can be ignored in the case of a delete
@@ -166,14 +165,13 @@ function del(table, searches, criterias, logical) {
   return db.prepare(sql).run(criterias);
 }
 
-/*
+/**
   A generic update function that build and executes an UPDATE statement.
   @param {string} table the table that must be updated.
   @param {object} fields The fields (col / value pairs) that will be updated in the table.
   @param {array} searches Fields that will be used for the WHERE clause
   @param {array} criterias Will be used for the values of the WHERE clause.
-  @param {string} logical Mandatory if more then one search fild is given. Must be:
-    'AND' or 'OR'
+  @param {string} logical Mandatory if more then one search fild is given. Must be: 'AND' or 'OR'
   @return {object} An info object with two properties:
     changes: is the number of changed rows
     lastInsertRowid: Can be ignored in the case of an update
@@ -187,6 +185,10 @@ function update(table, fields, searches, criterias, logical) {
   return db.prepare(sql).run(fieldvalues.values, criterias);
 }
 
+/**
+ * Used for testing if tables must be deleted
+ * @param {array} tables 
+ */
 function deleteTables(tables) {
   let sql;
   tables.forEach((table) => {
@@ -196,11 +198,14 @@ function deleteTables(tables) {
   });
 }
 
-/*
+/**
   A generic insert that builds and excutes an 'INSERT OR IGNORE' statement.
   @param {string} table the table where the data will be inserted
   @param {object} inserts An object with (multiple) column/value pairs.
   @param {boolean} ignore If true errors will be ignored
+  @return {object} An info object with two properties:
+    changes: is the number of changed rows
+    lastInsertRowid: Can be ignored in the case of an update
 */
 function insert(table, inserts, ignore) {
   const tableValues = dbutils.buildTableValues(inserts);
@@ -210,15 +215,16 @@ function insert(table, inserts, ignore) {
   return db.prepare(sql).run(tableValues.values);
 }
 
-/*
+/**
   A generic select that builds and excutes an 'SELECT' statement.
   @param {string} table the table where the data will be selected from.
   @param {array} fields The fields that will be selected from the table.
     Can be an empty array for all fields.
+  @param {array} searches Fields that will be used for the WHERE clause
+  @param {array} criterias Will be used for the values of the WHERE clause.
+  @param {string} logical if more then one search field is given. Must be: 'AND' or 'OR'
   @param {string} orderBy An 'ORDER BY' clause that will be used for the "SELECT".
-  @param {string} device_id If provided the id is used as the WHERE clause.
-  @return {object} row If a WHERE condition was provided or
-    {array} rows If NO WHERE condition was provided
+  @return {array} The resulting rows
 */
 function select(table, fields, searches, criterias, logical, orderBy) {
   let values = "";
@@ -244,7 +250,7 @@ function select(table, fields, searches, criterias, logical, orderBy) {
   }
 }
 
-/*
+/**
   If inserts or updates fail (likely due to UNIQUE Constraints), this function (tries to) generate a message
   that contains the reason of the conflict.
   If none of the possible conflict fields is found a standard message is returned.
@@ -261,9 +267,9 @@ function createMessageFromConflict(errmessage, standard) {
   return standard;
 }
 
-/*
+/**
   Inserts into or updates all the tables that contain consumption data.
-  Gets called whenever wshandler receives a 'NotifyStatus' websocket message
+  Gets called whenever wshandler receives a 'NotifyFullStatus' websocket message
   that contains consumption data.
   @param {string} device_id The Shelly device that send consumption data.
   @param {string} device_cname The name of the Shelly device.

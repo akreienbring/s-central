@@ -1,3 +1,6 @@
+/*
+  Main view for the Blog Posts
+*/
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid2';
@@ -20,19 +23,19 @@ export default function BlogView() {
   const isBlogpostsLoaded = useRef(false);
   const [openCreate, setOpenCreate] = useState(false);
 
-  /*
+  /**
     Called when BlogView is mounted and all blogposts
     are received from the server.
+    @param {object} msg with an array ob existing blog posts
   */
   const handleBlogpostsReceived = useCallback(
     (msg) => {
       isBlogpostsLoaded.current = true;
 
       const allBlogposts = msg.data.blogposts.map((blogpost, index) =>
-        // add a chart color to the device that depends on its index in the array
         ({
           id: blogpost.blogpostid,
-          cover: `/assets/images/covers/cover_${index + 1}.jpg`,
+          cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
           title: blogpost.title,
           content: blogpost.content,
           createdAt: blogpost.createdAt,
@@ -76,9 +79,10 @@ export default function BlogView() {
     setOpenCreate(false);
   };
 
-  /*
+  /**
     Called from the PostCard component when a post
     must be deleted. Send a message to the server.
+    @param {number} id The id of the blogpost that must be deleted
   */
   const handleDeletePost = (id) => {
     request(

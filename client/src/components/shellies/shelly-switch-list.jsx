@@ -10,8 +10,9 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
+/**
   If not undefined the switches of a device are shown on top of the ShellyCard.
+  There may be up to 4 switches in one device (as of now)
   @param {string} ip The ip address of the device that owns the switches
   @param {array} switches The switches of a device.
   @param {function} handleClick (in ShellyCard) Will be called when the switch was clicked.

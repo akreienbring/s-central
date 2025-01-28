@@ -9,8 +9,8 @@ import Typography from '@mui/material/Typography';
 import { createUUID } from 'src/utils/general';
 import { fUnixTime } from 'src/utils/format-time';
 
-/*
-  @param {number} ts mandatory the unix time stamp send by a websocket message
+/**
+  @param {number} ts the unix time stamp send by a websocket message
 */
 const SystemTime = ({ ts }) => (
   <Typography variant="subtitle2" key={createUUID()}>

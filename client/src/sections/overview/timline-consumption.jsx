@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Builds the Timeline Chart in the AppView Component
+  Builds the Timeline Chart in the AppView / Dashboard Component
 */
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -16,9 +16,14 @@ import { fWh, fKWh } from 'src/utils/format-number';
 
 import Chart, { useChart } from 'src/components/chart';
 
-/*
+/**
   This component presents the Timeline charts of the periods
   minute, hour, day, month and year.
+  @param {string} title The title of the chart
+  @param {string} subheader The text shown underneath the title
+  @param {object} chart Holds additional data to be used in the chart
+  @param {function} handleTimelineChange Called when the type of the chart is changed
+  @param {number} selection The currently selected type of the chart
 */
 export default function TimelineConsumption({
   title,

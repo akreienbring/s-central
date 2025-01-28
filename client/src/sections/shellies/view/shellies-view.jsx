@@ -2,8 +2,7 @@
   Author: André Kreienbring
   ShellyView is the view that presents all (in shellybroker) configured devices.
   For every configured shelly device several values are presented on different tab panels.
-  It implements a Websocket client that receives either an array of devices or a single device (update)
-  This websocket is independent from the socket that is implemented by the 'AppView' component.
+  It uses a Websocket client that receives either an array of devices or a single device (update)
 
   As the filter and sort components are direct childs of this component, they will be maintained by this view.
 */
@@ -43,8 +42,7 @@ export default function ShelliesView() {
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*
-    After mounting the page the websocket clients 'subscribes' to the shellybroker websocket server
-    The shellybroker will then send an array of devices.
+    After mounting the page the websocket clients requests all devices from the websocket server
   */
   useEffect(() => {
     if (devices.length === 0)
@@ -61,13 +59,14 @@ export default function ShelliesView() {
   }, [devices, request]);
   // --------------------- Websocket Implementation END------------------
 
-  /*
+  /**
     Called when the websocket receives the array of devices after 
     requesting it from the websocket server.
     Updates the state and generates arrays for models and generation that will be used by 
     the filter function.
     The device array that was received, will be saved
     in the 'origDevices' reference hook to restore the original filter settings.
+    @param {object} msg The websocket message that has an array of devices attached
   */
   const handleDevicesReceived = (msg) => {
     // Get available models and gens from the devices array
@@ -94,24 +93,32 @@ export default function ShelliesView() {
     origDevices.current = wsDevices;
   };
 
+  /**
+   * Called when a tab panel was selected
+   * @param {object} e The event
+   * @param {number} tabIndex The index of the selected tab
+   */
   const handleTabChange = (e, tabIndex) => {
     setCurrentTabIndex(tabIndex);
   };
 
+  /**
+   * Opens the filter dialog
+  */
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
-
   const handleCloseFilter = () => {
     setOpenFilter(false);
   };
 
-  /*
+  /**
     This function is passed as a prop to the sort component and will be called
     after a sort option was selected.
     Dependent on the option the array of the devices will be sorted by the correct 
     comparison. If the selected option is 'config' then the original array will be restored.
     This means that the devices are sorted in the order they were configured in Shellybroker.
+    @param {object} The selected sort option
   */
   const handleSort = (option) => {
     let sortedDevices;
@@ -133,9 +140,9 @@ export default function ShelliesView() {
     }
   };
 
-  /*
+  /**
     Apply a filter to the original devices array.
-    @params {array} mandatory An array that contains the filters to apply.
+    @param {array} deviceFilters  An array that contains the filters to apply.
     @returns {array} The filtered array of devices.
   */
   const filterDevices = (deviceFilters) => {
@@ -151,7 +158,7 @@ export default function ShelliesView() {
     return filteredDevices;
   };
 
-  /*
+  /**
     This function is passed as a prop to the filter component and will be called
     after a filter options are selected and submitted.
     Dependent on the checked filter options the array of the devices will be filtered. 
@@ -159,6 +166,8 @@ export default function ShelliesView() {
     finally filters the array.
     After filtering (or resetting) the array of devices the state is changed to
     rerender the view.
+    @param {array} mChecked Contains selected / unselected filter options for models
+    @param {array} gChecked Contains selected / unselected filter options for generation
   */
   const handleDeviceFilter = (mChecked, gChecked) => {
     let isFilter = false;

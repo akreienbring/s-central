@@ -1,4 +1,4 @@
-# Shelly Central
+# S-Central
 
 ![license](https://img.shields.io/badge/license-AGPL--3.0-orange)
 
@@ -6,13 +6,13 @@ Shelly Dashboard / Monitor for 1. / 2. / 3. generation devices
 
 ## Overview
 
-Shelly Central is a client (React) / server (nodejs) application to monitor and control your Shelly devices. The server collects all relevant information about your devices by using RPC calls and websocket connections. The client is a webapplication that makes monitoring and controlling your Shellies easy. <br/>
-Shelly Central is cloudless. That means it makes you (sort of) independent from the Shelly Cloud Control Center.
+S-Central is a client (React) / server (nodejs) application to monitor and control your Shelly devices. The server collects all relevant information about your devices by using RPC calls and websocket connections. The client is a webapplication that makes monitoring and controlling your Shellies easy. <br/>
+S-Central is cloudless. That means it makes you (sort of) independent from the Shelly Cloud Control Center.
 
 The server must run in your local network and acts as a broker between your Shellies and the client application. The communication with the client is strictly websocket based.
 
 ## Features
-Shelly Central supports English, Spanish and German.
+S-Central supports English, Spanish and German.
 
 - **Dashboard**<br/>
   Informs you about connected Shellies, current and timelined consumption, running scripts, cloud connection.
@@ -27,7 +27,7 @@ Shelly Central supports English, Spanish and German.
 
 ## Why use it?
 
-Managing many Shellies in a network is a challenge. The original Shelly Control app is a good choice. But it is cloudbased. Hence you need an internet connection to control your devices. Shelly Central needs only Wifi and your local network. It is Open Source and transparent. You are welcome to participate and enhance the features.
+Managing many Shellies in a network is a challenge. The original Shelly Control app is a good choice. But it is cloudbased. Hence you need an internet connection to control your devices. S-Central needs only Wifi and your local network. It is Open Source and transparent. You are welcome to participate and enhance the features.
 
 ## How to install
 
@@ -106,7 +106,7 @@ File: _/sb/config/devices.json_
 
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
-| ip              | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device                                     |
+| ip              | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device. Please use fixed IPs               |
 | cname (!)       | e.g. 'Floorlight'| Display name for the client                                       |
 | password        | text             | (optional) If the device is protected                                      |
 
@@ -172,7 +172,7 @@ It's always a good idea to check the browser console (CTRL-SHIFT-I). On a mobile
   The server comes with _pm2_ process management and there is a script to see the console logs which you can run with _npm run logs_
 
 ## Tested Devices
-The following devices have been tested with Shelly Central:
+The following devices have been tested with S-Central:
 
 | PM              | Light            | Other            |
 | --------------- | ---------------- | ---------------- |

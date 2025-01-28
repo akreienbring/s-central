@@ -1,3 +1,7 @@
+/*
+  Author: André Kreienbring
+  A small card that displays values on the Dashboard
+*/
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';

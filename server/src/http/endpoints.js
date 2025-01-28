@@ -11,7 +11,10 @@
 const shellyGen2Conn = require("@http/shellyGen2Conn.js");
 const wsclient = require("@ws/client/wsclient.js");
 
-// @returns {json} All configured devices
+/**
+ *  
+ * @returns {json} All configured devices
+ */ 
 async function getDevices() {
   return shellyGen2Conn
     .getDevices()
@@ -24,9 +27,9 @@ async function getDevices() {
     });
 }
 
-/*
-  Gets a device
-  @param {string} ip - mandatory  The IP of a device
+/**
+  Gets a device identified by its IP
+  @param {string} ip The IP of a device
   @returns {json} A specific device identified by its IP
 */
 async function getDeviceByIP(ip) {
@@ -49,9 +52,9 @@ async function getDeviceByIP(ip) {
     });
 }
 
-/*
-  Gets the scripts of a device
-  @param {string} ip - mandatory  The IP of a device
+/**
+  Gets the scripts of a device identified by its IP
+  @param {string} ip The IP of a device
   @returns {json} All scripts of a device identified by its IP
 */
 async function getScripts(ip) {
@@ -73,10 +76,10 @@ async function getScripts(ip) {
     });
 }
 
-/*
+/**
   Gets a specific script of a device
-  @param {string} ip - mandatory  The IP of a device
-  @param {number} id - mandatory  The ID of a script
+  @param {string} ip The IP of a device
+  @param {number} id The ID of a script
   @returns {json} The script
 */
 async function getScriptByID(ip, id) {
@@ -107,10 +110,10 @@ async function getScriptByID(ip, id) {
     });
 }
 
-/*
-  Sets (updates) a device
-  @param {string} ip - mandatory  The IP of a device
-  @param {json} body - mandatory  The property and new value to set
+/**
+  Sets (updates) a device identified by its IP and sends it to the ws server
+  @param {json} body The property and new value to set
+  @param {string} ip The IP of a device
   @returns {json} The send body is returned to the client
 */
 function setDevice(body, ip) {
@@ -139,11 +142,11 @@ function setDevice(body, ip) {
   }
 }
 
-/*
-  Sets (updates) a script
-  @param {string} ip - mandatory  The IP of a device
-  @param {number} id - mandatory  The ID of a script
-  @param {json} body - mandatory  The property and new value to set
+/**
+  Sets (updates) a script and sends it to the ws server
+  @param {string} ip The IP of a device
+  @param {number} id The ID of a script
+  @param {json} body The property and new value to set
   @returns {json} The send body is returned to the client
 */
 function setScript(body, ip, id) {
@@ -173,10 +176,10 @@ function setScript(body, ip, id) {
   }
 }
 
-/*
-  Sets (updates) a KVS entry
-  @param {string} id - mandatory  The ID of a device (ID is a Shelly system setting)
-  @param {json} body - mandatory  The key (of the KVS entry) and new value to set
+/**
+  Sets (updates) a KVS entry and sends it to the ws server
+  @param {string} id The ID of a device (ID is a Shelly system setting)
+  @param {json} body The key (of the KVS entry) and new value to set
   @returns {json} The send body is returned to the client
 */
 function setKVS(body, id) {

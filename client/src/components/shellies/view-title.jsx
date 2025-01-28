@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Shows the title of 'AppView' and 'ShellyView'. 
+  Shows the title of 'AppView', 'ShellyView', 'UserView' and 'BlogView'. 
 */
 import PropTypes from 'prop-types';
 

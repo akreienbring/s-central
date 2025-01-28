@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  A simple component that display a BLE event
+  A simple component that displays a BLE event
   Example: motion or door/window events
 */
 import PropTypes from 'prop-types';
@@ -9,8 +9,8 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  @param {object} data mandatory The data portion of an event property
+/**
+  @param {object} data The data portion of an event property
     of a 'NotifyEvent' websocket message.
 */
 const BLEEvent = ({ data }) => {

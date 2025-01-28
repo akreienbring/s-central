@@ -1,10 +1,10 @@
 /*
   Author: André Kreienbring
   A websocket server that handles all websocket activity. 
-  Websocket clients can be the Shelly device outbound websocket
-  or the Dashboard application powered by React.
+  Websocket clients can be the Shelly device outbound websocket, 
+  the Dashboard application powered by React or the internal wsclient.
 
-  If the ws client ads a channel to the message data, the 
+  If dashboard ws client ads a channelID to the message data, the 
   websocket connection is stored in an internal object
   that is used for subsequent communication with the client.
 
@@ -36,21 +36,20 @@ const PING_MESSAGE = {
 };
 
 /* 
-  When connected, a client sends a message. The websocket is then stored
-  and managed with this object. The channel property is used as the key
+  When connected, the dashboard client sends a message. The websocket is then stored
+  and managed with this object. The channelID property is used as the key
   in this object. The value is the websocket the client uses.
 */
 const dashboardClients = {};
 
 db.open();
 
-/*
+/**
   Add a websocket to the internal list.
   The property name is the unique client name, the client has generated.
   The name either starts with the shelly device ID or with "View" followed
   by a random number.
   The ws is also considered as being alive.
-  When the first socket is stored, the database is opened.
   @param {object} ws The websocket to store. Must have an unique 'channelID' property
     to identify it.
 */
@@ -65,16 +64,12 @@ function addSocket(ws) {
   );
 }
 
-/*
+/**
   Delete a websocket from the internal list.
   The websocket is identified by the ID of the channel, that the client
   sends with his first message.
   If the channelID is undefined, the ws client doesn't require a permanent connection.
-  The name/ID either starts with:
-    - the shelly device ID (if it handles a single device)
-    - "view" followed by a random number if it handles the list of devices
-    - "user" followed by a random number if it handles users
-  @param {object} ws The websocket to store. Must have an unique 'channelID' property
+  @param {object} ws The websocket to delete. Must have an unique 'channelID' property
     to identify it.
 */
 function deleteSocket(ws) {
@@ -91,9 +86,9 @@ function deleteSocket(ws) {
   }
 }
 
-/*
-  Receives messages from Shelly outbound websocket or
-  the Dashboard application. The message was sent over the given websocket.
+/**
+  Receives messages from Shelly outbound websocket, the Dashboard application
+  or the internal wsclient. The message was sent over the given websocket.
   Depending on the message properties actions are taken and answers are send.
   If a channelID exists, store the channel for later communication or deletion.
   The clients should respond with a pong to a ping to keep the websocket open.
@@ -103,17 +98,10 @@ function deleteSocket(ws) {
 function handleMessage(msg, ws) {
   //------------- Message Handling---------------------------
   if (typeof msg.src === "undefined") {
-    /*
-    console.log(
-      `wshandler: ${msg.data.source} says: '${msg.data.message}' in channel ${msg.data.channel}`
-    );
-    */
     if (typeof msg.data.channel !== "undefined") {
       ws.channelID = msg.data.channel;
       addSocket(ws);
     }
-  } else {
-    // console.log(`wshandler: New ws message from ${msg.src}`);
   }
 
   if (typeof msg.src !== "undefined") {
@@ -181,12 +169,13 @@ function handleMessage(msg, ws) {
       console.error(`wshandler: Couldn't find device with id ${msg.src}`);
     }
   } else if (typeof msg.event != "undefined") {
+    // message from dashboard client, endpoint or loghandler
     if (msg.event === "user reconnect") {
-      // Send after a client reopened a connection.
-      msg.data.message = "OK, will reconnect you!";
+      // Send after a client tried to reconnect.
+      msg.data.message = typeof msg.data.secret !== 'undefined' ? "OK, will reconnect you!" : "Couldn't reconnect you";
       ws.send(JSON.stringify(msg));
     } else if (msg.event === "ShellyUpdate") {
-      // message from Loghander or enpoint is simply forwarded to all clients
+      // message from Loghandler or enpoint is simply forwarded to all clients
       msg.data.subscriptionID = msg.data.device.id;
       broadcast(msg);
     } else if (msg.event === "ScriptError") {
@@ -285,7 +274,7 @@ function handleMessage(msg, ws) {
   }
 }
 
-/*
+/**
   Called when the connection to a client was opened. 
   The socket will be stored in the internal list, when the first message is received.
   @param {object} ws The websocket connection
@@ -294,7 +283,7 @@ function handleOpen(ws) {
   // console.log("wshandler: Connection was opened");
 }
 
-/*
+/**
   Called when the connection to a client was closed.
   Sets the maintained websocket connection to null
   @param {object} event has information over the connection
@@ -308,9 +297,9 @@ function handleClose(event, ws) {
   deleteSocket(ws);
 }
 
-/*
+/**
   Send a message to all connected clients.
-  As there may be more than one Frontend running in the local network.
+  As there may be more than one frontend running in the local network.
   @param {object} message The message that will be send to all managed clients.
 */
 function broadcast(message) {

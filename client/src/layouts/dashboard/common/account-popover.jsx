@@ -1,3 +1,8 @@
+/*
+  Author: André Kreienbring
+  A Popover that presents functions to edit the current user settings
+  and to log out from the system
+*/
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -33,10 +38,10 @@ export default function AccountPopover() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  /*
+  /**
     Open / Close the UserUpdate Dialog
     with the type of update that is going to be made
-    @param {string} The type is either 'profile', 'security' or 'settings'
+    @param {string} type The type is either 'profile', 'security' or 'settings'
   */
   const handleOpenUpdate = (type) => {
     handleClose();
@@ -46,24 +51,39 @@ export default function AccountPopover() {
     setOpenUpdate({ open: false, type: '' });
   };
 
+  /**
+    Navigates to the configure homepage (dashboard or shellies)
+    of the current user
+   */
   const handleHome = () => {
     handleClose();
     navigate(`${user.home}`);
   };
 
+  /**
+   * Opens the Popover itself 
+   * @param {object} event 
+   */
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
-
   const handleClose = () => {
     setOpen(null);
   };
 
+  /**
+   * Handles the click on the logout button
+   */
   const handleLogout = () => {
     navigate('/');
     logout();
   };
 
+  /**
+   * Maps the type to a title that is displayed in the Popover
+   * @param {string} type 
+   * @returns The (translated) title
+   */
   const getTitle = (type) => {
     if (type === 'profile') {
       return t('_editprofile_');

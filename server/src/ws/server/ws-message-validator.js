@@ -3,6 +3,7 @@
   When a websocket client tries to initially upgrade a HTTP request (open a connection)
   or sends a message it could be a potential attack. 
   Therefor the message is validated before forwarding it to the ws-handler.
+  This module also handles reconnection requests of the dashboard client.
 */
 
 const config = require("config");
@@ -15,7 +16,7 @@ const MESSAGELIMIT = config.get("ws-server.messagelimit");
 const SECRET = config.get("ws-server.secret");
 
 /*
-  IPs that send wrong (or too many messages) will be blocked for the 
+  IPs that send wrong (or too many) messages will be blocked for the 
   configured amount of time.
 */
 const blockedIPs = [];
@@ -31,7 +32,7 @@ const clientLimits = {};
 /*
   These events are not forced to send the secret.
   The secret is only send to clients that logged in 
-  successfully with 'user validate'.
+  successfully with a 'user validate' ws event.
 */
 const WITHOUT_SECRET = [
   "user reconnect",
@@ -40,11 +41,14 @@ const WITHOUT_SECRET = [
   "blogposts get public",
 ];
 
-/*
+/**
+ * Validates messages send by a ws client. For user validation a 
+ * digest authentication is implemented.
   @param {json} message The message that was send by a client.
     Message MUST contain event and data or src!
+  @param {object} message The message that was send.
   @param {object} ws The websocket that was used to send the message.
-  @param {string} clientIP The IP of the client that sent a message.
+  @returns {object} The validated message or NULL if the message is invalid
 */
 function validateMessage(message, ws) {
   if (blockedIPs.includes(ws.clientIP)) {
@@ -122,18 +126,14 @@ function validateMessage(message, ws) {
       }
     }
   } else if (msg.event === "user reconnect") {
-    // the client wants to reconnect with an existing user.
     if (msg.data.user !== null && db.isExistingUser(msg.data.user)) {
       console.log(`Successfully reconnected user ${msg.data.user.alias}`);
       msg.data.secret = SECRET;
     } else {
       console.error(
-        `A client with IP '${ws.clientIP}' tried to reconnect without an existing user`
+        `A client with IP '${ws.clientIP}' tried to reconnect with a non existing user ${JSON.stringify(msg.data.user)}`
       );
-      // TODO: Decide if this case shoud be closed and blocked
-      // if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
-      // ws.close(4000, "Reconnect is not allowed");
-      // return null;
+      // without the secret attached the user will be logged out
     }
   } else if (typeof msg.src !== "undefined") {
     // check if the device exists

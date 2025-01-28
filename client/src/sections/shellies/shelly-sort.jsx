@@ -1,3 +1,7 @@
+/*
+  Author: André Kreienbring
+  Component that represents the sort dialog
+*/
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -19,20 +23,33 @@ const SORT_OPTIONS = [
   { value: 'gen', label: 'Gen' },
 ];
 
+/**
+ * Component that presents several options for sorting
+ * the list of devices
+ * @param {function} handleSort Called when the list must be sorted
+*/
 export default function ShellySort({ handleSort }) {
   const [open, setOpen] = useState(null);
   const [selected, setSelected] = useState(0);
   const { t } = useTranslation();
 
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
+  /*
+    Openening / Closing the sort dialog
+  */
+  const handleOpen = (e) => {
+    setOpen(e.currentTarget);
   };
-
   const handleClose = () => {
     setOpen(null);
   };
 
-  const onMenuItemClick = (event, index) => {
+  /**
+   * Called when a sort option was selected
+   * @param {object} e The event
+   * @param {number} index The index of the selected sort option
+   * @param {function} handleSort Used to handle the selected sort option
+   */
+  const onMenuItemClick = (e, index) => {
     setOpen(null);
     setSelected(index);
     handleSort(SORT_OPTIONS[index]);

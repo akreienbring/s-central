@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Displays the brightness valuew sent with a 'NotifyFullStatus' websocket message.
+  Displays the brightness value sent with a 'NotifyFullStatus' websocket message.
 */
 import PropTypes from 'prop-types';
 
@@ -11,9 +11,9 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  The values will be displayed in kb
-  @param {object} sys mandatory The brightness property of a 'NotifyFullStatus' websocket message.
+/**
+  Component that displays the brighness value in percentage
+  @param {object} brightness The brightness property of a 'NotifyFullStatus' websocket message.
 */
 const Brightness = ({ brightness }) => (
   <Stack

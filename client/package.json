@@ -1,9 +1,9 @@
 {
   "author": "André Kreienbring",
-  "name": "@shellycentral/react-client",
+  "name": "@s-central/react-client",
   "license": "AGPL-3.0",
-  "version": "1.0.1",
-  "description": "Frontend of the Shelly Central",
+  "version": "1.0.2",
+  "description": "Frontend of the S-Central",
   "private": false,
   "scripts": {
     "dev": "vite",

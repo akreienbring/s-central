@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 
-/*
+/**
   Offers controls to change brightness, white value and rgb of the
   switch of a device.
   @param {object} device The device with switches
@@ -47,7 +47,7 @@ const ShellyControls = ({ device, handleSwitchSet }) => {
     [handleSwitchSet]
   );
 
-  /*
+  /**
     Called when the color input was changed.
     @param {string} color The new color value stringified (depends on the 'format' of the input)
     @param {object} colors an object of the color value in different formats stringified 

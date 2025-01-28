@@ -16,7 +16,8 @@ import Iconify from 'src/components/iconify';
 
 import UserForm from './user-form';
 
-/*
+/**
+  Component that allows to update an existing user
   @param {string} title The title that is presented at the top
   @param {boolean} openUpdate To determine if the dialog is shown or not
   @param {type} type: Type of the planned update. Either 'profile' or 'security'

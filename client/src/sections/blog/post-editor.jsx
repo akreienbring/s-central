@@ -7,6 +7,11 @@ import PropTypes from 'prop-types';
 import { TextEditor } from 'mui-tiptap-editor';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Component that displays the mui-tiptap-editor
+ * @param {function} handleContentChange Every change is reported to keep the post up-to-date
+ * @param {string}  content The initial content of the editor
+ */
 export default function BlogEditor({ handleContentChange, content }) {
   const { t } = useTranslation();
 

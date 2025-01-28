@@ -1,3 +1,8 @@
+/*
+  Author: André Kreienbring
+  If 'blogs' is configured as the landing page, then
+  this component presents public posts on the langing page.
+*/
 import { useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
@@ -23,10 +28,12 @@ export default function LandingView() {
   const isBlogpostsLoaded = useRef(false);
   const navigate = useNavigate();
 
-  /*
+  /**
     Called when BlogView is mounted and all blogposts
     are received from the server.
     Presents existing blogposts. If there are not blogpost
+    the loging page is presented.
+    @param {object} msg with an array ob existing blog posts
     the loging page is presented.
   */
   const handleBlogpostsReceived = useCallback(
@@ -38,7 +45,7 @@ export default function LandingView() {
           // add a chart color to the device that depends on its index in the array
           ({
             id: blogpost.blogpostid,
-            cover: `/assets/images/covers/cover_${index + 1}.jpg`,
+            cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
             title: blogpost.title,
             content: blogpost.content,
             createdAt: blogpost.createdAt,

@@ -5,13 +5,13 @@
 */
 const db = require("@db/db.js");
 
-/*
+/**
   Called by wshandler if a 'NotifyFullStatus' from a Shelly device arrives
   that contains data regarding the switches.
   The consumption is calculated and then written to the database as mw/m.
   The current state of the switches of the device is updated on the device.
-  @param device The device that send the websocket message.
-  @param params The params of the websocket message 'NotifyFullStatus'.
+  @param {object} device The device that send the websocket message.
+  @param {object} params The params of the websocket message 'NotifyFullStatus'.
 */
 function update(device, params) {
   let currentPower = 0;

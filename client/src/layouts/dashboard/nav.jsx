@@ -96,7 +96,7 @@ export default function Nav({ openNav, onCloseNav }) {
         </Box>
 
         <Button
-          href="https://github.com/akreienbring/Shelly-Central"
+          href="https://github.com/akreienbring/s-central"
           target="_blank"
           variant="contained"
           color="inherit"

@@ -9,11 +9,11 @@ import Typography from '@mui/material/Typography';
 
 import { createUUID } from 'src/utils/general';
 
-/*
+/**
   The params property of a 'NotifyFullStatus' websocket message may contain
   various script properties. 
   These are checked for the script status and displayed including their memory state
-  @param {object} params mandatory The params property of a 'NotifyFullStatus' websocket message
+  @param {object} params The params property of a 'NotifyFullStatus' websocket message
 */
 const Scripts = ({ params }) => {
   const elements = [];

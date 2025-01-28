@@ -12,8 +12,8 @@ import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
-/*
-  The consumption will be displayed in 'kw/h'.
+/**
+  The consumption will be displayed in 'w/h'.
   @param {number} consume The current energy consumption of a device in mw/m.
 */
 const Energy = ({ consume }) => (

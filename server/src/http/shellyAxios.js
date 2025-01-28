@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring  
-  Implements general methods to request data with Axis. 
+  Implements general methods to request data with Axios. 
   Including a 'challenge - response' cycle for retrieving information 
   from a password protected Shelly device.
   The original code was copied from an Allterco example here:
@@ -42,7 +42,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-/*
+/**
   Performs a request of the given type. GET requests will be executed 'normally. 
   In the case of POST: 
     - If the device is not proteced, it will be successful 
@@ -53,7 +53,7 @@ const headers = {
   @param {string} shellyMethod The RPC method that is called on the shelly device. E.g. "Shelly.GetStatus"
   @param {object} params POST parameters that will be send to the device.
   @param {string} password The password that is needed if the Authentication on the device is activated
-  @return {Promise} The (Axios) Promise that is either resolved or rejected by 'get' or 'digest'
+  @returns {Promise} The (Axios) Promise that is either resolved or rejected by 'get' or 'digest'
 */
 async function request(url, requestType, shellyMethod, params, password) {
   if (requestType === "GET") {
@@ -63,16 +63,16 @@ async function request(url, requestType, shellyMethod, params, password) {
   }
 }
 
-/*
+/**
   Performs a request with the POST method. If the device is not proteced, it will be successful 
   and the data will directly be returned to the caller.
   If the response status is 401 the user credentials and some conditions will be checked, 
   credentials will be added and the authorized request will be send again as a POST request.
   @param {string} url The url that is used for the request
   @param {string} shellyMethod The RPC method that is called on the shelly device. E.g. "Shelly.GetStatus"
-  @param {object} params POST  parameters that will be send to the device.
+  @param {object} params POST parameters that will be send to the device.
   @param {string} password The password that is needed if the Authentication on the device is activated
-  @return {Promise} The Promise that is either resolved or rejected by 'shellyAxiosPOST'
+  @returns {Promise} The Promise that is either resolved or rejected by 'shellyAxiosPOST'
 */
 async function digest(url, shellyMethod, params, password) {
   // first POST without credentials
@@ -100,7 +100,7 @@ async function digest(url, shellyMethod, params, password) {
     });
 }
 
-/*
+/**
   Performs a GET request to the given URL.
   @param: {string} url The URL that will be called.
   @return: {Promise} 
@@ -113,12 +113,12 @@ async function get(url) {
   });
 }
 
-/*
+/**
   Performs a POST request to the given URL.
-  @param: {string} url The URL that will be called.
+  @param {string} url The URL that will be called.
   @param {string} shellyMethod The RPC method that is called on the shelly device. E.g. "Shelly.GetStatus"
   @param {object} params POST  parameters that will be send to the device. Maybe 'undefinded'
-  @return: {Promise} 
+  @returns {Promise} 
     On a successful POST the Promise is resolved with the reponse.
     OR: The Promise is rejected with the error.
 */
@@ -131,7 +131,7 @@ async function post(url, shellyMethod, params) {
   });
 }
 
-/*
+/**
   Called when axios produced an error and can be used to output error information
   @param {object} error mandatory The axis error
   @returns {object} A response object with error information

@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring  
-  Used for a digest authetication scheme to protect server resources.
+  Used for a digest authetication scheme during user validation
 */
 const crypto = require("crypto");
 const endecrypt = require("@src/utils/endecrypt.js");
@@ -17,7 +17,7 @@ const CHALLENGE_ERROR = {
   },
 };
 
-/*
+/**
   Creates the error for the challenge - response Digest Cycle
   @return {object} The challenge message with a one time nonce
 */
@@ -26,8 +26,8 @@ function getChallengeError() {
   return CHALLENGE_ERROR;
 }
 
-/*
-  Deletes a stored nonce for the given clientIP.
+/**
+  Validates a user upon the send authetication values.
   @param {object} dbUser An existing user from the db with his HA1 value
   @param {string} auth The authentication data a client sent upon a digest challenge.
   @return {boolean} True if the digest response is valid, false if not.

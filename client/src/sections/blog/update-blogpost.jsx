@@ -1,7 +1,7 @@
 /*
   Author: André Kreienbring
   Presented for blogpost editing in the post-card
-  When clicked a dialog is opened that holds the form to update an existing user.
+  When clicked a dialog is opened that holds the form to update an existing blogpost.
 */
 
 import PropTypes from 'prop-types';
@@ -17,13 +17,12 @@ import Iconify from 'src/components/iconify';
 
 import BlogPostForm from './blogpost-form';
 
-/*
+/**
+  A Drawer that displays the Blogpost form to update a post.
   @param {boolean} openUpdate To determine if the update dialog is shown or not
   @param {object} updatepost The blogpost that will be updated.
-  @param {function} onCloseUpdate Handles the closed status. Either in the 
-    UserView / UserTableRow. Or in the
-    AccountPopover component
-  @param {function} handleUpdatePost Called when BlogView must rerender the user in the list
+  @param {function} onCloseUpdate Handles the closed status
+  @param {function} handleUpdatePost Called when BlogView must rerender the post
 */
 export default function UpdateBlogpost({
   openUpdate,

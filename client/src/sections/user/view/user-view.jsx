@@ -1,3 +1,7 @@
+/*
+  Author: André Kreienbring
+  Main View for the user management
+*/
 import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
@@ -42,12 +46,12 @@ export default function UserView() {
   const isUsersLoaded = useRef(false);
   const [showReallyDelete, setShowReallyDelete] = useState(false);
 
-  /*
+  /**
     The received users will be mapped to the table values.
     Called when users arrive due to a request send to the websocket server.
     Also called when a user was deleted and the server sends an updated list.
     Also passed to the CreateUser Component and called when a user was created.
-    @param {array} serverUsers The up to date list of users received from the server.
+    @param {object} msg A ws message that contains the users sent by the servers
   */
   const handleUsersReceived = (msg) => {
     const serverUsers = msg.data.users;
@@ -66,7 +70,7 @@ export default function UserView() {
     setUsers(clientUsers);
   };
 
-  /*
+  /**
     Called when a user was updated. Updates the
     list of users.
     @param {object} updateuser The user that was updated
@@ -132,14 +136,20 @@ export default function UserView() {
     setOpenCreate(false);
   };
 
-  /*
-    Controls the delete button in the table toolbar
+  /**
+    Controls the really delete button in the table toolbar
+    @param {boolean} show Show the 'really delete' menue item or not
   */
   const handleShowReallyDelete = (show) => {
     setShowReallyDelete(show);
   };
 
-  const handleSort = (event, id) => {
+  /**
+   * Sorts the table by a certain user property
+   * @param {object} e The event 
+   * @param {string} id The user property to sort the table (e.g. name)
+   */
+  const handleSort = (e, id) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
       setOrder(isAsc ? 'desc' : 'asc');
@@ -160,11 +170,13 @@ export default function UserView() {
     setShowReallyDelete(false);
   };
 
-  /*
+  /**
     When a checkbox of the user table is clicked, 
     this function creates an array of selected aliases
+    @param {object} e The event
+    @param {string} alias The alias of a user that must be added to the selection
   */
-  const handleClick = (event, alias) => {
+  const handleClick = (e, alias) => {
     const selectedIndex = selected.indexOf(alias);
     let newSelected = [];
     if (selectedIndex === -1) {
@@ -183,9 +195,10 @@ export default function UserView() {
     setShowReallyDelete(false);
   };
 
-  /*
+  /**
     Called from within the table row popover, when a user
-    must be deleted. Send a message to the server.
+    must be deleted. Send a delete request to the server.
+    @param {number} id The id of the user that must be deleted
   */
   const handleDeleteUser = (id) => {
     request(
@@ -201,7 +214,7 @@ export default function UserView() {
     );
   };
 
-  /*
+  /**
     Delete all selected users. The Admin is excluded!
   */
   const handleDeleteSelected = () => {
@@ -222,22 +235,28 @@ export default function UserView() {
     );
   };
 
+  /*
+    The table supports paging of the users
+  */
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
+  /**
+   * Applies a filter to the users if text is entered in the search bar
+   * @param {object} e The event triggered when text is entered
+   */
+  const handleFilterByName = (e) => {
     setPage(0);
-    setFilterName(event.target.value);
+    setFilterName(e.target.value);
   };
 
-  /*
-    Applies a filter on the users array depending on the curren search / filter input.
+  /**
+    Applies a filter on the users array depending on the current search / filter input.
     TODO: find a way to choose a different field.
   */
   const dataFiltered = applyFilter({
