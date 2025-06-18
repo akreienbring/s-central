@@ -21,7 +21,7 @@
 - Updated dependencies
 
 ### Release v2.0.0
-##### 18.01.2025
+##### 18.06.2025
 **Client (2.0.0)**
 - Updated dependencies
 - Migration to eslint v9, MUI v7, React v19
