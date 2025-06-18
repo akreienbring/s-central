@@ -106,6 +106,9 @@
     "_editor-placeholder_": "Schreib deinen Post",
     "_notfound_": "Nicht gefunden",
     "_noresultsfor_": "Keine Resultate gefunden für",
-    "selected": "ausgewählt"
+    "selected": "ausgewählt",
+    "_assigndevices_": "Shelly zuordnen",
+    "_devicesupdated_": "Zuordnung gespeichert",
+    "_devicesnotupdated": "Fehler bei der Zuordnung"
   }
 }

@@ -4,7 +4,6 @@
   depending on the passed in type property.
 */
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import { useTranslation } from 'react-i18next';
 
@@ -102,8 +101,8 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
 
   /**
    * Called when the submit button was clicked.
-   * Creates or updates a blogpost by communicating with the server 
-   * @param {object} event  
+   * Creates or updates a blogpost by communicating with the server
+   * @param {object} event
    */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -115,7 +114,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
       const msg = {
         event: 'blogpost create',
         data: {
-          name: 'Blogpost Form',
+          source: 'Blogpost Form',
           message: 'Blogpost Form wants to create a new post',
           blogpost: currentBlogpost,
         },
@@ -126,7 +125,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
       const msg = {
         event: 'blogpost update',
         data: {
-          name: 'Blogpost Form',
+          source: 'Blogpost Form',
           message: 'Blogpost Form wants to update a post',
           blogpost: currentBlogpost,
         },
@@ -195,10 +194,3 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
 };
 
 export default BlogpostForm;
-
-BlogpostForm.propTypes = {
-  type: PropTypes.string.isRequired,
-  handleBlogpostsReceived: PropTypes.func,
-  updatepost: PropTypes.object,
-  handleUpdatePost: PropTypes.func,
-};

@@ -9,7 +9,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 export default function useChart(options) {
   const theme = useTheme();
 
-  // eslint-disable-next-line no-unused-vars
   const smUp = useResponsive('up', 'sm');
 
   const LABEL_TOTAL = {

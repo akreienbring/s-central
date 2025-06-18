@@ -10,7 +10,7 @@ const config = require("config");
 
 const SECRET = config.get("ws-server.secret");
 
-/*
+/** 
   Handles messages sent by the frontend that are related to user managment.
   @param {object} msg The message that was sent by the frontend. Properties are:
     - {string} event mandatory Indicating an event that happened on the frontend.
@@ -297,13 +297,64 @@ function handle(msg, ws) {
 
     if (info.changes !== msg.data.ids.length) {
       // something went wrong
-      updateAnswer.data.message = "_usernotdeleted_";
-      updateAnswer.data.success = false;
+      deleteAnswer.data.message = "_usernotdeleted_";
+      deleteAnswer.data.success = false;
     } else {
       const sql = `SELECT users.id AS userid, email, firstname, lastname, home, alias, roles.name AS rolename FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
       deleteAnswer.data.users = db.getUser(sql);
     }
     ws.send(JSON.stringify(deleteAnswer));
+  } else if (msg.event === "user devices get all") {
+    // clients needs the devices of a user
+
+    const deviceAnswer = {
+      event: "user devices get all",
+      data: {
+        message: "Ok, here are all the user devices",
+        success: true,
+        requestID: msg.data.requestID,
+      },
+    };
+    const sql = `SELECT device_id FROM user_devices WHERE user_id = ?`;
+    const userdevices = db.get(sql, [msg.data.userid]);
+
+    //userdevices is an array of objects. We want only the values.
+    deviceAnswer.data.userdevices = userdevices.map((object) => {
+      return object.device_id;
+    });
+
+    ws.send(JSON.stringify(deviceAnswer));
+  } else if (msg.event === "user devices update") {
+    // client wants to update the devices of a user
+    const deviceUpdateAnswer = {
+      event: msg.event,
+      data: {
+        message: "_devicesupdated_",
+        success: true,
+        requestID: msg.data.requestID,
+      },
+    };
+    const userdevices = msg.data.userdevices;
+    const userid = msg.data.userid;
+    let success = true;
+
+    let info = db.del("user_devices", ["user_id"], [userid]);
+    for (i in userdevices) {
+      info = db.insert(
+        "user_devices",
+        {
+          user_id: userid,
+          device_id: userdevices[i],
+        },
+        false
+      );
+      if (info?.changes !== 1) {
+        success = false;
+      }
+    }
+    if (!success) deviceUpdateAnswer.data.message = "_devicesnotupdated";
+    deviceUpdateAnswer.data.success = success;
+    ws.send(JSON.stringify(deviceUpdateAnswer));
   }
 }
 

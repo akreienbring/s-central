@@ -18,6 +18,7 @@ function initDB(db) {
 /**
   Creates several tables and triggers for the consumption data.
   If they don't exist! Can therefor be called many times.
+  ATTENTION: The saved device_cname is currently ignored by the client.
   @param {object} db The (already open) database
 */
 function createConsupmtionTables(db) {
@@ -117,7 +118,7 @@ function createConsupmtionTables(db) {
   Creates several tables for the user / role data.
   If they don't exist! Can therefor be called many times.
   @param {object} db The (already open) database
-*/function createUserTables(db) {
+*/ function createUserTables(db) {
   sql = `CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     uuid TEXT UNIQUE NOT NULL,
@@ -141,20 +142,30 @@ function createConsupmtionTables(db) {
   )`;
 
   db.exec(sql);
+
+  sql = `CREATE TABLE IF NOT EXISTS user_devices (
+    user_id INTEGER NOT NULL, 
+    device_id TEXT NOT NULL,
+    CONSTRAINT once_per_user UNIQUE (user_id, device_id)
+  )`;
+
+  db.exec(sql);
 }
 
 /**
   Creates the table for the notification data.
   If they don't exist! Can therefor be called many times.
   @param {object} db The (already open) database
-*/function createNotificationTable(db) {
+*/
+function createNotificationTable(db) {
   sql = `CREATE TABLE IF NOT EXISTS notifications (
       id INTEGER PRIMARY KEY,
       type NOT NULL,
+      title NOT NULL,
       device_ip NOT NULL,
       device_cname NOT NULL,
-      script_id NOT NULL,
-      script_name NOT NULL,
+      script_id,
+      script_name,
       notification NOT NULL,
       isUnread NOT NULL,
       ts NOT NULL
@@ -167,7 +178,8 @@ function createConsupmtionTables(db) {
   Creates the table for the blogposts data.
   If they don't exist! Can therefor be called many times.
   @param {object} db The (already open) database
-*/function createBlogpostTable(db) {
+*/
+function createBlogpostTable(db) {
   sql = `CREATE TABLE IF NOT EXISTS blogposts (
       id INTEGER PRIMARY KEY,
       title NOT NULL,

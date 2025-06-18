@@ -106,6 +106,9 @@
     "_editor-placeholder_": "Write your post",
     "_notfound_": "Not found",
     "_noresultsfor_": "No results found for",
-    "selected": "selected"
+    "selected": "selected",
+    "_assigndevices_": "Shelly assingment",
+    "_devicesupdated_": "Assignment saved",
+    "_devicesnotupdated": "Error saving Assignment"
   }
 }

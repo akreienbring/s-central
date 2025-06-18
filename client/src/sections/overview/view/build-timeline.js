@@ -74,7 +74,7 @@ export function buildTimeline(devices, rows, timeline) {
         chartColors.push(devices[dIndex].chartColor);
 
         chartSeries.push({
-          name: entry.device_cname,
+          name: devices[dIndex].cname,
           type: timeline.data === 'Minute' ? 'line' : 'bar',
           data: [{ x: category, y: entry.consumption }],
         });

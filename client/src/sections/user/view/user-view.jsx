@@ -89,7 +89,7 @@ export default function UserView() {
   );
 
   /*
-    If a user is updated from the Accout popover, then an
+    If a user is updated from the Account popover, then an
     event signals that this view must update the list of users.
   */
   const handleUpdateUserEvent = useCallback(
@@ -111,7 +111,7 @@ export default function UserView() {
         {
           event: 'users get all',
           data: {
-            name: 'Users View',
+            source: 'Users View',
             message: 'User View needs the list of users',
           },
         },
@@ -146,7 +146,7 @@ export default function UserView() {
 
   /**
    * Sorts the table by a certain user property
-   * @param {object} e The event 
+   * @param {object} e The event
    * @param {string} id The user property to sort the table (e.g. name)
    */
   const handleSort = (e, id) => {
@@ -204,8 +204,8 @@ export default function UserView() {
     request(
       {
         event: 'user delete',
-        source: {
-          name: 'Users View',
+        data: {
+          source: 'Users View',
           message: 'User View wants to delete a user',
           ids: [id],
         },

@@ -32,7 +32,6 @@ import updateDeviceValues from 'src/sections/shellies/view/update-device-values'
 // ----------------------------------------------------------------------
 
 const ExpandKVS = styled((props) => {
-  // eslint-disable-next-line no-unused-vars
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({

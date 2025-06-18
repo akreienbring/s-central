@@ -32,8 +32,6 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const [openUpdate, setOpenUpdate] = useState({ open: false, type: '' });
 
-  // eslint-disable-next-line no-unused-vars
-  const [showSecuriy, setShowSecurity] = useState(false);
   const { user, logout } = useShelly();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -69,14 +67,6 @@ export default function AccountPopover() {
   };
   const handleClose = () => {
     setOpen(null);
-  };
-
-  /**
-   * Handles the click on the logout button
-   */
-  const handleLogout = () => {
-    navigate('/');
-    logout();
   };
 
   /**
@@ -181,7 +171,7 @@ export default function AccountPopover() {
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={handleLogout}
+          onClick={logout}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
           {t('Logout')}

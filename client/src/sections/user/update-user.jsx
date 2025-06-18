@@ -4,8 +4,6 @@
   When clicked a dialog is opened that holds the form to update an existing user.
 */
 
-import PropTypes from 'prop-types';
-
 import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
@@ -41,8 +39,10 @@ export default function UpdateUser({
       anchor="right"
       open={openUpdate}
       onClose={onCloseUpdate}
-      PaperProps={{
-        sx: { width: 300, border: 'none', overflow: 'hidden' },
+      slotProps={{
+        paper: {
+          sx: { width: 300, border: 'none', overflow: 'hidden' },
+        },
       }}
     >
       <Stack
@@ -64,12 +64,3 @@ export default function UpdateUser({
     </Drawer>
   );
 }
-
-UpdateUser.propTypes = {
-  title: PropTypes.string.isRequired,
-  openUpdate: PropTypes.bool.isRequired,
-  type: PropTypes.string.isRequired,
-  updateuser: PropTypes.object,
-  handleUpdateUser: PropTypes.func,
-  onCloseUpdate: PropTypes.func.isRequired,
-};

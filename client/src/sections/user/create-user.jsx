@@ -47,8 +47,10 @@ export default function CreateUser({
         anchor="right"
         open={openCreate}
         onClose={onCloseCreate}
-        PaperProps={{
-          sx: { width: 300, border: 'none', overflow: 'hidden' },
+        slotProps={{
+          paper: {
+            sx: { width: 300, border: 'none', overflow: 'hidden' },
+          },
         }}
       >
         <Stack

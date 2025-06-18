@@ -24,7 +24,7 @@ function ShellyKVSList({ kvs }) {
   return kvs.map((kvsentry, index) => {
     const key = typeof kvsentry.display !== 'undefined' ? kvsentry.display : kvsentry.key;
 
-    // convert the given on its style attribute
+    // convert the value given on its style attribute
     const convertValue = (value) => {
       const style = typeof kvsentry.style !== 'undefined' ? kvsentry.style : kvsentry.value;
       switch (style) {

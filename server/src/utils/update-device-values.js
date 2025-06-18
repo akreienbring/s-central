@@ -1,7 +1,7 @@
 /*
   Author: André Kreienbring
-  Helps wshandler to insert/update values in the database that stores
-  consumption values for minute, hour, day, month, year
+  Get Data from the "NotifyFullStatus" of a device
+  
 */
 const db = require("@db/db.js");
 
@@ -43,8 +43,8 @@ function update(device, params) {
     });
   }
 
-  // console.log(`${device.cname} currently consumes ${currentPower}`);
   if (currentPower > 0) {
+    // update consumption values for minute, hour, day, month, year
     db.updateConsumption(device.id, device.cname, currentPower, params.ts);
   }
 }

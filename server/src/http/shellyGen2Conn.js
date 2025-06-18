@@ -256,19 +256,18 @@ async function getKVS(device) {
   });
   if (res.status === 200 && typeof res.data.result.items !== "undefined") {
     const kvsentries = res.data.result.items;
-    Object.keys(kvsentries).forEach((entry) => {
-      const kvsdisplay = kvsdisplays[entry];
+    for (let entry of kvsentries) {
+      const kvsdisplay = kvsdisplays[entry.key];
       arrKVS.push({
-        key: entry,
-        value: kvsentries[entry].value,
-        ...(typeof kvsdisplay.display !== "undefined" && {
+        key: entry.key,
+        value: entry.value,
+        ...(typeof kvsdisplay?.display !== "undefined" && {
           display: kvsdisplay.display,
         }),
-        ...(typeof kvsdisplay.style !== "undefined" && {
+        ...(typeof kvsdisplay?.style !== "undefined" && {
           style: kvsdisplay.style,
         }),
-      });
-    });
+    });    }
     console.log("Successfully got the KVS entries of " + device.cname);
   } else {
     if (typeof res !== "undefined") {
@@ -386,7 +385,7 @@ async function createDevice(device, data) {
   Generic method that calles the devices rpc interfaces by using the POST method.
   @param {object} device The device the call will be send to.
   @param {string} method The RPC method that will be called.
-  @param {object} [params] If provide this params will be added to the method.
+  @param {object} [params] If provided this params will be added to the method.
   @returns {object} The response object.
 */
 async function getRPCMethod(device, method, params) {

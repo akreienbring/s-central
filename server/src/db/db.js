@@ -140,7 +140,10 @@ function resetPW(email) {
 
 /**
   Get data from the database.
+  Example: "SELECT device_id FROM user_devices WHERE user_id = ?" would result in a call
+  "db.get(sql, [userid]);"
   @param {string} sql The select statement to execute.
+  @param {array} criterias Will be used for the values of the WHERE clause.
   @return {array} The data fetched from the db
 */
 function get(sql, criterias) {
@@ -187,7 +190,7 @@ function update(table, fields, searches, criterias, logical) {
 
 /**
  * Used for testing if tables must be deleted
- * @param {array} tables 
+ * @param {array} tables
  */
 function deleteTables(tables) {
   let sql;

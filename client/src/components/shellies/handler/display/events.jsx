@@ -1,3 +1,5 @@
+import 'src/custom.css';
+
 /*
   Author: André Kreienbring
   Examines the 'events' property of a 'NotifyEvent' websocket message.
@@ -8,8 +10,6 @@
 import PropTypes from 'prop-types';
 
 import { createUUID } from 'src/utils/general';
-
-import 'src/custom.css';
 
 import Iconify from 'src/components/iconify';
 

@@ -35,7 +35,7 @@ Managing many Shellies in a network is a challenge. The original Shelly Control 
   Install nodejs. Normally it includes the NPM packet manager. I tested the system with nodejs 20.x.
 
 - **Server (Client included)** <br/>
-  Download the server release and unzip it in a directory of your choice. E.g. _/sb_ (Shelly Broker). Normally you run the server on a dedicated always-on-system. Like a NAS, a Rasberry or any other OS that can run nodejs. Navigate to that directory and type _npm install_. It might take a while untill all modules are downloaded. In the meantime you could...
+  Download the server release and unzip it in a directory of your choice. E.g. _/sb_ (Shelly Broker). Normally you run the server on a dedicated always-on-system. Like a NAS, a Rasberry or any other OS that can run nodejs. Navigate to that directory and type _npm install --force_. It might take a while untill all modules are downloaded. In the meantime you could...
 
   **Configure your Shellies**<br/>
   Add the IP addresses and custom names of your Shellies to the file _/sb/config/devices.json_. An example is included. <br/>
@@ -91,6 +91,27 @@ function log(to_log) {
 ```
 to output messages to the console prefixed by the script name.
 
+## How to call the webservice endpoints
+There's functionality that requires you to call an endpoint from within your script. E.g. to detect if a device is offline or 
+a script is not running.<br/>
+Example for a device that must be set to offline:
+```
+let url = http://[ServerIP]/ws/v1/SetDevice?secret=[SECRET]&ip='[deviceIP]';
+let body = JSON.stringify({online: false});
+
+Shelly.call('HTTP.POST', {url: url, body: body});
+```
+
+Example that acknowleges the server that a script is not running:
+```
+let url = http://[ServerIP]/ws/v1/SetScript?secret=[SECRET]&ip='[deviceIP]&id='[scriptID]';
+let body = JSON.stringify({running: false});
+
+Shelly.call('HTTP.POST', {url: url, body: body});
+```
+See _/sb/server.js_ for all available entpoints 
+
+
 ## When to restart the server
 The server must be restartet when
 - You add / change / delete a device in _/sb/config/devices.json_
@@ -136,8 +157,8 @@ File: _/sb/config/default.json_
 | secret (!)      | secret text      | Security feature. Is exchanged between WS client and server       |
 | **Shelly config**                                                                                          |
 | set-udp         | true / false     | If true, all shellies are configured to sent UDP Logs             |
-| set-ws          | true / false     | If true, all shellies send ws messages to the server              |
-| **Database**                                                                                               |
+| set-ws          | true / false     | If true, all shellies are configured to send WS messages to the server (Reboots the Shelly on every server start)  |       
+| **Database**                                                                                           |
 | standardpw (!)  | text             | Standard password for all created users                           |
 | standardal      | text             | Standard alias for the admin user (Created on first run)          |
 | standardem      | email            | Standard email for the admin user (Created on first run)          |

@@ -152,9 +152,11 @@ export default function Nav({ openNav, onCloseNav }) {
         <Drawer
           open={openNav}
           onClose={onCloseNav}
-          PaperProps={{
-            sx: {
-              width: NAV.WIDTH,
+          slotProps={{
+            paper: {
+              sx: {
+                width: NAV.WIDTH,
+              },
             },
           }}
         >

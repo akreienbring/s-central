@@ -47,8 +47,10 @@ export default function CreateBlogpost({
         anchor="right"
         open={openCreate}
         onClose={onCloseCreate}
-        PaperProps={{
-          sx: { width: 1, border: 'none', overflow: 'auto' },
+        slotProps={{
+          paper: {
+            sx: { width: 1, border: 'none', overflow: 'auto' },
+          },
         }}
       >
         <Stack

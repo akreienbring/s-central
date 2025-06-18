@@ -12,15 +12,21 @@ import { bgBlur } from 'src/theme/css'
 export const useChartColors = () => {
   const theme = useTheme();
   return [
-    theme.palette.success.darker,
+    theme.palette.success.dark,
+    theme.palette.info.dark,
+    theme.palette.error.dark,
+    theme.palette.warning.dark,
+    theme.palette.primary.dark,
+    theme.palette.success.main,
     theme.palette.info.main,
     theme.palette.error.main,
-    theme.palette.warning.main,
-    theme.palette.success.main,
-    theme.palette.warning.dark,
-    theme.palette.info.dark,
-    theme.palette.info.darker,
     theme.palette.primary.main,
+    theme.palette.warning.main,
+    theme.palette.success.light,
+    theme.palette.info.light,
+    theme.palette.error.light,
+    theme.palette.warning.light,
+    theme.palette.primary.light,
   ];
 };
 

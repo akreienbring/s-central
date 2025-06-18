@@ -43,7 +43,6 @@ function handle(msg, ws) {
     };
 
     const blogpostToCreate = msg.data.blogpost;
-    console.log(JSON.stringify(blogpostToCreate));
 
     let info;
     try {

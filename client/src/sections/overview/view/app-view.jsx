@@ -14,7 +14,7 @@
 import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 
@@ -118,7 +118,7 @@ export default function AppView() {
         {
           event: `getTimeline${timeline.current.data}`,
           data: {
-            name: 'App View',
+            source: 'App View',
             message: 'App View needs timeline for a device',
           },
         },
@@ -213,7 +213,7 @@ export default function AppView() {
         {
           event: 'devices timeline get',
           data: {
-            name: 'App View',
+            source: 'App View',
             message: 'App View needs the list of devices and the timeline',
           },
         },
@@ -238,7 +238,7 @@ export default function AppView() {
     };
   }, [devices.length, handleDevicesReceived, handleDeviceUpdate, unsubscribe, subscribe, request]);
   // --------------------- Websocket Implementation END------------------
-  
+
   if (devices.length === 0) return null;
   return (
     <Container maxWidth="xl">

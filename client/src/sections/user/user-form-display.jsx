@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
 import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -289,7 +288,7 @@ const UserFormDisplay = ({
             )}
           </Stack>
           {type === 'login' ? (
-            <LoadingButton
+            <Button
               disabled={checkSubmitCriterias()}
               fullWidth
               size="large"
@@ -298,7 +297,7 @@ const UserFormDisplay = ({
               color="inherit"
             >
               {t('Login')}
-            </LoadingButton>
+            </Button>
           ) : (
             <Button
               disabled={checkSubmitCriterias()}

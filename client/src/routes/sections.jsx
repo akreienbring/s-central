@@ -34,8 +34,8 @@ export default function Router() {
         <Navigate to="/" replace />
       ),
       children:
-        // only if admin
-        user && user.roleid === 1
+        // only if admin or no user (needed for correct logout behavior)
+        !user || user.roleid === 1
           ? [
               { path: 'dashboard', element: <AppPage />, index: true },
               { path: 'user', element: <UserPage /> },

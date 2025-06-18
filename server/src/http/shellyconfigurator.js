@@ -45,16 +45,15 @@ function configureShellies(devices, getRPCMethod) {
         getRPCMethod(device, "Ws.SetConfig", {
           config: {
             server: wsConfig,
-            enabled: true,
+            enable: true,
           },
         })
           .then((res) => {
             if (res.status === 200 && typeof res.data.result !== "undefined") {
               console.log(
-                `Successfully configured the outbound Websocket on ${device.cname}`
+                `Successfully configured the outbound Websocket on ${device.cname}. Rebooting the Shelly`
               );
-              // This configuration requiers a restart of the device!
-              // Could be done automatically!
+              getRPCMethod(device, "Shelly.Reboot")
             } else {
               console.error(
                 `Couldn't configure the outbound Websocket on ${device.cname}`

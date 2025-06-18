@@ -9,4 +9,5 @@ client/.vscode
 client/dist/
 client/.env.private
 client/.env.development
+client/dev.code-workspace
 

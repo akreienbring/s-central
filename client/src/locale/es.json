@@ -105,6 +105,9 @@
     "_editor-placeholder_": "Escribir tu post",
     "_notfound_": "No encontrado",
     "_noresultsfor_": "No se encontraron resultados para",
-    "selected": "seleccionado"
+    "selected": "seleccionado",
+    "_assigndevices_": "relacionar Shelly",
+    "_devicesupdated_": "Relacion guardada",
+    "_devicesnotupdated": "Error al guardar"
   }
 }

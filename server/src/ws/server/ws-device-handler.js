@@ -14,11 +14,25 @@ function handle(msg, ws) {
       const answer = {
         event: "devices get all",
         data: {
-          message: "OK! Here are all the devices!",
-          devices: devices,
           requestID: msg.data.requestID,
         },
       };
+      const userid = msg.data.userid;
+
+      if (userid != null) {
+        console.log(`Sending only the devices of user ${userid}`);
+        const sql = `SELECT device_id FROM user_devices WHERE user_id = ?`;
+        let userdevices = db.get(sql, [userid]);
+        userdevices = userdevices.map((object) => {
+          return object.device_id;
+        });
+        answer.data.message = `OK! Here are all the devices of user ${userid}`;
+        devices = devices.filter((device) => userdevices.includes(device.id));
+      } else {
+        console.log(`Sending all the devices for an admin`);
+        answer.data.message = `OK! Here are all the devices`;
+      }
+      answer.data.devices = devices;
       ws.send(JSON.stringify(answer));
     });
   } else if (msg.event === "devices timeline get") {

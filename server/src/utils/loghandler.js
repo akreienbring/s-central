@@ -75,12 +75,6 @@ function handleLogMessage(device, msg) {
         errorBuffer[device.id].push(logmessage);
       }
 
-      if (device.cname === "Sirene") {
-        console.log(
-          `After Filer: Sirene Script '${script.name}' just logged: ${logmessage}`
-        );
-      }
-
       /*
         By pushing the message into the logmessages array of the script
         it will be automatically updated in the internal device list
@@ -151,7 +145,7 @@ function checkDeviceError(device, logmessage) {
             Create a notification of the Script error in the database
           */
           const wsmessage = {
-            event: "ScriptError",
+            event: "notification create",
             data: {
               name: "Loghandler",
               message: `Error of ${device.cname} in script with id  ${oScriptNotification.id}`,

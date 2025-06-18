@@ -3,7 +3,7 @@
 */
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -32,20 +32,18 @@ export default function BlogView() {
     (msg) => {
       isBlogpostsLoaded.current = true;
 
-      const allBlogposts = msg.data.blogposts.map((blogpost, index) =>
-        ({
-          id: blogpost.blogpostid,
-          cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
-          title: blogpost.title,
-          content: blogpost.content,
-          createdAt: blogpost.createdAt,
-          public: blogpost.public,
-          author: {
-            name: blogpost.alias,
-            avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(blogpost.userid, 25)}.jpg`,
-          },
-        })
-      );
+      const allBlogposts = msg.data.blogposts.map((blogpost, index) => ({
+        id: blogpost.blogpostid,
+        cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
+        title: blogpost.title,
+        content: blogpost.content,
+        createdAt: blogpost.createdAt,
+        public: blogpost.public,
+        author: {
+          name: blogpost.alias,
+          avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(blogpost.userid, 25)}.jpg`,
+        },
+      }));
 
       setBlogposts(allBlogposts);
     },
@@ -63,8 +61,8 @@ export default function BlogView() {
         {
           event: 'blogposts get all',
           data: {
-            name: 'BlowView',
-            message: 'BlowView  needs the list of blogposts',
+            source: 'Blog View',
+            message: 'Blog View  needs the list of blogposts',
           },
         },
         handleBlogpostsReceived

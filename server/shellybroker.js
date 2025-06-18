@@ -3,6 +3,7 @@
   https://github.com/ALLTERCO/fleet-management
   https://github.com/ALLTERCO/shelly-outbound-websockets
   https://github.com/Luligu/matterbridge
+  https://github.com/ThellyHRO/local-Website
 
   https://github.com/alexryd/node-shellies-ng
   https://github.com/alexnederlof/shelly-admin

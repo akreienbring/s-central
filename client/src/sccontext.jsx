@@ -8,7 +8,6 @@
 */
 
 import websocket from 'websocket';
-import PropTypes from 'prop-types';
 import {
   useRef,
   useMemo,
@@ -36,6 +35,7 @@ export const useShelly = () => useContext(Context);
 */
 export const SCProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [devices, setDevices] = useState([]);
   const [validationRequest, setValidationRequest] = useState(null);
   const [retryCount, setRetryCount] = useState(0.001);
   const ws = useRef(null);
@@ -47,7 +47,7 @@ export const SCProvider = ({ children }) => {
     event: 'user reconnect',
     data: {
       name: 'Shelly Context',
-      channel: `sc${createUUID()}`,
+      channelID: `sc${createUUID()}`,
       message: 'Hello from Shelly Context',
       user,
     },
@@ -70,7 +70,7 @@ export const SCProvider = ({ children }) => {
   */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const startRetryTimeout = (currentRetryCount, isInit) => {
-    // if (reconnectMsg.current.data.user === null) return;
+    if (reconnectMsg.current.data.user === null) return;
     if (isInit) currentRetryCount = 0.001;
     isReconnecting.current = true;
     setTimeout(
@@ -91,199 +91,6 @@ export const SCProvider = ({ children }) => {
       },
       currentRetryCount * window.scconfig.RECONNECT_DELAY * 1000
     );
-  };
-
-  useEffect(() => {
-    if (user !== null) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-    reconnectMsg.current.data.user = user;
-  }, [user]);
-
-  // --------------------- Websocket Implementation END----------------
-  /*
-    When this effect is executed, a new WebSocket is created that will directly
-    connect to the server. Rerunning the effect reconnects when the socket was closed.
-  */
-  useEffect(() => {
-    if (ws.current === null || (isReconnecting && ws.current.readyState !== WebSocket.OPEN)) {
-      publishEvent('lastUpdatedAt', 'connecting');
-      const wsurl = import.meta.env.DEV ? window.scconfig.WSURL : window.scconfig.WSSURL;
-      console.log(`Creating websocket connection to ${wsurl}`);
-      // eslint-disable-next-line new-cap
-      ws.current = new websocket.w3cwebsocket(wsurl);
-    }
-
-    ws.current.onerror = (e) => console.error(e);
-
-    ws.current.onopen = (event) => {
-      isReconnecting.current = false;
-      publishEvent('lastUpdatedAt', Date.now());
-      console.log(`WebSocket connection opened for Shelly Context!`);
-
-      if (validationRequest !== null) {
-        // don't send the password! Instead digest authentication will be used
-        ws.current.send(
-          JSON.stringify({
-            event: 'user validate',
-            data: {
-              source: validationRequest.msg.data.source,
-              message: validationRequest.msg.data.message,
-              user: { email: validationRequest.msg.data.user.email },
-            },
-          })
-        );
-      } else if (reconnectMsg.current.data.user !== null) {
-        console.log(`Reconnecting the logged in user '${reconnectMsg.current.data.user.alias}'`);
-        ws.current.send(JSON.stringify(reconnectMsg.current));
-      }
-
-      // send all requests that don't need a secret
-      Object.entries(requests.current).forEach((entry) => {
-        const [requestID, request] = entry;
-        if (WITHOUT_SECRET.current.includes(request.msg.event))
-          ws.current.send(JSON.stringify(request.msg));
-        // delete the requests that don't receive an answer and hence have no callback
-        if (typeof request.callback === 'undefined') delete requests[requestID];
-      });
-    };
-
-    ws.current.onmessage = (event) => {
-      publishEvent('lastUpdatedAt', Date.now());
-      const msg = JSON.parse(event.data);
-      if (msg !== null) {
-        if (msg.event === 'user validate') {
-          if (
-            validationRequest !== null &&
-            typeof msg.data.error !== 'undefined' &&
-            msg.data.error.code === 401
-          ) {
-            // Not authenticated. Add the credentials to the message
-            validationRequest.msg.data.auth = getWSCredentials(
-              msg.data.error.message,
-              validationRequest.msg.data.user.password,
-              validationRequest.msg.data.user.email
-            );
-            delete validationRequest.msg.data.user.password;
-            delete validationRequest.msg.data.error;
-            // Retry with challenge response object
-            ws.current.send(JSON.stringify(validationRequest.msg));
-          } else {
-            // authenticated: forward the message
-            secret.current = msg.data.secret;
-            delete msg.data.secret;
-            validationRequest.callback(msg);
-            setValidationRequest(null);
-            console.log(
-              `Deleted the 'user validate request. Now have ${Object.entries(requests.current).length} messages left`
-            );
-          }
-        } else if (msg.event === 'user reconnect') {
-          // the secret must be send with every request
-          if (typeof msg.data.secret !== 'undefined') {
-            secret.current = msg.data.secret;
-            /*
-            Send all messages that arrived while the socket was not open
-            */
-            console.log(
-              `Just reconnected. There are ${Object.entries(requests.current).length} outstanding messages`
-            );
-            Object.entries(requests.current).forEach((entry) => {
-              const [requestID, request] = entry;
-              if (!WITHOUT_SECRET.current.includes(msg.event))
-                request.msg.data.secret = secret.current;
-              ws.current.send(JSON.stringify(request.msg));
-              // delete the requests that don't receive an answer and hence have no callback
-              if (typeof request.callback === 'undefined') delete requests[requestID];
-            });
-          } else {
-            // reconnect unsuccessfull: logout
-            console.error('Reconnecting was not possible. Logging out!');
-            logout();
-          }
-        } else if (msg.event === 'ping') {
-          /*
-            the server sent a ping! Answer with the correct pong to
-            make clear that this socket is still alive.
-          */
-          ws.current.send(
-            JSON.stringify({
-              event: 'pong',
-              data: {
-                name: 'SC Context',
-                message: msg.data.message,
-              },
-            })
-          );
-        } else if (
-          typeof msg.data.requestID !== 'undefined' &&
-          typeof requests.current[msg.data.requestID] !== 'undefined'
-        ) {
-          /*
-            Find the request with the provided id and forward the message
-            to the stored callback function
-          */
-          requests.current[msg.data.requestID].callback(msg);
-          delete requests.current[msg.data.requestID];
-          console.log(
-            `Deleted request ${msg.data.requestID} on answer: '${msg.data.message}'. Now have ${Object.entries(requests.current).length} requests`
-          );
-        } else if (typeof msg.event !== 'undefined') {
-          /*
-            Forward the message to the registered / subscribed callback
-            functions for the given msg.event
-          */
-          if (typeof subscribtions.current[msg.event] !== 'undefined') {
-            subscribtions.current[msg.event].forEach((subscription) => {
-              if (
-                subscription.all ||
-                msg.data.subscriptionID === subscription.subscriptionID ||
-                subscription.all
-              ) {
-                subscription.callback(msg);
-              }
-            });
-          }
-        } else {
-          console.error(`Shelly context received an unhandled message ${JSON.stringify(msg)} `);
-        }
-      }
-    };
-
-    ws.current.onclose = (e) => {
-      if (!isReconnecting.current) {
-        publishEvent('lastUpdatedAt', 'connecting');
-        startRetryTimeout(retryCount, true);
-      } else {
-        publishEvent('lastUpdatedAt', null);
-      }
-
-      if (ws.current) {
-        console.log(
-          `WebSocket connection closed by the server for SC Context. Reason: ${e.reason}!`
-        );
-      } else {
-        console.log(
-          `WebSocket connection closed because SC Context was unmounted. Reason: ${e.reason}!`
-        );
-      }
-    };
-  }, [validationRequest, startRetryTimeout, retryCount]);
-
-  /**
-    Put the current user in the context of the application.
-    This also adds him to the reconnect message to be send when reconnecting the websocket.
-    @param {object} theUser The user that was provided by the login form.
-  */
-  const login = (theUser) => {
-    setUser(theUser);
-  };
-
-  const logout = () => {
-    ws.current.close(4001, 'User logged out');
-    setUser(null);
   };
 
   /**
@@ -331,7 +138,8 @@ export const SCProvider = ({ children }) => {
   };
 
   /**
-    Components can send messages directly to the websocket server.
+    Components can send messages directly to the websocket server
+    without expecting an answer.
     This messages will ONLY be stored in the requests object,
     if the websocket is closed. Each message triggers a reconnection attempt.
     @param {Object} msg The message that will be send to the websocket server
@@ -364,7 +172,7 @@ export const SCProvider = ({ children }) => {
     A component can request data from the server.
     The requestID is unique an used to identify the request when the data arrives.
     Requests will ALWAYS be stored in the request object.
-    Each request triggers a reconnection attempt.
+    Each request that can not be send triggers a reconnection attempt.
     @param {Object} msg The message with the request that is send to the websocket server
     @param {callback} callback The function to call when the data arrives.
   */
@@ -380,11 +188,10 @@ export const SCProvider = ({ children }) => {
           isExistingMessage = true;
         }
       });
-
       if (isExistingMessage) return;
+
       if (msg.event === 'user validate') {
         // if the socket is closed, this will trigger a reconnection
-        reconnectMsg.current.data.user = msg.data.user;
         setValidationRequest({ msg, callback });
       } else {
         const requestID = createUUID();
@@ -402,24 +209,243 @@ export const SCProvider = ({ children }) => {
         ws.current.readyState === WebSocket.OPEN &&
         (!isSecretNeeded || secret.current !== null)
       ) {
+        // console.log(`Socket is open. Sending request '${msg.event}' to the server`);
         ws.current.send(JSON.stringify(msg));
-      } else if (!isReconnecting.current) startRetryTimeout(retryCount, true);
+      } else if (
+        !isReconnecting.current &&
+        (ws.current === null || ws.current.readyState !== WebSocket.OPEN)
+      )
+        startRetryTimeout(retryCount, true);
     },
     [startRetryTimeout, retryCount]
   );
 
+  /**
+    Put the current user in the context of the application.
+    This also adds him to the reconnect message to be send when reconnecting the websocket.
+    @param {object} theUser The user that was provided by the login form.
+  */
+  const login = useCallback((theUser) => {
+    setUser(theUser);
+    reconnectMsg.current.data.user = theUser;
+    console.log(`Connecting the logged in user '${theUser.alias}'`);
+    // this will send a message with a channelID. Used to manage the connection on the serverside!
+    ws.current.send(JSON.stringify(reconnectMsg.current));
+  }, []);
+
+  const logout = useCallback(() => {
+    ws.current.close(4001, 'User logged out');
+    setUser(null);
+    setDevices([]);
+  }, []);
+
+  useEffect(() => {
+    if (user !== null) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+      reconnectMsg.current.data.user = null;
+      setDevices([]);
+    }
+  }, [user]);
+
+  // --------------------- Websocket Implementation END----------------
+  /*
+    When this effect is executed, a new WebSocket is created that will directly
+    connect to the server. Rerunning the effect reconnects when the socket was closed.
+  */
+  useEffect(() => {
+    if (ws.current === null || (isReconnecting && ws.current.readyState !== WebSocket.OPEN)) {
+      publishEvent('lastUpdatedAt', 'connecting');
+      const wsurl = import.meta.env.DEV ? window.scconfig.WSURL : window.scconfig.WSSURL;
+      console.log(`Creating websocket connection to ${wsurl}`);
+      ws.current = new websocket.w3cwebsocket(wsurl);
+    }
+
+    ws.current.onerror = (e) => console.error(e);
+
+    ws.current.onopen = (event) => {
+      isReconnecting.current = false;
+      publishEvent('lastUpdatedAt', Date.now());
+      console.log(`WebSocket connection opened for Shelly Context!`);
+
+      if (validationRequest !== null) {
+        console.log('Sending an existing validation request');
+        // don't send the password! Instead digest authentication will be used
+        ws.current.send(
+          JSON.stringify({
+            event: 'user validate',
+            data: {
+              source: validationRequest.msg.data.source,
+              message: validationRequest.msg.data.message,
+              user: { email: validationRequest.msg.data.user.email },
+            },
+          })
+        );
+      } else if (reconnectMsg.current.data.user !== null) {
+        console.log(
+          `Reconnecting the previously logged in user '${reconnectMsg.current.data.user.alias}'`
+        );
+        // this will send a message with a channelID. Used to manage the connection on the serverside!
+        ws.current.send(JSON.stringify(reconnectMsg.current));
+      }
+
+      // send all requests that don't need a secret
+      Object.entries(requests.current).forEach((entry) => {
+        const [requestID, request] = entry;
+        if (WITHOUT_SECRET.current.includes(request.msg.event)) {
+          console.log(`Sending '${request.msg.event}' after opening the websocket`);
+          ws.current.send(JSON.stringify(request.msg));
+        }
+        // delete the requests that don't receive an answer and hence have no callback
+        if (typeof request.callback === 'undefined') delete requests[requestID];
+      });
+    };
+
+    ws.current.onmessage = (event) => {
+      publishEvent('lastUpdatedAt', Date.now());
+      const msg = JSON.parse(event.data);
+      if (msg !== null) {
+        if (msg.event === 'user validate') {
+          if (
+            validationRequest !== null &&
+            typeof msg.data.error !== 'undefined' &&
+            msg.data.error.code === 401
+          ) {
+            // Not authenticated. Add the credentials to the message
+            validationRequest.msg.data.auth = getWSCredentials(
+              msg.data.error.message,
+              validationRequest.msg.data.user.password,
+              validationRequest.msg.data.user.email
+            );
+            delete validationRequest.msg.data.user.password;
+            delete validationRequest.msg.data.error;
+            // Retry with challenge response object
+            ws.current.send(JSON.stringify(validationRequest.msg));
+          } else {
+            // authenticated: forward the message to userform to perform a login
+            secret.current = msg.data.secret;
+            delete msg.data.secret;
+            validationRequest.callback(msg);
+            setValidationRequest(null);
+            console.log(
+              `Deleted the 'user validate' request. Now have ${Object.entries(requests.current).length} requests left`
+            );
+          }
+        } else if (msg.event === 'user reconnect') {
+          // the secret must be send with every request
+          if (typeof msg.data.secret !== 'undefined') {
+            const connectedUser = reconnectMsg.current.data.user;
+            console.log(
+              `Just reconnected with user ${connectedUser.alias}. There are ${Object.entries(requests.current).length} outstanding requests`
+            );
+            secret.current = msg.data.secret;
+            if (devices.length === 0) {
+              console.log(`Requesting devices of user ${connectedUser.alias}.`);
+              ws.current.send(
+                JSON.stringify({
+                  event: 'devices get all',
+                  data: {
+                    source: 'Shelly Context',
+                    message: 'Shelly Context needs the list of devices',
+                    userid: connectedUser.roleid != 1 ? connectedUser.id : null, //an admin gets all devices
+                    secret: secret.current,
+                  },
+                })
+              );
+            }
+            /*
+            Send all messages that arrived while the socket was not open
+            */
+            Object.entries(requests.current).forEach((entry) => {
+              const [requestID, request] = entry;
+              if (!WITHOUT_SECRET.current.includes(msg.event))
+                request.msg.data.secret = secret.current;
+              console.log(`Sending '${request.msg.event}' after reconnecting`);
+              ws.current.send(JSON.stringify(request.msg));
+              // delete the requests that don't receive an answer and hence have no callback
+              if (typeof request.callback === 'undefined') delete requests[requestID];
+            });
+          } else {
+            // reconnect unsuccessfull: logout
+            console.error('Reconnecting was not possible. Logging out!');
+            logout();
+          }
+        } else if (msg.event === 'devices get all') {
+          setDevices(msg.data.devices);
+        } else if (msg.event === 'ping') {
+          /*
+            the server sent a ping! Answer with pong to
+            make clear that this socket is still alive.
+          */
+          ws.current.send(
+            JSON.stringify({
+              event: 'pong',
+              data: {
+                source: 'SC Context',
+                message: msg.data.message,
+              },
+            })
+          );
+        } else if (
+          typeof msg.data.requestID !== 'undefined' &&
+          typeof requests.current[msg.data.requestID] !== 'undefined'
+        ) {
+          /*
+            Find the request with the provided id and forward the message
+            to the stored callback function
+          */
+          requests.current[msg.data.requestID].callback(msg);
+          delete requests.current[msg.data.requestID];
+          console.log(
+            `Deleted request '${msg.event}' on answer: '${msg.data.message}'. Now have ${Object.entries(requests.current).length} requests`
+          );
+        } else if (typeof msg.event !== 'undefined') {
+          /*
+            Forward the message to the registered / subscribed callback
+            functions for the given msg.event
+          */
+          if (typeof subscribtions.current[msg.event] !== 'undefined') {
+            subscribtions.current[msg.event].forEach((subscription) => {
+              if (subscription.all || msg.data.subscriptionID === subscription.subscriptionID) {
+                subscription.callback(msg);
+              }
+            });
+          }
+        } else {
+          console.error(`Shelly context received an unhandled message ${JSON.stringify(msg)} `);
+        }
+      }
+    };
+
+    ws.current.onclose = (e) => {
+      if (!isReconnecting.current) {
+        publishEvent('lastUpdatedAt', 'connecting');
+        startRetryTimeout(retryCount, true);
+      } else {
+        publishEvent('lastUpdatedAt', null);
+      }
+
+      if (ws.current) {
+        console.log(
+          `WebSocket connection closed by the server for SC Context. Reason: ${e.reason}!`
+        );
+      } else {
+        console.log(
+          `WebSocket connection closed because SC Context was unmounted. Reason: ${e.reason}!`
+        );
+      }
+    };
+  }, [validationRequest, startRetryTimeout, retryCount, logout, devices]);
+
   return (
     <Context.Provider
       value={useMemo(
-        () => ({ user, login, logout, subscribe, unsubscribe, request, send }),
-        [user, request, send]
+        () => ({ user, devices, login, logout, subscribe, unsubscribe, request, send }),
+        [user, devices, login, logout, request, send]
       )}
     >
       {children}
     </Context.Provider>
   );
-};
-
-SCProvider.propTypes = {
-  children: PropTypes.object,
 };

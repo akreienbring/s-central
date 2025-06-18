@@ -12,9 +12,9 @@ const shellyGen2Conn = require("@http/shellyGen2Conn.js");
 const wsclient = require("@ws/client/wsclient.js");
 
 /**
- *  
+ *
  * @returns {json} All configured devices
- */ 
+ */
 async function getDevices() {
   return shellyGen2Conn
     .getDevices()
@@ -120,7 +120,7 @@ function setDevice(body, ip) {
   const device = shellyGen2Conn.findDevice(ip);
   if (typeof device != "undefined") {
     device.online = body.online;
-    const message = {
+    let message = {
       event: "ShellyUpdate",
       type: "device",
       data: {
@@ -132,6 +132,23 @@ function setDevice(body, ip) {
       },
     };
     wsclient.send(message);
+
+    if (!device.online) {
+      message = {
+        event: "notification create",
+        data: {
+          name: "Device Endpoint",
+          message: `${device.cname} is offline`,
+          notification: {
+            type: "device-offline",
+            device_ip: device.ip,
+            device_cname: device.cname,
+            notification: `${device.cname} is offline`,
+          },
+        },
+      };
+      wsclient.send(message);
+    }
     return body;
   } else {
     return {
@@ -178,8 +195,8 @@ function setScript(body, ip, id) {
 
 /**
   Sets (updates) a KVS entry and sends it to the ws server
+  @param {json}  body Key and value of the KVS entry as json object
   @param {string} id The ID of a device (ID is a Shelly system setting)
-  @param {json} body The key (of the KVS entry) and new value to set
   @returns {json} The send body is returned to the client
 */
 function setKVS(body, id) {

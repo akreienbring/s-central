@@ -37,8 +37,10 @@ export default function UpdateBlogpost({
       anchor="right"
       open={openUpdate}
       onClose={onCloseUpdate}
-      PaperProps={{
-        sx: { width: 1, border: 'none', overflow: 'auto' },
+      slotProps={{
+        paper: {
+          sx: { width: 1, border: 'none', overflow: 'auto' },
+        },
       }}
     >
       <Stack

@@ -10,18 +10,26 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const endpoints = require("@http/endpoints.js");
+const config = require("config");
 
 const server = express();
-
 server.use(cors());
 server.use(express.json());
 
+const SECRET = config.get("ws-server.secret");
+const ACCESS_DENIED = {
+  status: 401,
+  error: "Access denied",
+  message: "Access denied",
+};
+
 /**
-  'Main' webservice that returns all configured devices.
-  @returns  {json} All devices after they were enriched with Shelly device data
+  Webservice endpoint that returns configured devices.
+  @returns  {json} All devices or a single device if an IP is provided
 */
 server.get("/ws/v1/GetDevices", (req, res) => {
   console.log("-----Endpoint GetDevices was called-----");
+  if (!checkSecret(req.query.secret)) return res.json(ACCESS_DENIED);
   if (typeof req.query.ip != "undefined") {
     endpoints
       .getDeviceByIP(req.query.ip)
@@ -45,12 +53,11 @@ server.get("/ws/v1/GetDevices", (req, res) => {
 
 /**
   Returns script information of a device.
-  @param {string}  ip The IP adress of a device
-  @param {number}  [id] The ID of a script
-  @returns {json} If id was not provided all scripts are returned. Else the script with the given id
+  @returns {json} If script id is not provided all scripts are returned. Else the script with the given id
 */
 server.get("/ws/v1/GetScripts", (req, res) => {
   console.log("-----Endpoint GetScripts was called------");
+  if (!checkSecret(req.query.secret)) return res.json(ACCESS_DENIED);
   if (
     typeof req.query.ip != "undefined" &&
     typeof req.query.id != "undefined"
@@ -85,12 +92,11 @@ server.get("/ws/v1/GetScripts", (req, res) => {
 
 /**
   'Updates' properties (such as script status or KVS keys) of a configured device. 
-  @param {string}  ip The IP adress of a device
-  @param {json}  body The property to update as json object
   @returns {json} The updated device
 */
 server.post("/ws/v1/SetDevice", (req, res) => {
   console.log("-----Endpoint SetDevice was called------");
+  if (!checkSecret(req.query.secret)) return res.json(ACCESS_DENIED);
   if (typeof req.body == "object" && typeof req.query.ip != "undefined") {
     return res.json(endpoints.setDevice(req.body, req.query.ip));
   } else {
@@ -105,13 +111,11 @@ server.post("/ws/v1/SetDevice", (req, res) => {
 
 /**
   'Updates' the status of a script of a configured device. 
-  @param {string}  ip The IP adress of a device
-  @param {number}  id The ID of a script
-  @param {json}  body The status of the script as json object
   @returns {json} The updated script
 */
 server.post("/ws/v1/SetScript", (req, res) => {
   console.log("-----Endpoint SetScript was called------");
+  if (!checkSecret(req.query.secret)) return res.json(ACCESS_DENIED);
   if (
     typeof req.body == "object" &&
     typeof req.query.ip != "undefined" &&
@@ -132,12 +136,11 @@ server.post("/ws/v1/SetScript", (req, res) => {
 
 /**
   'Updates' valus of a KVS key of a configured device. 
-  @param {number}  id The ID of a device (ID is a Shelly system setting)
-  @param {json}  body Key and value of the KVS entry as json object
   @returns {json} The updated device
 */
 server.post("/ws/v1/SetKVS", (req, res) => {
   console.log("-----Endpoint SetKVS was called------");
+  if (!checkSecret(req.query.secret)) return res.json(ACCESS_DENIED);
   if (typeof req.body == "object" && typeof req.query.id != "undefined") {
     return res.json(endpoints.setKVS(req.body, req.query.id));
   } else {
@@ -150,9 +153,18 @@ server.post("/ws/v1/SetKVS", (req, res) => {
   }
 });
 
+/**
+ * Checks if the given secret is valid
+ * @param {string} secret
+ * @returns {boolean} true if the secret is valid, false if not
+ */
+function checkSecret(secret) {
+  return typeof secret === "undefined" || secret != SECRET ? false : true;
+}
+
 server.use(express.static("public"));
 // handle every other route with index.html
-server.get("*", function (req, res) {
+server.get("/*splat", function (req, res) {
   res.sendFile(path.resolve("./public/index.html"));
 });
 

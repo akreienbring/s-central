@@ -137,7 +137,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
         {
           event: 'roles get all',
           data: {
-            name: 'Users Form',
+            source: 'Users Form',
             message: 'User Form needs the list of roles',
           },
         },
@@ -224,7 +224,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
     const msg = {
       event: 'user resetpw',
       data: {
-        name: 'User Form',
+        source: 'User Form',
         message: 'User Form wants to reset a password',
         email,
       },

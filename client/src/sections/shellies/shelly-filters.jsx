@@ -3,7 +3,6 @@
   The components implements the filter dialog. After selecting divers filters
   a function is called that resides in the ShellyView component and applies the filter.
 */
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -52,13 +51,17 @@ export default function ShellyFilters({
 
   // if a model option is checked or unchecked this must be reflected in the state
   const handleModelFilterChange = (position) => {
-    const updatedCheckedState = mChecked.map((item, index) => (index === position ? !item : item));
+    const updatedCheckedState = mChecked.map((checked, index) =>
+      index === position ? !checked : checked
+    );
     setMChecked(updatedCheckedState);
   };
 
   // if a generation option is checked or unchecked this must be reflected in the state
   const handleGenFilterChange = (position) => {
-    const updatedCheckedState = gChecked.map((item, index) => (index === position ? !item : item));
+    const updatedCheckedState = gChecked.map((checked, index) =>
+      index === position ? !checked : checked
+    );
     setGChecked(updatedCheckedState);
   };
 
@@ -123,8 +126,10 @@ export default function ShellyFilters({
         anchor="right"
         open={openFilter}
         onClose={onCloseFilter}
-        PaperProps={{
-          sx: { width: 300, border: 'none', overflow: 'hidden' },
+        slotProps={{
+          paper: {
+            sx: { width: 300, border: 'none', overflow: 'hidden' },
+          },
         }}
       >
         <Stack
@@ -178,11 +183,3 @@ export default function ShellyFilters({
     </>
   );
 }
-
-ShellyFilters.propTypes = {
-  openFilter: PropTypes.bool.isRequired,
-  onOpenFilter: PropTypes.func.isRequired,
-  onCloseFilter: PropTypes.func.isRequired,
-  filter: PropTypes.object,
-  handleDeviceFilter: PropTypes.func.isRequired,
-};

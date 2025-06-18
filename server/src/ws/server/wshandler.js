@@ -98,8 +98,8 @@ function deleteSocket(ws) {
 function handleMessage(msg, ws) {
   //------------- Message Handling---------------------------
   if (typeof msg.src === "undefined") {
-    if (typeof msg.data.channel !== "undefined") {
-      ws.channelID = msg.data.channel;
+    if (typeof msg.data.channelID !== "undefined") {
+      ws.channelID = msg.data.channelID;
       addSocket(ws);
     }
   }
@@ -168,52 +168,19 @@ function handleMessage(msg, ws) {
     } else {
       console.error(`wshandler: Couldn't find device with id ${msg.src}`);
     }
-  } else if (typeof msg.event != "undefined") {
+  } else if (typeof msg.event !== "undefined") {
     // message from dashboard client, endpoint or loghandler
     if (msg.event === "user reconnect") {
       // Send after a client tried to reconnect.
-      msg.data.message = typeof msg.data.secret !== 'undefined' ? "OK, will reconnect you!" : "Couldn't reconnect you";
+      msg.data.message =
+        typeof msg.data.secret !== "undefined"
+          ? "OK, will reconnect you!"
+          : "Couldn't reconnect you";
       ws.send(JSON.stringify(msg));
     } else if (msg.event === "ShellyUpdate") {
       // message from Loghandler or enpoint is simply forwarded to all clients
       msg.data.subscriptionID = msg.data.device.id;
       broadcast(msg);
-    } else if (msg.event === "ScriptError") {
-      /* 
-      Loghandler has detected a Script error.
-      Create a notification in the DB and broadcast to all clients
-    */
-      let notification = msg.data.notification;
-
-      const script = shellyGen2Conn.findScript(
-        notification.device_ip,
-        notification.script_id
-      );
-
-      if (typeof script !== "undefined") {
-        // add the name of the script. The frontend will create a link!
-        notification = {
-          type: notification.type,
-          device_ip: notification.device_ip,
-          device_cname: notification.device_cname,
-          script_id: notification.script_id,
-          script_name: script.name,
-          notification: notification.notification,
-          isUnread: 1,
-          ts: Date.now(),
-        };
-
-        info = db.insert("notifications", notification, true);
-
-        // use the row id to identify the notification when it's been deleted
-        notification.id = info.lastInsertRowid;
-        msg.data.notification = notification;
-        broadcast(msg);
-      } else {
-        console.error(
-          `Couldn't store a notification. Script with id ${notification.scrip_id} on device ${notification.device_cname} does not exist!`
-        );
-      }
     } else if (msg.event === "pong" && msg.data.message === HEARTBEAT_VALUE) {
       // the client answered to a ping message
       ws.isAlive = true;
@@ -224,9 +191,9 @@ function handleMessage(msg, ws) {
         This data is fetched from the database and sent to the client.
       */
       const answer = {
-        event: "timeline",
+        event: msg.event,
         data: {
-          source: "WSHander",
+          source: "WSHandler",
           message: `OK! ${msg.event}`,
           requestID: msg.data.requestID,
         },
@@ -256,7 +223,67 @@ function handleMessage(msg, ws) {
     } else if (msg.event.startsWith("device")) {
       wsDeviceHandler.handle(msg, ws);
     } else if (msg.event.startsWith("notification")) {
-      wsNotificationHandler.handle(msg, ws);
+      if (msg.event === "notification create") {
+        // handle notifications created by the server
+        let notification = msg.data.notification;
+
+        if (notification.type === "script-error") {
+          /* 
+            Loghandler has detected a Script error.
+          */
+          const script = shellyGen2Conn.findScript(
+            notification.device_ip,
+            notification.script_id
+          );
+
+          if (typeof script !== "undefined") {
+            notification = {
+              type: notification.type,
+              title: `Error: ${notification.device_cname}, Script: ${script.name}`,
+              device_ip: notification.device_ip,
+              device_cname: notification.device_cname,
+              script_id: notification.script_id,
+              script_name: script.name,
+              notification: notification.notification,
+              isUnread: 1,
+              ts: Date.now(),
+            };
+
+            info = db.insert("notifications", notification, true);
+
+            // use the row id to identify the notification when it's been deleted
+            notification.id = info.lastInsertRowid;
+            msg.data.notification = notification;
+            broadcast(msg);
+          } else {
+            console.error(
+              `Couldn't store a notification. Script with id ${notification.scrip_id} on device ${notification.device_cname} does not exist!`
+            );
+          }
+        } else if (notification.type === "device-offline") {
+          // endpoint was called
+          notification = {
+            type: notification.type,
+            title: `Info: ${notification.device_cname} is offline`,
+            device_ip: notification.device_ip,
+            device_cname: notification.device_cname,
+            script_id: null,
+            script_name: null,
+            notification: notification.notification,
+            isUnread: 1,
+            ts: Date.now(),
+          };
+
+          info = db.insert("notifications", notification, true);
+
+          notification.id = info.lastInsertRowid;
+          msg.data.notification = notification;
+          broadcast(msg);
+        }
+      } else {
+        // handle notifications requests created by the client
+        wsNotificationHandler.handle(msg, ws);
+      }
     } else if (msg.event.startsWith("blog")) {
       wsBlogpostHandler.handle(msg, ws);
     } else {
@@ -304,9 +331,9 @@ function handleClose(event, ws) {
 */
 function broadcast(message) {
   // eslint-disable-next-line no-unused-vars
-  Object.entries(dashboardClients).forEach(([channel, ws]) => {
+  Object.entries(dashboardClients).forEach(([channelID, ws]) => {
     if (typeof ws !== "undefined" && ws !== null) {
-      //console.log(`Broadcasting to channel ${channel}`);
+      //console.log(`Broadcasting to channelID ${channelID}`);
       ws.send(JSON.stringify(message));
     }
   });

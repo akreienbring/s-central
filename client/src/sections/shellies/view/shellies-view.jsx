@@ -3,11 +3,10 @@
   ShellyView is the view that presents all (in shellybroker) configured devices.
   For every configured shelly device several values are presented on different tab panels.
   It uses a Websocket client that receives either an array of devices or a single device (update)
-
   As the filter and sort components are direct childs of this component, they will be maintained by this view.
 */
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRef, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -26,10 +25,10 @@ import ShellySort from '../shelly-sort';
 import ShellyFilters from '../shelly-filters';
 
 export default function ShelliesView() {
-  const { request } = useShelly();
+  const { devices } = useShelly();
+  const [userDevices, setUserDevices] = useState(devices);
   const [openFilter, setOpenFilter] = useState(false);
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
-  const [devices, setDevices] = useState([]);
   const [filter, setFilter] = useState({
     models: [],
     generations: [],
@@ -37,61 +36,38 @@ export default function ShelliesView() {
     gChecked: [],
     isFilter: false,
   });
-  const origDevices = useRef([]);
+  // const origDevices = useRef([]);
   const { t } = useTranslation();
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*
-    After mounting the page the websocket clients requests all devices from the websocket server
-  */
-  useEffect(() => {
-    if (devices.length === 0)
-      request(
-        {
-          event: 'devices get all',
-          data: {
-            name: 'Shelly View',
-            message: 'Shelly View needs the list of devices',
-          },
-        },
-        handleDevicesReceived
-      );
-  }, [devices, request]);
-  // --------------------- Websocket Implementation END------------------
-
-  /**
-    Called when the websocket receives the array of devices after 
-    requesting it from the websocket server.
     Updates the state and generates arrays for models and generation that will be used by 
     the filter function.
-    The device array that was received, will be saved
-    in the 'origDevices' reference hook to restore the original filter settings.
-    @param {object} msg The websocket message that has an array of devices attached
   */
-  const handleDevicesReceived = (msg) => {
-    // Get available models and gens from the devices array
-    // these will be used for the checkboxes in the filter
-    const wsDevices = msg.data.devices;
-    const models = [];
-    const generations = [];
+  useEffect(() => {
+    if (devices.length !== 0) {
+      // Get available models and gens from the devices array
+      // these will be used for the checkboxes in the filter
+      const models = [];
+      const generations = [];
 
-    wsDevices.forEach((device) => {
-      if (!models.includes(device.name)) models.push(device.name);
-      if (!generations.includes(device.gen)) generations.push(device.gen);
-    });
+      devices.forEach((device) => {
+        if (!models.includes(device.name)) models.push(device.name);
+        if (!generations.includes(device.gen)) generations.push(device.gen);
+      });
 
-    // init the filter checkboxes with false
-    const newFilter = {
-      models,
-      generations,
-      mChecked: new Array(models.length).fill(false),
-      gChecked: new Array(generations.length).fill(false),
-      isFilter: false,
-    };
-    setFilter(() => newFilter);
-    setDevices(() => wsDevices);
-    origDevices.current = wsDevices;
-  };
+      // init the filter checkboxes with false
+      const newFilter = {
+        models,
+        generations,
+        mChecked: new Array(models.length).fill(false),
+        gChecked: new Array(generations.length).fill(false),
+        isFilter: false,
+      };
+      setFilter(() => newFilter);
+    }
+  }, [devices]);
+  // --------------------- Websocket Implementation END------------------
 
   /**
    * Called when a tab panel was selected
@@ -103,8 +79,8 @@ export default function ShelliesView() {
   };
 
   /**
-   * Opens the filter dialog
-  */
+   * Opens / closes the filter dialog
+   */
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
@@ -118,25 +94,25 @@ export default function ShelliesView() {
     Dependent on the option the array of the devices will be sorted by the correct 
     comparison. If the selected option is 'config' then the original array will be restored.
     This means that the devices are sorted in the order they were configured in Shellybroker.
-    @param {object} The selected sort option
+    @param {object} option The selected sort option
   */
   const handleSort = (option) => {
     let sortedDevices;
     switch (option.value) {
       case 'config':
         // restore the original array
-        setDevices((prevDevices) => origDevices.current);
+        setUserDevices((prevDevices) => devices);
         break;
       case 'gen':
         // numeric sort
-        sortedDevices = [...devices];
+        sortedDevices = [...userDevices];
         sortedDevices = sortNumeric(sortedDevices, 'gen');
-        setDevices(() => sortedDevices);
+        setUserDevices(() => sortedDevices);
         break;
       default:
-        sortedDevices = [...devices];
+        sortedDevices = [...userDevices];
         sortedDevices = sortText(sortedDevices, option.value);
-        setDevices(() => sortedDevices);
+        setUserDevices(() => sortedDevices);
     }
   };
 
@@ -146,8 +122,7 @@ export default function ShelliesView() {
     @returns {array} The filtered array of devices.
   */
   const filterDevices = (deviceFilters) => {
-    const filteredDevices = origDevices.current.filter((device) => {
-      // eslint-disable-next-line no-restricted-syntax
+    const filteredDevices = devices.filter((device) => {
       for (const key in deviceFilters) {
         if (device[key] === undefined || !deviceFilters[key].includes(device[key])) {
           return false;
@@ -189,9 +164,9 @@ export default function ShelliesView() {
     });
 
     if (isFilter) {
-      setDevices(() => filterDevices(deviceFilters));
+      setUserDevices(() => filterDevices(deviceFilters));
     } else {
-      setDevices(() => origDevices.current);
+      setUserDevices(() => devices);
     }
 
     // the following is necessary to show that a filter is active
@@ -245,7 +220,11 @@ export default function ShelliesView() {
           <Tab label="WS Inspector" />
         </Tabs>
       </Box>
-      <TabPanel index={currentTabIndex} devices={devices} key="shelliesTab" />
+      <TabPanel
+        index={currentTabIndex}
+        devices={typeof userDevices === 'undefined' ? devices : userDevices}
+        key="shelliesTab"
+      />
     </Container>
   );
 }

@@ -12,6 +12,7 @@ export default defineConfig({
     checker({
       eslint: {
         lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+        useFlatConfig: true,
       },
     }),
   ],
@@ -30,12 +31,13 @@ export default defineConfig({
   server: {
     port: 3030,
 
-    hmr: false,
+    hmr: true,
   },
   preview: {
     port: 3030,
   },
   build: {
+    sourcemap: true,
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {

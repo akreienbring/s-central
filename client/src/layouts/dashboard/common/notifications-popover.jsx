@@ -54,7 +54,7 @@ export default function NotificationsPopover() {
       updatedNotifications.push({
         id: notification.id,
         type: notification.type,
-        title: `Error: ${notification.device_cname}, Script: ${notification.script_name}`,
+        title: notification.title,
         description: notification.notification,
         avatar: null,
         createdAt: new Date(notification.ts),
@@ -75,18 +75,15 @@ export default function NotificationsPopover() {
     (msg) => {
       isNotificationLoaded.current = true;
 
-      const allNotifications = msg.data.notifications.map((notification, index) =>
-        // add a chart color to the device that depends on its index in the array
-        ({
-          id: notification.id,
-          type: notification.type,
-          title: `Error: ${notification.device_cname}, Script: ${notification.script_name}`,
-          description: notification.notification,
-          avatar: null,
-          createdAt: new Date(notification.ts),
-          isUnread: notification.isUnread === 1,
-        })
-      );
+      const allNotifications = msg.data.notifications.map((notification, index) => ({
+        id: notification.id,
+        type: notification.type,
+        title: notification.title,
+        description: notification.notification,
+        avatar: null,
+        createdAt: new Date(notification.ts),
+        isUnread: notification.isUnread === 1,
+      }));
 
       setNotifications(allNotifications);
     },
@@ -107,7 +104,7 @@ export default function NotificationsPopover() {
         {
           event: 'notifications get all',
           data: {
-            name: 'Notifications Popover',
+            source: 'Notifications Popover',
             message: 'Notifications Popover needs the list of notifications',
           },
         },
@@ -120,20 +117,20 @@ export default function NotificationsPopover() {
         callback: handleNotificationUpdate,
         all: true,
       },
-      ['ScriptError']
+      ['notification create']
     );
     /*
       Clean up the websocket subscription when unmounting the component.
     */
     // eslint-disable-next-line consistent-return
     return () => {
-      unsubscribe(currentSubscriptionID, ['ScriptError']);
+      unsubscribe(currentSubscriptionID, ['notification create']);
     };
   }, [handleNotificationsReceived, handleNotificationUpdate, subscribe, unsubscribe, request]);
 
   /**
    * Used to open the Popover
-   * @param {*} event 
+   * @param {*} event
    */
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -307,7 +304,7 @@ export default function NotificationsPopover() {
  * @param {object} notification The notification to show
  * @param {function} handleItemClick Sets the notification to 'read'
  * @param {function} handleItemDelete Deletes the notification
-*/
+ */
 function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
   const { avatar, title } = renderContent(notification);
   const { i18n } = useTranslation();
@@ -384,8 +381,8 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
 // ----------------------------------------------------------------------
 /**
  * Renders the content of a notification
- * @param {object} notification 
- * @returns 
+ * @param {object} notification
+ * @returns
  */
 function renderContent(notification) {
   const title = (
@@ -409,11 +406,13 @@ function renderContent(notification) {
     };
   }
 
-  // UNUSED currently there are only error notifications
-  return {
-    avatar: notification.avatar ? <img alt={notification.title} src={notification.avatar} /> : null,
-    title,
-  };
+  if (notification.type === 'device-offline') {
+    return {
+      avatar: <img alt={notification.title} src="/assets/icons/ic_notification_offline.svg" />,
+      title,
+    };
+  }
+  return null;
 }
 
 NotificationItem.propTypes = {
