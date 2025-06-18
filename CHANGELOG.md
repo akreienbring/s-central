@@ -20,7 +20,7 @@
 **Server (1.0.2)**
 - Updated dependencies
 
-### Release v2.0.0 (WORK IN PROGRESS!!!)
+### Release v2.0.0
 ##### 18.01.2025
 **Client (2.0.0)**
 - Updated dependencies
