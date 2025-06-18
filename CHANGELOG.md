@@ -28,7 +28,7 @@
 - fixed a bug that affected the Chart Colors
 - fixed a bug the prevented KVS entries to be shown correctly
 
-**Server (2.0.03)**
+**Server (2.0.0)**
 - (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
 - (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
 - Updated dependencies
