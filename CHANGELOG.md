@@ -20,15 +20,15 @@
 **Server (1.0.2)**
 - Updated dependencies
 
-### Release v2.0.0 (WORK IN PROGRESS!!!)
-##### 18.01.2025
+### Release v2.0.0
+##### 18.06.2025
 **Client (2.0.0)**
 - Updated dependencies
 - Migration to eslint v9, MUI v7, React v19
 - fixed a bug that affected the Chart Colors
 - fixed a bug the prevented KVS entries to be shown correctly
 
-**Server (2.0.03)**
+**Server (2.0.0)**
 - (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
 - (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
 - Updated dependencies

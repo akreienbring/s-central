@@ -19,7 +19,7 @@ S-Central supports English, Spanish and German.
 - **Shellies**<br/>
   Get insights about KVS values, script status, Logs and websocket messages. Control your switches. Get notified when a script error occurs.
 - **User**<br/>
-  Enable additional users to log in to the appplication.
+  Enable additional users to log in to the appplication and assign specific Shellies to them.
 - **Blog**<br/>
   A simple interface to write internal articles or notes to be displayed on the landing page.
 - **Webservices**<br/>
