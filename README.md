@@ -116,18 +116,19 @@ See _/sb/server.js_ for all available entpoints
 The server must be restartet when
 - You add / change / delete a device in _/sb/config/devices.json_
 - You add / delete a script on a device
-- you add / delete a KVS key<br/>
-- you change server configuration values<br/>
+- You add / delete a KVS key<br/>
+- You change server configuration values<br/>
 
-because of performance reasons this information is only retrieved once.
+because of performance reasons this information is only retrieved on Server startup.
 
 ## Server Configuration
+Check/ Change the Settings marked with (!)
 
 File: _/sb/config/devices.json_
 
 | Option          | Value            | Description                                                       |
 | --------------- | ---------------- | ----------------------------------------------------------------- |
-| ip              | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device. Please use fixed IPs               |
+| ip (!)          | xxx.xxx.xxx.xxx  | IP Address of a Shelly Device. Please use fixed IPs               |
 | cname (!)       | e.g. 'Floorlight'| Display name for the client                                       |
 | password        | text             | (optional) If the device is protected                                      |
 
@@ -165,6 +166,8 @@ File: _/sb/config/default.json_
 | standardhome    | 'dashboard / 'shellies'      | Standard homepage for all created users               |
 
 ## Client Configuration
+Check/ Change the Settings marked with (!)
+
 
 File: _/sb/public/index.html_
 
@@ -193,7 +196,7 @@ It's always a good idea to check the browser console (CTRL-SHIFT-I). On a mobile
   The server comes with _pm2_ process management and there is a script to see the console logs which you can run with _npm run logs_
 
 ## Tested Devices
-The following devices have been tested with S-Central:
+The following devices have been tested with S-Central (with all firmwares from 1.3.3 to current):
 
 | PM              | Light            | Other            |
 | --------------- | ---------------- | ---------------- |

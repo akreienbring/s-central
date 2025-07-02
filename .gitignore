@@ -1,5 +1,5 @@
 /HowTo.md
-
+/.vscode
 server/broker.db
 server/node_modules/
 server/.vscode

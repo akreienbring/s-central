@@ -30,7 +30,6 @@ export default defineConfig({
   },
   server: {
     port: 3030,
-
     hmr: true,
   },
   preview: {

@@ -372,6 +372,7 @@ export const SCProvider = ({ children }) => {
             logout();
           }
         } else if (msg.event === 'devices get all') {
+          console.log(`Received ${msg.data.devices.length} devices for user ${user.alias}`);
           setDevices(msg.data.devices);
         } else if (msg.event === 'ping') {
           /*

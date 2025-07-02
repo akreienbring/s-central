@@ -38,8 +38,8 @@ export default function AppView() {
   const [totalPower, setTotalPower] = useState(0);
   const [scripts, setScripts] = useState({ running: 0, count: 0 });
   const [cloudCount, setCloudCount] = useState(0);
-  const [powerPerDevice, setPowerPerDevice] = useState([]);
   const [colorPerDevice, setColorPerDevice] = useState([]);
+  const [powerPerDevice, setPowerPerDevice] = useState([]);
   const [onlineCount, setOnlineCount] = useState({ online: 0, count: 0 });
   const [timelineByDevice, setTimelineByDevice] = useState({
     labels: [],
@@ -99,16 +99,15 @@ export default function AppView() {
   const handleDevicesUpdate = useCallback(
     (wsDevices) => {
       // calculate the values for all devices
+      setDevices(wsDevices);
       const overviewValues = calculateOverview(wsDevices);
 
-      const { currentPower } = overviewValues;
       setScripts({ running: overviewValues.scriptsRunning, count: overviewValues.scriptsCount });
       setCloudCount(overviewValues.cloudCount);
-      setPowerPerDevice(overviewValues.powerPerDevice);
       setColorPerDevice(overviewValues.colorPerDevice);
-      setTotalPower(currentPower);
+      setPowerPerDevice(overviewValues.powerPerDevice);
+      setTotalPower(overviewValues.currentPower);
       setOnlineCount({ online: overviewValues.onlineCount, count: wsDevices.length });
-      setDevices(wsDevices);
 
       /*
         When a device websocket message was updated the current 
@@ -160,7 +159,7 @@ export default function AppView() {
 
   /**
     Gets called from the timeline chart, when the dropdown selection changes.
-    Sends a request to the websocket server to send the selected timeline.
+    Sends a request to the websocket server to request the selected timeline.
     Based on the selected timeline some format options are set.
     @param e The event with the selected value
   */
@@ -201,7 +200,7 @@ export default function AppView() {
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*
-    After creation of the page all devices are requested from the websocket server.
+    After creation of the page all devices and the timeline are requested from the websocket server.
     Further ws messages from the Shelly devices are also handled.
     The useEffect is only triggered once and lives as long the page is mounted.
   */
@@ -289,7 +288,7 @@ export default function AppView() {
             title={t('_consumption_')}
             subheader={t('_perShelly_')}
             colors={colorPerDevice}
-            series={powerPerDevice}
+            powerPerDevice={powerPerDevice}
           />
         </Grid>
 

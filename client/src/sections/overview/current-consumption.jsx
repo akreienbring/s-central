@@ -1,15 +1,14 @@
 /*
   Author: André Kreienbring
 */
-import PropTypes from 'prop-types';
+
+import ApexChart from 'react-apexcharts';
 
 import Card from '@mui/material/Card';
 import { useTheme } from '@mui/material/styles';
 import CardHeader from '@mui/material/CardHeader';
 
 import { fWh } from 'src/utils/format-number';
-
-import Chart from 'src/components/chart';
 
 /**
  * Component that displays the current consumption circle chart.
@@ -18,17 +17,21 @@ import Chart from 'src/components/chart';
  * @param {array} colors contains a color for every device
  * @param {array} series the consumption data used in the chart
  */
-export default function CurrentConsumption({ title, subheader, colors, series, ...other }) {
+export default function CurrentConsumption({ title, subheader, colors, powerPerDevice, ...other }) {
   const theme = useTheme();
+  // convert for current consumption chart
 
   const labels = [];
-  const values = [];
-  series.forEach((n) => {
+  const series = [];
+  powerPerDevice.forEach((n) => {
     labels.push(n.label);
-    values.push(n.value);
+    series.push(n.value);
   });
 
   const options = {
+    chart: {
+      id: 'current-consumption',
+    },
     labels,
     stroke: {
       colors: [theme.palette.background.paper],
@@ -63,14 +66,15 @@ export default function CurrentConsumption({ title, subheader, colors, series, .
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
 
-      <Chart dir="ltr" type="pie" series={values} options={options} width="100%" height={280} />
+      <ApexChart
+        // TODO: key forces a rerender. Currently not working with react-apexcharts v1.7.0
+        key={series}
+        type="pie"
+        series={series}
+        options={options}
+        width="100%"
+        height={280}
+      />
     </Card>
   );
 }
-CurrentConsumption.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-  colors: PropTypes.array,
-  series: PropTypes.array,
-};

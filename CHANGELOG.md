@@ -37,6 +37,12 @@
 - if configured the Setting of websocketes and udp debug automatically reboots the Shelly.
 - New feature: Admin can assign devices to users
 
+### Release v2.0.1
+##### 02.07.2025
+**Client (2.0.1)**
+- Vite v7
+- fixed: Current Consumption Chart not rerendering
+
 
 
 

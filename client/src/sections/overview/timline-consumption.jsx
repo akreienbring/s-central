@@ -2,7 +2,7 @@
   Author: André Kreienbring
   Builds the Timeline Chart in the AppView / Dashboard Component
 */
-import PropTypes from 'prop-types';
+import ApexChart from 'react-apexcharts';
 import { useTranslation } from 'react-i18next';
 
 import Box from '@mui/material/Box';
@@ -13,8 +13,6 @@ import CardHeader from '@mui/material/CardHeader';
 import FormControl from '@mui/material/FormControl';
 
 import { fWh, fKWh } from 'src/utils/format-number';
-
-import Chart, { useChart } from 'src/components/chart';
 
 /**
   This component presents the Timeline charts of the periods
@@ -37,7 +35,7 @@ export default function TimelineConsumption({
   const { labels, colors, series, timeline, maxConsumption } = chart;
   const { t } = useTranslation();
 
-  const chartOptions = useChart({
+  const chartOptions = {
     colors,
     plotOptions: {
       bar: {
@@ -68,6 +66,12 @@ export default function TimelineConsumption({
       },
       // categories: labels,
     },
+    stroke: {
+      width: 3,
+      curve: 'smooth',
+      lineCap: 'round',
+    },
+
     tooltip: {
       shared: true,
       intersect: false,
@@ -86,7 +90,7 @@ export default function TimelineConsumption({
         },
       },
     },
-  });
+  };
 
   return (
     <Card {...other}>
@@ -107,7 +111,7 @@ export default function TimelineConsumption({
       />
 
       <Box sx={{ p: 3, pb: 1 }}>
-        <Chart
+        <ApexChart
           dir="ltr"
           type={series[0].type}
           series={series}
@@ -119,11 +123,3 @@ export default function TimelineConsumption({
     </Card>
   );
 }
-
-TimelineConsumption.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-  handleTimelineChange: PropTypes.func,
-  selection: PropTypes.number,
-};
