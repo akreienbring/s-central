@@ -1,10 +1,10 @@
 {
   "author": "André Kreienbring",
-  "name": "@shellycentral/node-server",
-  "license": "MIT",
+  "name": "@s-central/server",
+  "license": "AGPL-3.0",
   "version": "2.0.0",
-  "description": "Server for Shelly Central",
-  "private": true,
+  "description": "Server for S-Central",
+  "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2 flush && pm2 start ecosystem.config.js",
@@ -17,7 +17,7 @@
   "keywords": [],
   "dependencies": {
     "axios": "^1.9.0",
-    "better-sqlite3": "^11.3.0",
+    "better-sqlite3": "^12.1.0",
     "config": "^4.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",

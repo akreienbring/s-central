@@ -18,7 +18,7 @@ import UserForm from './user-form';
   Component that allows to update an existing user
   @param {string} title The title that is presented at the top
   @param {boolean} openUpdate To determine if the dialog is shown or not
-  @param {type} type: Type of the planned update. Either 'profile' or 'security'
+  @param {type} type: Type of the planned update. Either 'profile', 'security' or 'settings'
   @param {object} updateuser The user that can be updated. Only set when a user
     from UserView / UserTableRow is updated
   @param {function} onCloseUpdate Handles the closed status. Either in the 

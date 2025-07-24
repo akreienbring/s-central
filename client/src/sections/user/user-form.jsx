@@ -16,7 +16,7 @@ import UserFormDisplay from './user-form-display';
   Presents a form to create / update / validate a user. Communicates with the 
   websocket server. The 'currentUser' is set to the logged in user OR to a user
   that must be updated from the UserView / UserTableRow list.
-  @param {string} type Must be 'login', 'profile', 'security' , or 'create'
+  @param {string} type Must be 'login', 'profile', 'security' , 'create' or 'settings'
   @param {object} updateuser The user that can be updated. Only set when a user
     from the list of users (UserView / UserTableRow) is updated
   @param {function} handleUsersReceived Will be used to update the list of all users

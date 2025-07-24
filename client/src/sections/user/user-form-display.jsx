@@ -24,7 +24,7 @@ import Iconify from 'src/components/iconify';
 
 /**
   Separates the form display components from the UserForm that communicates with the websocket.
-  @param {string} type Must be 'login', 'profile', 'security' , or 'create'
+  @param {string} type Must be 'login', 'profile', 'security' , 'create' or 'settings'
   @param {object} requestResult Information about a request result from the websocket server.
   @param {array} roles A list of roles requested from the websocket server.
   @param {object} currentUser Either the currently logged in user OR a user from the UserView / UserTableRow list.
@@ -45,7 +45,7 @@ const UserFormDisplay = ({
 }) => {
   const { user } = useShelly();
   const [homeSelection, setHomeSelection] = useState(
-    type !== 'profile' ? 'dashboard' : currentUser.home
+    type === 'create' ? 'dashboard' : currentUser.home
   );
   const [roleSelection, setRoleSelection] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -89,6 +89,7 @@ const UserFormDisplay = ({
       updatedUser.roleid = target.value;
     } else if (target.name === 'home') {
       setHomeSelection(target.value);
+      updatedUser.home = target.value;
     } else if (target.name === 'alias') {
       // no spaces on alias
       updatedUser[target.name] = target.value.trim();

@@ -1,48 +1,72 @@
 ### Release v1.0.0
+
 ###### 12.01.2025
 
-- Initial Release.
+* Initial Release.
 
 ### Release v1.0.1
+
 ##### 18.01.2025
+
 **Client (1.0.1)**
-- Enhanced debug information
-- Updated dependencies
+
+* Enhanced debug information
+* Updated dependencies
 
 **Server (1.0.1)**
-- Updated dependencies
+
+* Updated dependencies
 
 ### Release v1.0.2
+
 ##### 28.01.2025
+
 **Client (1.0.2)**
-- Updated dependencies
+
+* Updated dependencies
 
 **Server (1.0.2)**
-- Updated dependencies
+
+* Updated dependencies
 
 ### Release v2.0.0
+
 ##### 18.06.2025
+
 **Client (2.0.0)**
-- Updated dependencies
-- Migration to eslint v9, MUI v7, React v19
-- fixed a bug that affected the Chart Colors
-- fixed a bug the prevented KVS entries to be shown correctly
+
+* Updated dependencies
+* Migration to eslint v9, MUI v7, React v19
+* fixed a bug that affected the Chart Colors
+* fixed a bug the prevented KVS entries to be shown correctly
 
 **Server (2.0.0)**
-- (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
-- (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
-- Updated dependencies
-- Using express v5
-- fixed the bug that outbound websockets not were enabled if configured
-- if configured the Setting of websocketes and udp debug automatically reboots the Shelly.
-- New feature: Admin can assign devices to users
+
+* (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
+* (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
+* Updated dependencies
+* Using express v5
+* fixed the bug that outbound websockets not were enabled if configured
+* if configured the Setting of websocketes and udp debug automatically reboots the Shelly.
+* New feature: Admin can assign devices to users
 
 ### Release v2.0.1
+
 ##### 02.07.2025
+
 **Client (2.0.1)**
-- Vite v7
-- fixed: Current Consumption Chart not rerendering
 
+* Vite v7
+* fixed: Current Consumption Chart not rerendering
 
+### Release v2.0.2
 
+##### 24.07.2025
 
+**Client (2.0.2)**
+
+* fixed: User could not change his Homepage Setting
+
+**Server (2.0.2)**
+
+*  Updated axiox because of a security issue

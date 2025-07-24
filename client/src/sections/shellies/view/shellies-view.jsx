@@ -36,7 +36,6 @@ export default function ShelliesView() {
     gChecked: [],
     isFilter: false,
   });
-  // const origDevices = useRef([]);
   const { t } = useTranslation();
 
   // --------------------- Websocket Implementation BEGIN----------------

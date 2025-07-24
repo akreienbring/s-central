@@ -19,7 +19,6 @@ import { fWh } from 'src/utils/format-number';
  */
 export default function CurrentConsumption({ title, subheader, colors, powerPerDevice, ...other }) {
   const theme = useTheme();
-  // convert for current consumption chart
 
   const labels = [];
   const series = [];
@@ -68,7 +67,7 @@ export default function CurrentConsumption({ title, subheader, colors, powerPerD
 
       <ApexChart
         // TODO: key forces a rerender. Currently not working with react-apexcharts v1.7.0
-        key={series}
+        key={JSON.stringify(powerPerDevice)}
         type="pie"
         series={series}
         options={options}
