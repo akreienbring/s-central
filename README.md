@@ -1,6 +1,6 @@
 # S-Central
 
-!\[license](https://img.shields.io/badge/license-AGPL--3.0-orange)
+![license](https://img.shields.io/badge/license-AGPL--3.0-orange)
 
 Shelly Dashboard / Monitor for Shelly Devices in your Smarthome
 
