@@ -12,5 +12,3 @@ server/config/kvsdisplays.json
 client/node_modules/
 client/.vscode
 client/dist/
-client/.env.release
-
