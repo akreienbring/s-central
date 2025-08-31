@@ -94,5 +94,5 @@
 - Log capturing is now more robust
 - Added two example scripts (Example, Watchdog) that demonstrate:
   - how to log output that is captured by the Shellybroker server
-  - hot to use the webservice endpoints of the Shellybroker
+  - how to use the webservice endpoints of the Shellybroker
   - how script Errors are detected and send to the Shellybroker as notification
