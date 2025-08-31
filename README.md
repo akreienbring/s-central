@@ -237,19 +237,19 @@ Fork the whole Github project and start making pullrequests! Your welcome! As wi
 
 ## Screenshots
 
-!\[Dashboard](screens/Dashboard.png)
+![Dashboard](screens/Dashboard.png)
 
-!\[Script_KVS](screens/Shellies_Script_KVS.png)
+![Script_KVS](screens/Shellies_Script_KVS.png)
 
-!\[Settings](screens/Shellies_Settings.png)
+![Settings](screens/Shellies_Settings.png)
 
-!\[Logs](screens/Shellies_Logs.png)
+![Logs](screens/Shellies_Logs.png)
 
-!\[Websocket](screens/Shellies_WS.png)
+![Websocket](screens/Shellies_WS.png)
 
-!\[Users](screens/Users.png)
+![Users](screens/Users.png)
 
-!\[Users](screens/List_Batch.png)
+![Users](screens/List_Batch.png)
 
 ## Thanks!
 

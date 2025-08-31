@@ -69,7 +69,7 @@
 
 **Server (2.0.2)**
 
-- Updated axiox because of a security issue
+- Updated axios because of a security issue
 
 ### Release v2.1.0
 
