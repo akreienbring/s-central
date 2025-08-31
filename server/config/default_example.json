@@ -1,0 +1,28 @@
+{
+  "http-server": {
+    "host": "192.168.68.2",
+    "port": 3031
+  },
+  "udp-server": {
+    "host": "192.168.68.2",
+    "port": 3031
+  },
+  "ws-server": {
+    "host": "192.168.68.2",
+    "port": 3031,
+    "ping-interval": 10,
+    "unblock-interval": 10,
+    "messagelimit": 120,
+    "secret": "djfjfjfj_fjeoweruwrfsfsjf12242"
+  },
+  "shelly": {
+    "set-udp": true,
+    "set-ws": true
+  },
+  "db": {
+    "standardpw": "undlos",
+    "standardal": "Admin",
+    "standardem": "admin@sc.com",
+    "standardhome": "dashboard"
+  }
+}

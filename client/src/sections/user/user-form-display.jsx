@@ -2,7 +2,6 @@
   Author: André Kreienbring  
   Renders the login, profile, security and create form depending on the passed in type property.
 */
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect } from 'react';
 
@@ -132,6 +131,7 @@ const UserFormDisplay = ({
       // disable if nothing was changed or alias is empty
       isDisabled =
         (currentUser.alias === origUser.current.alias || currentUser.alias.length === 0) &&
+        currentUser.roleid === origUser.current.roleid &&
         currentUser.firstname === origUser.current.firstname &&
         currentUser.lastname === origUser.current.lastname &&
         currentUser.home === origUser.current.home;
@@ -239,7 +239,7 @@ const UserFormDisplay = ({
                 onFocus={handleInputFocus}
               />
               <TextField
-                disabled={user.id === currentUser.id || currentUser.id === 1}
+                disabled={user.userid === currentUser.userid || currentUser.userid === 1}
                 required
                 select
                 value={roleSelection}
@@ -319,14 +319,3 @@ const UserFormDisplay = ({
 };
 
 export default UserFormDisplay;
-
-UserFormDisplay.propTypes = {
-  type: PropTypes.string,
-  currentUser: PropTypes.object,
-  setCurrentUser: PropTypes.func,
-  requestResult: PropTypes.object,
-  setRequestResult: PropTypes.func,
-  roles: PropTypes.array,
-  handleForgotten: PropTypes.func,
-  handleCurrentUser: PropTypes.func,
-};

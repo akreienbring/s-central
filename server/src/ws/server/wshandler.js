@@ -13,7 +13,9 @@
 */
 const prettyjson = require("prettyjson");
 const config = require("config");
-const shellyGen2Conn = require("@http/shellyGen2Conn.js");
+const shellyDevices = require("@devices/shellyDevices.js");
+const shellyConnector = require("@devices/shellyConnector.js");
+
 const updateDeviceValues = require("@src/utils/update-device-values.js");
 const db = require("@db/db.js");
 const wsUserHandler = require("./ws-user-handler.js");
@@ -112,28 +114,8 @@ function handleMessage(msg, ws) {
       The updated device is forwarded to the Dashboard application
     */
 
-    let device = shellyGen2Conn.findDeviceById(msg.src);
+    let device = shellyDevices.findDeviceById(msg.src);
     if (typeof device !== "undefined") {
-      if (!device.online || device.name === "unknown") {
-        // reload the device because it's obviously online
-        console.warn(`Reloading device ${device.cname}`);
-
-        shellyGen2Conn.getDevice(device.ip, true).then((reloadedDevice) => {
-          device = reloadedDevice;
-          const reloadMessage = {
-            event: "ShellyUpdate",
-            type: "device",
-            data: {
-              source: "WSHandler",
-              message: "Device was reloaded",
-              device: device,
-              subscriptionID: msg.src,
-            },
-          };
-          broadcast(reloadMessage);
-        });
-      }
-
       /* 
         Update the db with consumption data and get the current
         state of the switches ONLY if the NotifyFullStatus was
@@ -145,26 +127,83 @@ function handleMessage(msg, ws) {
         typeof msg.params !== "undefined"
       ) {
         updateDeviceValues.update(device, msg.params);
+        delete device.rebootPending;
+
+        /*
+        if the device sends a ws message, it is considered as online
+        */
+        if (
+          (typeof device.online !== "undefined" && !device.online) ||
+          device.name === "unknown" ||
+          (typeof device.updateStablePending !== "undefined" &&
+            device.updateStablePending) ||
+          (typeof device.updateBetaPending !== "undefined" &&
+            device.updateBetaPending)
+        ) {
+          /*
+            Reload an offline device because it's obviously online.
+            If an update is pending, the device will be reloaded
+            to get the current firmware of the device.
+          */
+          device.online = true;
+          console.warn(`Reloading device ${device.cname}`);
+
+          device.old_fw_id = device.fw_id;
+
+          shellyDevices.getDevice(device.ip, true).then((reloadedDevice) => {
+            prettyjson.render(reloadedDevice);
+            if (reloadedDevice.fw_id === device.old_fw_id) {
+              console.warn(
+                `Reloaded device ${reloadedDevice.cname}. Firmware is still the same (${device.old_fw_id}).`
+              );
+              return; // keep the pending update flags until the firmware is updated
+            }
+
+            device = reloadedDevice;
+            delete device.updateBetaPending;
+            delete device.updateStablePending;
+            delete device.old_fw_id;
+
+            const reloadMessage = {
+              event: "ShellyUpdate",
+              type: "device",
+              data: {
+                source: "WSHandler",
+                message: "Device was reloaded",
+                device,
+                subscriptionID: msg.src,
+              },
+            };
+            broadcast(reloadMessage);
+          });
+          // don't send any message to the client if an update is pending
+          return;
+        }
       }
 
-      /*
-        ONLY initialize wsmessages if it doesn't exist and
-        add only the current websocket message to the device.
-      */
-      if (typeof device.wsmessages === "undefined") device.wsmessages = {};
-      device.wsmessages[msg.method] = msg;
+      if (
+        ((msg.dst === "ws" && msg.method !== "NotifyFullStatus") ||
+          (msg.dst === "request" && msg.method === "NotifyFullStatus")) &&
+        typeof msg.params !== "undefined"
+      ) {
+        /*
+          Only forward requested NotifyFullStatus or
+          other messages (NotifyStatus, NotifyEvent...) directly send by the device,
+        */
+        device.wsmessages[msg.method] = msg;
 
-      const updateMessage = {
-        event: "ShellyUpdate",
-        type: "ws",
-        data: {
-          source: "WSHandler",
-          message: "new WS message",
-          device: device,
-          subscriptionID: msg.src,
-        },
-      };
-      broadcast(updateMessage);
+        const updateMessage = {
+          event: "ShellyUpdate",
+          type: "ws",
+          data: {
+            source: "WSHandler",
+            message: "new WS message",
+            device: device,
+            subscriptionID: msg.src,
+          },
+        };
+        broadcast(updateMessage);
+      }
     } else {
       console.error(`wshandler: Couldn't find device with id ${msg.src}`);
     }
@@ -213,9 +252,15 @@ function handleMessage(msg, ws) {
         ws.send(JSON.stringify(answer));
       }
     } else if (msg.event === "toggleSwitch") {
-      shellyGen2Conn.toggleSwitch(msg.data.switch);
+      shellyConnector.toggleSwitch(
+        shellyDevices.findDeviceByIp(msg.data.switch.deviceIp),
+        msg.data.switch
+      );
     } else if (msg.event === "setSwitch") {
-      shellyGen2Conn.setSwitch(msg.data.switch);
+      shellyConnector.setSwitch(
+        shellyDevices.findDeviceByIp(msg.data.switch.deviceIp),
+        msg.data.switch
+      );
     } else if (msg.event.startsWith("user")) {
       wsUserHandler.handle(msg, ws);
     } else if (msg.event.startsWith("role")) {
@@ -231,7 +276,7 @@ function handleMessage(msg, ws) {
           /* 
             Loghandler has detected a Script error.
           */
-          const script = shellyGen2Conn.findScript(
+          const script = shellyDevices.findScript(
             notification.device_ip,
             notification.script_id
           );

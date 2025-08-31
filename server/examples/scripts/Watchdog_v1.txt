@@ -1,0 +1,193 @@
+/*
+  Author: André Kreienbring
+  Example script for S-Central
+  The Watschdog script checks configured scripts for their status.
+  If a script is not running a one time message will be sent to the S-Central server
+  To adopt it to your needs: Change the IP adress in oScripts to the IP of the
+  Shelly where the 'Example' script runs or run both examples on the same Shelly (isLocal: true)
+*/
+
+/******************* GLOBAL VARIABLES WATCHDOG *******************/
+let nScriptIndex = 0
+
+const CONFIG = {
+  logPrefix: 'Watchdog (#' + Shelly.getCurrentScriptId() + '): ',
+  nCheckInterval: 30,
+  sShellyBrokerURL: '${broker}/ws/v1/',
+  sShellyBrokerSECRECT: 'djfjfjfj_fjeoweruwrfsfsjf12242',
+   
+  //These scripts will be checked by interval 
+  oScripts: [
+    {sScriptname: 'Example', sIP: '192.168.68.20', nID: 1, isRunning: null, isDeviceOnline: null, isLocal: true},
+  ],
+}
+
+/******************* HELPERS WATCHDOG *******************/
+/*
+  Log with prefix to console.
+  Will be send to Shellybroker via udp logging
+*/ 
+function log(to_log) {
+  console.log(CONFIG.logPrefix + to_log);
+}
+
+// find next script index
+function iterate_index() {
+  if(nScriptIndex < CONFIG.oScripts.length - 1) {
+    nScriptIndex += 1;
+    return;
+  }
+  nScriptIndex = 0;
+}
+
+/******************* RESPONSE CHECKS WATCHDOG *******************/
+/*
+Check a HTTP response. If userdata contains messages, they will be logged.
+If userdata contains a callback (handle) function, it will be called with the results and the userdata
+if userdata constains a property report with value true the parameters are logged.
+*/
+function responseCheckHTTP(result, error_code, error_msg, ud){
+   // result may be the result of the call or en error object
+  if(ud.report){
+    log('result: ' + JSON.stringify(result));
+    log('error_code: ' + error_code);
+    log('error_message: ' + error_msg);
+    log('userdata: ' + JSON.stringify(ud));  
+  };
+  const nCode = (typeof result !== 'undefined' && typeof result.code !== 'undefined') ? result.code : error_code;
+  let bSuccess = false;
+  if(nCode !== 0){
+    // this was a HTTP RPC call
+    const sBody = (typeof result !== 'undefined' && typeof result.body !== 'undefined') ? result.body : null;
+    //sBody is a string that MAY be parsed to an object, depending on the Content-Type
+    bSuccess = (nCode != 200) ? false : true;
+    if(bSuccess){
+      result = JSON.parse(sBody);
+    } else {
+      /*
+        103 (timeout) indicates that the device is offline
+        see: https://shelly-api-docs.shelly.cloud/gen2/General/CommonErrors
+      */
+      if(nCode == 103) result = null;
+    }
+  } else {
+    // this was a local call
+    bSuccess = true;
+  }
+  
+  if(bSuccess) {
+    if(ud.success_msg !== null) log(typeof ud.success_msg !== 'undefined' ? ud.success_msg : 'Successfully performed a HTTP request');
+  } else {
+    if(ud.error_msg !== null) log(typeof ud.error_msg !== 'undefined' ? ud.error_msg : 'Error while doing a HTTP request');
+  };
+  if(typeof ud.callback !== 'undefined') ud.callback(bSuccess, result, ud);
+}
+/******************* RESPONSE HANDLERS WATCHDOG *******************/
+/*
+Handle the response of a script status request.
+If a script is not running a message will be sent.
+On status changes of script or device (online / offline shellyBroker will be informed
+*/
+function handleStatus(bSuccess, status, ud){
+  const oScript = CONFIG.oScripts[ud.nScriptIndex];
+  let bStateChanged = false;
+  if(bSuccess) {
+    if(!oScript.isDeviceOnline){
+      log(ud.sIP + ' is back ONLINE ');
+      bStateChanged  = true;      
+    } 
+    oScript.isDeviceOnline = true;
+    
+    if(status.running){
+      console.log("Script '" + ud.sScriptname + "' is running");
+    } else {
+      console.log("Script '" + ud.sScriptname + "' is NOT running");
+    };
+    
+    if(oScript.isRunning != status.running){
+      //status has changed
+      let url = CONFIG.sShellyBrokerURL.replace("${broker}", Shelly.getComponentConfig("ws").server.replace("ws", "http")) + 'SetScript?secret='+ CONFIG.sShellyBrokerSECRECT + '&ip='+ ud.sIP + '&id=' + ud.nID;
+      let body = JSON.stringify({running: status.running});
+      log("Sending script status update to " + url);
+      Shelly.call('HTTP.POST', 
+        {url: url, body: body},
+      );
+    }
+         
+    oScript.isRunning = status.running;
+  } else if(result = null) {
+    //call was not successfull and a timeout was received. Consider that the device is offline!
+    if(oScript.isDeviceOnline){
+      log(ud.sIP + ' is OFFLINE');
+      bStateChanged  = true;      
+    } 
+    oScript.isDeviceOnline = false;
+  }
+  
+  if(bStateChanged){
+    let url = CONFIG.sShellyBrokerURL.replace("${broker}", Shelly.getComponentConfig("ws").server.replace("ws", "http")) + 'SetDevice?secret='+ CONFIG.sShellyBrokerSECRECT + '&ip='+ ud.sIP;
+    let body = JSON.stringify({online: oScript.isDeviceOnline});
+    log("Sending device status update to " + url);
+    Shelly.call('HTTP.POST', 
+      {url: url, body: body},
+    );
+  }
+  
+  iterate_index();
+}
+
+
+/*
+  Checks the configured scripts in sequence and calls the function that handles the result.
+  The script to check can run locally (on the same Shelly) or checked by a remote RPC call.
+*/
+function checkScript(){
+  const oScript = CONFIG.oScripts[nScriptIndex];
+  const ud =         
+    {
+      report: true,
+      error_msg: 'Could not get the status of Script ' + oScript.sScriptname,
+      success_msg: 'Successfully got the status of Script ' + oScript.sScriptname,
+      callback: handleStatus,
+      sScriptname: oScript.sScriptname,
+      nScriptIndex: nScriptIndex,
+      nID: oScript.nID,
+      sIP: oScript.sIP,
+     };
+    
+  if(oScript.isLocal) {
+    Shelly.call('Script.GetStatus',
+      {id: oScript.nID},
+       responseCheckHTTP,
+       ud
+    );
+  }else{
+    /*
+      If the device is protected with a password use:
+      const sCheckURL = 'http://admin:[Password]@' + oScript.sIP + '/rpc/Script.GetStatus?id=' + oScript.nID;
+    */
+    const sCheckURL = 'http://' + oScript.sIP + '/rpc/Script.GetStatus?id=' + oScript.nID;
+    log('Checking ' + oScript.sScriptname + ' URL: ' + sCheckURL);
+  
+    Shelly.call('HTTP.GET',
+       { url: sCheckURL, timeout: 10},
+       responseCheckHTTP,
+       ud
+    );
+  }
+}
+
+function init() {
+  log('RAM: ' + Shelly.getComponentStatus("sys").ram_free + '/' + Shelly.getComponentStatus("sys").ram_size);
+  log('FS: ' + Shelly.getComponentStatus("sys").fs_free + '/' + Shelly.getComponentStatus("sys").fs_size);
+
+    //set the timer that checks the Scripts status
+  Timer.set(
+    CONFIG.nCheckInterval * 1000,
+    true,
+    checkScript
+  ); 
+
+}
+
+init();

@@ -15,9 +15,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import { mapNumberToMax } from 'src/utils/general';
+import { emptyRows, applyFilter, getComparator } from 'src/utils/sort-array';
 
 import { useShelly } from 'src/sccontext';
-// eslint-disable-next-line no-unused-vars, unused-imports/no-unused-imports
 import { subscribeEvent, unsubscribeEvent } from 'src/events/pubsub';
 
 import Scrollbar from 'src/components/scrollbar';
@@ -28,7 +28,6 @@ import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
 
 // ----------------------------------------------------------------------
 
@@ -41,10 +40,14 @@ export default function UserView() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
-  const { request } = useShelly();
+  const { request, user } = useShelly();
   const [openCreate, setOpenCreate] = useState(false);
   const isUsersLoaded = useRef(false);
   const [showReallyDelete, setShowReallyDelete] = useState(false);
+  const [rowCount, setRowCount] = useState([
+    // remmove administrators from the users list.
+    user.roleid === 1 && user.userid !== 1 ? users.length - 2 : users.length - 1,
+  ]);
 
   /**
     The received users will be mapped to the table values.
@@ -53,35 +56,44 @@ export default function UserView() {
     Also passed to the CreateUser Component and called when a user was created.
     @param {object} msg A ws message that contains the users sent by the servers
   */
-  const handleUsersReceived = (msg) => {
-    const serverUsers = msg.data.users;
-    const clientUsers = serverUsers.map((serverUser, index) => ({
-      id: serverUser.userid,
-      avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(serverUser.userid, 25)}.jpg`,
-      alias: serverUser.alias,
-      firstname: serverUser.firstname,
-      lastname: serverUser.lastname,
-      role: serverUser.rolename,
-      email: serverUser.email,
-      home: serverUser.home,
-      roleid: serverUser.roleid,
-    }));
-    isUsersLoaded.current = true;
-    setUsers(clientUsers);
-  };
+  const handleUsersReceived = useCallback(
+    (msg) => {
+      const serverUsers = msg.data.users;
+      // eslint-disable-next-line no-unused-vars
+      const clientUsers = serverUsers.map((serverUser, index) => ({
+        userid: serverUser.userid,
+        uuid: serverUser.uuid,
+        avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(serverUser.userid, 25)}.jpg`,
+        alias: serverUser.alias,
+        firstname: serverUser.firstname,
+        lastname: serverUser.lastname,
+        role: serverUser.rolename,
+        email: serverUser.email,
+        home: serverUser.home,
+        roleid: serverUser.roleid,
+      }));
+      isUsersLoaded.current = true;
+      setUsers(clientUsers);
+      setRowCount(
+        user.roleid === 1 && user.userid !== 1 ? clientUsers.length - 2 : clientUsers.length - 1
+      );
+      setSelected([]);
+    },
+    [user]
+  );
 
   /**
     Called when a user was updated. Updates the
-    list of users.
+    list of users. Is called from the UserForm
     @param {object} updateuser The user that was updated
   */
   const handleUpdateUser = useCallback(
     (updateuser) => {
       const updatedUsers = [...users];
-      const index = updatedUsers.findIndex((x) => x.id === updateuser.id);
+      const index = updatedUsers.findIndex((x) => x.userid === updateuser.userid);
       updatedUsers[index] = updateuser;
       updatedUsers[index].avatarUrl =
-        `/assets/images/avatars/avatar_${mapNumberToMax(updateuser.id, 25)}.jpg`;
+        `/assets/images/avatars/avatar_${mapNumberToMax(updateuser.userid, 25)}.jpg`;
 
       setUsers(updatedUsers);
     },
@@ -117,13 +129,12 @@ export default function UserView() {
         },
         handleUsersReceived
       );
-    /*
+
     return () => {
       // cleanup on unmount: unsubscribe from the event
       unsubscribeEvent('userUpdated');
     };
-    */
-  }, [request, handleUpdateUserEvent]);
+  }, [request, handleUpdateUserEvent, handleUsersReceived]);
   // --------------------- Websocket Implementation END------------------
 
   /*
@@ -162,8 +173,10 @@ export default function UserView() {
   */
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = users.filter((u) => u.id !== 1).map((u) => u.alias);
-      setSelected(newSelecteds);
+      const newSelected = users
+        .filter((u) => u.userid !== 1 && user.userid !== u.userid)
+        .map((u) => u.alias);
+      setSelected(newSelected);
       return;
     }
     setSelected([]);
@@ -198,16 +211,17 @@ export default function UserView() {
   /**
     Called from within the table row popover, when a user
     must be deleted. Send a delete request to the server.
-    @param {number} id The id of the user that must be deleted
+    The server responds with an updated list of users.
+    @param {number} userid The id of the user that must be deleted
   */
-  const handleDeleteUser = (id) => {
+  const handleDeleteUser = (userid) => {
     request(
       {
         event: 'user delete',
         data: {
           source: 'Users View',
           message: 'User View wants to delete a user',
-          ids: [id],
+          ids: [userid],
         },
       },
       handleUsersReceived
@@ -215,12 +229,14 @@ export default function UserView() {
   };
 
   /**
+    Called from within the table toolbar
     Delete all selected users. The Admin is excluded!
+    The server responds with an updated list of users.
   */
   const handleDeleteSelected = () => {
     const ids = users
-      .filter((user) => selected.includes(user.alias) && user.id !== 1)
-      .map((user) => user.id);
+      .filter((user) => selected.includes(user.alias) && user.userid !== 1)
+      .map((user) => user.userid);
     setSelected([]);
     request(
       {
@@ -293,11 +309,11 @@ export default function UserView() {
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 800 }} size="small">
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={users.length}
+                rowCount={rowCount}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -316,8 +332,10 @@ export default function UserView() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
-                      id={row.id}
+                      key={row.userid}
+                      appUser={user}
+                      userid={row.userid}
+                      uuid={row.uuid}
                       alias={row.alias}
                       firstname={row.firstname}
                       lastname={row.lastname}
@@ -328,7 +346,7 @@ export default function UserView() {
                       avatarUrl={row.avatarUrl}
                       selected={selected.indexOf(row.alias) !== -1}
                       handleClick={(event) => handleClick(event, row.alias)}
-                      handleDeleteUser={(event) => handleDeleteUser(row.id)}
+                      handleDeleteUser={() => handleDeleteUser(row.userid)}
                       handleUpdateUser={handleUpdateUser}
                     />
                   ))}

@@ -3,11 +3,14 @@
 server/broker.db
 server/node_modules/
 server/.vscode
+server/config/default.json
+server/config/dev.json
+server/config/devices.json
+server/config/kvsdisplays.json
+
 
 client/node_modules/
 client/.vscode
 client/dist/
-client/.env.private
-client/.env.development
-client/dev.code-workspace
+client/.env.release
 

@@ -18,8 +18,8 @@ import { sortText, sortNumeric } from 'src/utils/sort-array';
 
 import { useShelly } from 'src/sccontext';
 
-import TabPanel from 'src/components/shellies/tabpanel';
-import ViewTitle from 'src/components/shellies/view-title';
+import TabPanel from 'src/sections/shellies/tabpanel';
+import ViewTitle from 'src/sections/shellies/view-title';
 
 import ShellySort from '../shelly-sort';
 import ShellyFilters from '../shelly-filters';
@@ -44,27 +44,26 @@ export default function ShelliesView() {
     the filter function.
   */
   useEffect(() => {
-    if (devices.length !== 0) {
-      // Get available models and gens from the devices array
-      // these will be used for the checkboxes in the filter
-      const models = [];
-      const generations = [];
+    // Get available models and gens from the devices array
+    // these will be used for the checkboxes in the filter
+    const models = [];
+    const generations = [];
 
-      devices.forEach((device) => {
-        if (!models.includes(device.name)) models.push(device.name);
-        if (!generations.includes(device.gen)) generations.push(device.gen);
-      });
+    devices.forEach((device) => {
+      if (!models.includes(device.name)) models.push(device.name);
+      if (!generations.includes(device.gen)) generations.push(device.gen);
+    });
 
-      // init the filter checkboxes with false
-      const newFilter = {
-        models,
-        generations,
-        mChecked: new Array(models.length).fill(false),
-        gChecked: new Array(generations.length).fill(false),
-        isFilter: false,
-      };
-      setFilter(() => newFilter);
-    }
+    // init the filter checkboxes with false
+    const newFilter = {
+      models,
+      generations,
+      mChecked: new Array(models.length).fill(false),
+      gChecked: new Array(generations.length).fill(false),
+      isFilter: false,
+    };
+    setFilter(() => newFilter);
+    setUserDevices(devices);
   }, [devices]);
   // --------------------- Websocket Implementation END------------------
 
@@ -100,7 +99,7 @@ export default function ShelliesView() {
     switch (option.value) {
       case 'config':
         // restore the original array
-        setUserDevices((prevDevices) => devices);
+        setUserDevices(() => devices);
         break;
       case 'gen':
         // numeric sort
@@ -217,6 +216,7 @@ export default function ShelliesView() {
           <Tab label={t('Control')} />
           <Tab label="Logs" />
           <Tab label="WS Inspector" />
+          <Tab label="List / Batch" />
         </Tabs>
       </Box>
       <TabPanel

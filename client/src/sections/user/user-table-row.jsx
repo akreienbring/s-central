@@ -18,13 +18,27 @@ import AddDevices from 'src/sections/user/add-devices';
 
 // ----------------------------------------------------------------------
 
-/*
+/**
+  Presents a single row in the user table
+  @param {number} userid The unique identifier of the user
+  @param {object} appUser The logged in user
+  @param {boolean} selected To determine if the user entry is selected or not
+  @param {string} alias The alias of the user
+  @param {string} avatarUrl The URL of the avatar image
+  @param {string} firstname The first name of the user
+  @param {string} lastname The last name of the user
+  @param {number} roleid The unique identifier of the role
+  @param {string} role The name of the role
+  @param {string} email The email address of the user
+  @param {string} home The home location of the user
   @param {function} handleClick Called when clicking the checkbox of an user entry
   @param {function} handleDeleteUser Called when a user must be deleted
   @param {function} handleUpdateUser Called when a user was updated
 */
 export default function UserTableRow({
-  id,
+  userid,
+  uuid,
+  appUser,
   selected,
   alias,
   avatarUrl,
@@ -94,7 +108,11 @@ export default function UserTableRow({
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
-          {roleid !== 1 && <Checkbox disableRipple checked={selected} onChange={handleClick} />}
+          {userid !== 1 && // main admin must not be deleted
+            userid !== appUser.userid && // self deletion is not allowed
+            (appUser.roleid === 1 || roleid !== 1) && ( // only main admin can delete admins
+              <Checkbox disableRipple checked={selected} onChange={handleClick} />
+            )}
         </TableCell>
 
         <TableCell component="th" scope="row" padding="none">
@@ -133,7 +151,10 @@ export default function UserTableRow({
           },
         }}
       >
-        <MenuItem onClick={() => handleOpenUpdate('profile')}>
+        <MenuItem
+          disabled={userid === 1 && appUser.userid !== 1}
+          onClick={() => handleOpenUpdate('profile')}
+        >
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           {t('Edit')}
         </MenuItem>
@@ -144,12 +165,15 @@ export default function UserTableRow({
             {t('_assigndevices_')}
           </MenuItem>
         )}
-        {!showReallyDelete && roleid !== 1 && (
-          <MenuItem onClick={handleShowReally} sx={{ color: 'error.main' }}>
-            <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-            {t('Delete')}
-          </MenuItem>
-        )}
+        {!showReallyDelete &&
+          userid !== 1 && // main admin must not be deleted
+          userid !== appUser.userid && // self deletion is not allowed
+          (appUser.roleid === 1 || roleid !== 1) && ( // only main admin can delete admins
+            <MenuItem onClick={handleShowReally} sx={{ color: 'error.main' }}>
+              <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+              {t('Delete')}
+            </MenuItem>
+          )}
 
         {showReallyDelete && (
           <MenuItem onClick={handleDeleteUser} sx={{ color: 'error.main' }}>
@@ -162,13 +186,13 @@ export default function UserTableRow({
         title={t('_edituserprofile_')}
         openUpdate={openUpdate.open}
         type={openUpdate.type}
-        updateuser={{ alias, email, firstname, lastname, home, id, roleid, role }}
+        updateuser={{ alias, email, firstname, lastname, home, userid, roleid, role, uuid }}
         onCloseUpdate={handleCloseUpdate}
         handleUpdateUser={handleUpdateUser}
       />
       <AddDevices
         title={t('_assigndevices_')}
-        updateuser={{ alias, firstname, lastname, id }}
+        updateuser={{ alias, firstname, lastname, userid }}
         openDevices={openDevices.open}
         onCloseDevices={handleCloseDevices}
       />

@@ -1,6 +1,5 @@
 //  see 'date-fns' and 'date-fns-tz
-import { format, getTime, fromUnixTime, formatDistanceToNow } from 'date-fns';
-// eslint-disable-next-line no-unused-vars, perfectionist/sort-imports, unused-imports/no-unused-imports
+import { format, getTime, fromUnixTime, intervalToDuration, formatDistanceToNow } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -30,4 +29,23 @@ export function fToNow(date) {
         addSuffix: true,
       })
     : '';
+}
+
+/**
+  Converts a number of seconds to a formatted time string.
+  @param seconds The number of seconds to convert. If 0 or undefined, returns '0'.
+  @returns {string} The formatted time string in the format "DD:HH:MM:SS".
+*/
+export function fSToTime(seconds) {
+  if (seconds === 0 || typeof seconds === 'undefined') return '0';
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
+
+  const zeroPad = (num) => String(num).padStart(2, '0');
+
+  const formatted = [duration.days, duration.hours, duration.minutes, duration.seconds]
+    .filter(Boolean)
+    .map(zeroPad)
+    .join(':');
+
+  return formatted;
 }

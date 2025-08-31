@@ -23,12 +23,12 @@ import { createUUID, mapNumberToMax } from 'src/utils/general';
 
 import { useShelly } from 'src/sccontext';
 
-import ViewTitle from 'src/components/shellies/view-title';
 import { useChartColors } from 'src/components/chart/chart';
+
+import ViewTitle from 'src/sections/shellies/view-title';
 
 import AppWidgetSummary from '../app-widget-summary';
 import calculateOverview from './calculate-overview';
-// eslint-disable-next-line no-unused-vars, unused-imports/no-unused-imports
 import CurrentConsumption from '../current-consumption';
 import TimelineConsumption from '../timline-consumption';
 import { buildTimeline, getTimelineOptions } from './build-timeline';
@@ -235,7 +235,7 @@ export default function AppView() {
     return () => {
       unsubscribe(currentSubscriptionID, ['ShellyUpdate']);
     };
-  }, [devices.length, handleDevicesReceived, handleDeviceUpdate, unsubscribe, subscribe, request]);
+  }, [devices, handleDevicesReceived, handleDeviceUpdate, unsubscribe, subscribe, request]);
   // --------------------- Websocket Implementation END------------------
 
   if (devices.length === 0) return null;

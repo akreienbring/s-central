@@ -23,11 +23,15 @@ const SECRET = config.get("ws-server.secret");
 */
 function handle(msg, ws) {
   if (msg.event === "user validate") {
-    // client send a login request
+    /*
+      Client send a login request AFTER already completing the
+      digest challenge response cyle. That means that his credentials
+      are successfully validated by Message Validation at this point.
+     */
     const validateAnswer = {
       event: "user validate",
       data: {
-        success: false,
+        success: true,
         requestID: msg.data.requestID,
       },
     };
@@ -38,19 +42,18 @@ function handle(msg, ws) {
     const row = db.getUser(sql, userToValidate.email);
 
     if (typeof row !== "undefined") {
-      // skip the password check, if the users digest authentication is valid.
-      // TODO Maybe the password is not needed anymore!!!
       if (
-        typeof msg.data.secret === "undefined" &&
-        !endecrypt.validate(userToValidate.password, row.hash, row.salt)
+        /*
+        Skip the password check, if the users digest authentication is valid.
+        This way the password is NEVER send over the network
+        This is only left here as a reminder.
+      */
+        typeof msg.data.secret === "undefined" // && !endecrypt.validate(userToValidate.password, row.hash, row.salt)
       ) {
-        validateAnswer.data.message = "_wrongpw_";
+        console.error("Digest Authentication has not worked!");
       } else {
-        validateAnswer.data.success = true;
-        // add the secret for all further requests
-        validateAnswer.data.secret = SECRET;
         validateAnswer.data.user = {
-          id: row.userid,
+          userid: row.userid,
           uuid: row.uuid,
           email: row.email,
           alias: row.alias,
@@ -82,8 +85,43 @@ function handle(msg, ws) {
     const row = db.getUser(sql, msg.data.email);
 
     if (typeof row !== "undefined") {
-      console.log(`db: Resetting pw for ${row.name}`);
-      db.resetPW(msg.data.email);
+      const password = config.get("db.standardpw");
+      const HA1 = endecrypt.encryptUserHA1(
+        msg.data.email,
+        digest.REALM,
+        password
+      );
+      endecrypt.encrypt(password).then((secret) => {
+        console.log(`Resetting pw for ${msg.data.email}`);
+        let info;
+        try {
+          info = db.update(
+            "users",
+            {
+              hash: secret.hash,
+              salt: secret.salt,
+              HA1,
+            },
+            ["email"],
+            [msg.data.email]
+          );
+
+          if (info?.changes !== 1) {
+            // something went wrong
+            resetAnswer.data.message = "_notresetpw_";
+            resetAnswer.data.success = false;
+          }
+        } catch (err) {
+          console.error(err.message);
+          resetAnswer.data.message = db.createMessageFromConflict(
+            err.message,
+            "_notresetpw_"
+          );
+          resetAnswer.data.success = false;
+        }
+
+        ws.send(JSON.stringify(resetAnswer));
+      });
     } else {
       resetAnswer.data.message = "_usernotexists_";
       resetAnswer.data.success = false;
@@ -99,7 +137,7 @@ function handle(msg, ws) {
       },
     };
 
-    const sql = `SELECT users.id AS userid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+    const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
     usersAnswer.data.users = db.getUser(sql);
     ws.send(JSON.stringify(usersAnswer));
   } else if (msg.event === "user profile update") {
@@ -124,7 +162,7 @@ function handle(msg, ws) {
           roleid: userToUpdate.roleid,
         },
         ["id"],
-        [userToUpdate.id]
+        [userToUpdate.userid]
       );
       if (info.changes !== 1) {
         // something went wrong
@@ -159,7 +197,7 @@ function handle(msg, ws) {
           home: userToUpdate.home,
         },
         ["id"],
-        [userToUpdate.id]
+        [userToUpdate.userid]
       );
       if (info.changes !== 1) {
         // something went wrong
@@ -203,7 +241,7 @@ function handle(msg, ws) {
             HA1,
           },
           ["id"],
-          [userToUpdate.id]
+          [userToUpdate.userid]
         );
         if (info.changes !== 1) {
           // something went wrong
@@ -212,11 +250,11 @@ function handle(msg, ws) {
         }
       } catch (err) {
         console.error(err.message);
-        createAnswer.data.message = db.createMessageFromConflict(
+        securityAnswer.data.message = db.createMessageFromConflict(
           err.message,
           "_usernotupdated_"
         );
-        createAnswer.data.success = false;
+        securityAnswer.data.success = false;
       }
       ws.send(JSON.stringify(securityAnswer));
     });
@@ -267,7 +305,7 @@ function handle(msg, ws) {
           createAnswer.data.message = "_usernotcreated_";
           createAnswer.data.success = false;
         } else {
-          const sql = `SELECT users.id AS userid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+          const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
           createAnswer.data.users = db.getUser(sql);
         }
       } catch (err) {
@@ -300,7 +338,7 @@ function handle(msg, ws) {
       deleteAnswer.data.message = "_usernotdeleted_";
       deleteAnswer.data.success = false;
     } else {
-      const sql = `SELECT users.id AS userid, email, firstname, lastname, home, alias, roles.name AS rolename FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+      const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
       deleteAnswer.data.users = db.getUser(sql);
     }
     ws.send(JSON.stringify(deleteAnswer));

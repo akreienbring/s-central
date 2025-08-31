@@ -57,7 +57,7 @@ export const SCProvider = ({ children }) => {
     These events are not forced to send the secret.
     Will be respected by the request function
   */
-  const WITHOUT_SECRET = useRef(['user validate', 'blogposts get public']);
+  const WITHOUT_SECRET = useRef(['user validate', 'blogposts get public', 'user resetpw']);
 
   /**
     Implements a reconnection strategy.
@@ -95,12 +95,11 @@ export const SCProvider = ({ children }) => {
 
   /**
     A component can subscribe to one or more events.
-    @typedef {Object} subscription
-    @property {string} subscriptionID An unique ID that identifies the subscription
-    @property {callback} callback A function that is called when a msg with an event arrives
-    @property {boolean} all  A boolean value that indicates if the component needs all or only specific (device) events
-    @param {subscription} subscription The subscription object
-    @param {Array} events An array of websocket events (e.g. 'ShellyUpdate')
+    @param {object} subscription
+    @param {string} subscription.subscriptionID An unique ID that identifies the subscription
+    @param {callback} subscription.callback A function that is called when a msg with an event arrives
+    @param {boolean} subscription.all  A boolean value that indicates if the component needs all or only specific (device) events
+    @param {array} events An array of websocket events (e.g. 'ShellyUpdate')
   */
   const subscribe = (subscription, events) => {
     events.forEach((event) => {
@@ -188,15 +187,16 @@ export const SCProvider = ({ children }) => {
           isExistingMessage = true;
         }
       });
-      if (isExistingMessage) return;
 
-      if (msg.event === 'user validate') {
-        // if the socket is closed, this will trigger a reconnection
-        setValidationRequest({ msg, callback });
-      } else {
-        const requestID = createUUID();
-        msg.data.requestID = requestID;
-        requests.current[requestID] = { msg, callback };
+      if (!isExistingMessage) {
+        if (msg.event === 'user validate') {
+          // if the socket is closed, this will trigger a reconnection
+          setValidationRequest({ msg, callback });
+        } else {
+          const requestID = createUUID();
+          msg.data.requestID = requestID;
+          requests.current[requestID] = { msg, callback };
+        }
       }
 
       const isSecretNeeded = !WITHOUT_SECRET.current.includes(msg.event);
@@ -264,14 +264,17 @@ export const SCProvider = ({ children }) => {
 
     ws.current.onerror = (e) => console.error(e);
 
-    ws.current.onopen = (event) => {
+    ws.current.onopen = () => {
       isReconnecting.current = false;
       publishEvent('lastUpdatedAt', Date.now());
       console.log(`WebSocket connection opened for Shelly Context!`);
 
       if (validationRequest !== null) {
         console.log('Sending an existing validation request');
-        // don't send the password! Instead digest authentication will be used
+        /*
+          Don't send the password! Instead digest authentication will be used.
+          So this will provoke an 401 error.
+        */
         ws.current.send(
           JSON.stringify({
             event: 'user validate',
@@ -305,7 +308,21 @@ export const SCProvider = ({ children }) => {
     ws.current.onmessage = (event) => {
       publishEvent('lastUpdatedAt', Date.now());
       const msg = JSON.parse(event.data);
+
       if (msg !== null) {
+        if (msg.event === 'ShellyUpdate') {
+          /*
+            a device update was received. Replace ONLY the device in the devices array.
+            This DOES NOT trigger a rerender of the components that use the devices.
+            The component that is subscribed to the ShellyUpdate event will rerender itself.
+            But it is necessary to update the devices array in the context
+            to have the latest data available.
+          */
+          const updatedDevice = msg.data.device;
+          devices[devices.findIndex((device) => device.id === updatedDevice.id)] = updatedDevice;
+          setDevices(devices);
+        }
+
         if (msg.event === 'user validate') {
           if (
             validationRequest !== null &&
@@ -313,7 +330,9 @@ export const SCProvider = ({ children }) => {
             msg.data.error.code === 401
           ) {
             // Not authenticated. Add the credentials to the message
+
             validationRequest.msg.data.auth = getWSCredentials(
+              msg.data.error,
               msg.data.error.message,
               validationRequest.msg.data.user.password,
               validationRequest.msg.data.user.email
@@ -348,7 +367,7 @@ export const SCProvider = ({ children }) => {
                   data: {
                     source: 'Shelly Context',
                     message: 'Shelly Context needs the list of devices',
-                    userid: connectedUser.roleid != 1 ? connectedUser.id : null, //an admin gets all devices
+                    userid: connectedUser.roleid != 1 ? connectedUser.userid : null, //an admin gets all devices
                     secret: secret.current,
                   },
                 })
@@ -371,8 +390,9 @@ export const SCProvider = ({ children }) => {
             console.error('Reconnecting was not possible. Logging out!');
             logout();
           }
-        } else if (msg.event === 'devices get all') {
-          console.log(`Received ${msg.data.devices.length} devices for user ${user.alias}`);
+        } else if (msg.event === 'devices get all' && typeof msg.data.requestID === 'undefined') {
+          // this is the initial request for devices sent by the context itself
+          console.log(`Context received ${msg.data.devices.length} devices for user ${user.alias}`);
           setDevices(msg.data.devices);
         } else if (msg.event === 'ping') {
           /*
@@ -396,8 +416,10 @@ export const SCProvider = ({ children }) => {
             Find the request with the provided id and forward the message
             to the stored callback function
           */
-          requests.current[msg.data.requestID].callback(msg);
-          delete requests.current[msg.data.requestID];
+          const requestID = msg.data.requestID;
+          delete msg.data.requestID; // remove the requestID from the message
+          requests.current[requestID].callback(msg);
+          delete requests.current[requestID];
           console.log(
             `Deleted request '${msg.event}' on answer: '${msg.data.message}'. Now have ${Object.entries(requests.current).length} requests`
           );
@@ -437,7 +459,7 @@ export const SCProvider = ({ children }) => {
         );
       }
     };
-  }, [validationRequest, startRetryTimeout, retryCount, logout, devices]);
+  }, [validationRequest, startRetryTimeout, retryCount, logout, devices, user]);
 
   return (
     <Context.Provider

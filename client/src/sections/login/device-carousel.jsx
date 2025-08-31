@@ -3,7 +3,6 @@
   Presents a selection of Shelly devices in the LoginView
 */
 import { useState } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Carousel from 'react-material-ui-carousel';
 
 import Box from '@mui/material/Box';
@@ -15,9 +14,8 @@ export default function DeviceCarousel() {
 
   const [index, setIndex] = useState(0);
 
-  const handleChange = (cur, prev) => {
+  const handleChange = (cur) => {
     setIndex(cur);
-    // console.log(cur, prev);
   };
 
   return (
@@ -30,7 +28,7 @@ export default function DeviceCarousel() {
         indicators
         stopAutoPlayOnHover
       >
-        {DEVICES.map((name, i) => (
+        {DEVICES.map((name) => (
           <Box
             component="img"
             src={`/assets/images/devices/${name}.png`}

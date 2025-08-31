@@ -107,7 +107,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
   const handleSubmit = (e) => {
     e.preventDefault();
     if (type === 'create') {
-      currentBlogpost.userid = user.id;
+      currentBlogpost.userid = user.userid;
       currentBlogpost.createdAt = Date.now();
 
       // send the created user to the server

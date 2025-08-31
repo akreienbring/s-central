@@ -2,12 +2,13 @@
   "author": "André Kreienbring",
   "name": "@s-central/server",
   "license": "AGPL-3.0",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Server for S-Central",
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2 flush && pm2 start ecosystem.config.js",
+    "dev": "set NODE_ENV=dev&& node --watch shellybroker.js",
     "stop": "pm2 stop shellybroker",
     "list": "pm2 list",
     "logs": "pm2 logs --time",
@@ -16,25 +17,26 @@
   },
   "keywords": [],
   "dependencies": {
-    "axios": "^1.9.0",
-    "better-sqlite3": "^12.1.0",
-    "config": "^4.0.0",
+    "axios": "^1.11.0",
+    "better-sqlite3": "^12.2.0",
+    "config": "^4.1.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "faye-websocket": "^0.11.4",
     "module-alias": "^2.2.3",
-    "pm2": "^6.0.6",
+    "pm2": "^6.0.8",
     "prettyjson": "^1.2.5",
     "request-ip": "^3.3.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.1",
-    "eslint": "^9.9.1",
-    "globals": "^16.2.0"
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0"
   },
   "_moduleAliases": {
     "@root": ".",
     "@http": "./src/http",
+    "@devices": "./src/devices",
     "@ws": "./src/ws",
     "@db": "./src/db",
     "@public": "./public",

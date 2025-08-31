@@ -19,7 +19,7 @@ function hexHash(str) {
   @param (string) email The mail address of an existing user.
   @return {object} The authentication parameters
 */
-export function getWSCredentials(msg, password, email) {
+export function getWSCredentials(error, msg, password, email) {
   if (typeof password === 'undefined' || password === '') {
     throw new Error('Failed to authenticate!  Please supply a password!');
   }
@@ -29,7 +29,7 @@ export function getWSCredentials(msg, password, email) {
   }
 
   const authParams = {
-    nonce: msg.nonce,
+    nonce: error.nonce,
     nc: msg.nc,
     realm: msg.realm,
     algorithm: msg.algorithm,

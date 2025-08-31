@@ -37,6 +37,11 @@ export default function TimelineConsumption({
 
   const chartOptions = {
     colors,
+    legend: {
+      show: true,
+      position: 'bottom',
+      showForSingleSeries: true,
+    },
     plotOptions: {
       bar: {
         columnWidth: '28%',

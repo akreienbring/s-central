@@ -88,7 +88,7 @@ function isExistingUser(user) {
   const row = getUserByUUID(sql, user.uuid);
 
   if (typeof row !== "undefined") {
-    return row.id === user.id;
+    return row.id === user.userid;
   }
   return false;
 }
@@ -112,30 +112,15 @@ function getUserByUUID(sql, uuid) {
     If not all users are returned
 */
 function getUser(sql, email) {
-  if (typeof email !== "undefined") {
-    return db.prepare(sql).get(email);
-  } else {
-    return db.prepare(sql).all();
+  try {
+    if (typeof email !== "undefined") {
+      return db.prepare(sql).get(email);
+    } else {
+      return db.prepare(sql).all();
+    }
+  } catch (error) {
+    console.error("GetUser error", error);
   }
-}
-
-/**
-  Reset the password of a user
-  @param:{string} email The user is identified by his email
-*/
-function resetPW(email) {
-  endecrypt.encrypt(config.get("db.standardpw")).then((secret) => {
-    console.log(`wsserver: resetting password of user ${email}`);
-    update(
-      "users",
-      {
-        hash: secret.hash,
-        salt: secret.salt,
-      },
-      ["email"],
-      [email]
-    );
-  });
 }
 
 /**
@@ -361,7 +346,6 @@ module.exports = {
   get,
   getUser,
   del,
-  resetPW,
   isExistingUser,
   createMessageFromConflict,
 };

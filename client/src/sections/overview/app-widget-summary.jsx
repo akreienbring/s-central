@@ -11,14 +11,7 @@ import Typography from '@mui/material/Typography';
 
 // ----------------------------------------------------------------------
 
-export default function AppWidgetSummary({
-  title,
-  subtitle,
-  icon,
-  color = 'primary',
-  sx,
-  ...other
-}) {
+export default function AppWidgetSummary({ title, subtitle, icon, sx, ...other }) {
   return (
     <Card
       component={Stack}

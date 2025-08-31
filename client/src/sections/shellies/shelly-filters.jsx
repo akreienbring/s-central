@@ -163,7 +163,7 @@ export default function ShellyFilters({
               color="inherit"
               variant="outlined"
               startIcon={<Iconify icon="formkit:submit" />}
-              onClick={(e) => handleDeviceFilter(mChecked, gChecked)}
+              onClick={() => handleDeviceFilter(mChecked, gChecked)}
             >
               {t('Submit')}
             </Button>
@@ -173,7 +173,7 @@ export default function ShellyFilters({
               color="inherit"
               variant="outlined"
               startIcon={<Iconify icon="ic:round-clear-all" />}
-              onClick={(e) => clearAll()}
+              onClick={() => clearAll()}
             >
               {t('Clear')}
             </Button>

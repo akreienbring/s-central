@@ -65,15 +65,7 @@ export default function CurrentConsumption({ title, subheader, colors, powerPerD
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
 
-      <ApexChart
-        // TODO: key forces a rerender. Currently not working with react-apexcharts v1.7.0
-        key={JSON.stringify(powerPerDevice)}
-        type="pie"
-        series={series}
-        options={options}
-        width="100%"
-        height={280}
-      />
+      <ApexChart type="pie" series={series} options={options} width="100%" height={280} />
     </Card>
   );
 }

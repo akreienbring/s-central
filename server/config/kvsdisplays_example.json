@@ -1,0 +1,9 @@
+{
+    "ClimateControl":{
+        "display": "Klimakontrolle",
+        "style": "color"
+    },
+    "SystemLanguage":{
+        "display": "Sprache"
+    }
+ }

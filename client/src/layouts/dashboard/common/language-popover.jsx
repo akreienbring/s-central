@@ -36,8 +36,8 @@ export default function LanguagePopover() {
   /**
    * When the language was changes the according states are set and
    * i18next is used
-   * @param {string} value 
-   * @param {number} index 
+   * @param {string} value
+   * @param {number} index
    */
   const handleChangeLanguage = (value, index) => {
     setCurrentLanguage(value);
@@ -95,7 +95,7 @@ export default function LanguagePopover() {
           <MenuItem
             key={option.value}
             selected={option.value === languages[languageIndex].value}
-            onClick={(event) => handleChangeLanguage(option.value, index)}
+            onClick={() => handleChangeLanguage(option.value, index)}
             sx={{ typography: 'body2', py: 1 }}
           >
             <Box

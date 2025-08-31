@@ -7,7 +7,6 @@
 const WebSocket = require("faye-websocket");
 const wsclient = require("@ws/client/wsclient");
 const shellyAuth = require("@src/utils/shelly-auth.js");
-const shellyGen1Conn = require("@http/shellyGen1Conn.js");
 const prettyjson = require("prettyjson");
 
 /*
@@ -20,26 +19,29 @@ const prettyjson = require("prettyjson");
 const getStatusBody = { id: 1, src: "user_1", method: "Shelly.GetStatus" };
 const sendCommandBody = { id: 2, src: "user_1" };
 
+/*
+  The shellyWSClients object contains all ws connections to the shelly devices.
+  A client has the following structure: { ws: shellyws, password: device.password }
+*/
 const shellyWSClients = {};
 
 /*
-  Buffers commands that must be resend if the auth info was added.
-  Commands are identified by the device id and the RPC channel.
+  Every message that must be send to a shelly device is buffered here.
+  There are messages that must be resend if the auth info was added.
+  Messages are identified by the device id and the RPC channel.
 */
 const outstandingCommands = {};
 
-/*
+/**
   Handles websocket messages received from a Shelly. If a device is protected,
   the digest authentication will be triggered.
   @param {object} event The message with data
 */
 function onMessage(event) {
   let msg = JSON.parse(event.data);
-  // console.log(prettyjson.render(msg));
   const shellyws = shellyWSClients[msg.src].ws;
   const password = shellyWSClients[msg.src].password;
 
-  // console.log(prettyjson.render(event.data));
   if (typeof msg.error !== "undefined") {
     if (msg.error.code === 401) {
       // Not authenticated. Add the credentials to the buffered body / payload
@@ -75,12 +77,13 @@ function onMessage(event) {
     const date = new Date();
     notifyFullStatus.params.ts = Math.floor(date.getTime() / 1000);
     wsclient.send(notifyFullStatus);
+    delete outstandingCommands[msg.src];
   } else if (typeof msg.method !== "undefined") {
     // ignore other messages as they will be handled by wsHandler.
   }
 }
 
-/*
+/**
   Creates a websocket client to the given device.
   All incoming messages are handled by the onMessage function.
   @param {object} device The device to connect to via websocket.
@@ -102,7 +105,7 @@ function createWSClient(device) {
       console.warn(
         `Websocket to Shelly ${shellyws.id} was closed with code ${event.code}. Reason: ${event.reason}`
       );
-      shellyWSClients[shellyws.id] = null;
+      delete shellyWSClients[shellyws.id];
     });
 
     shellyws.on("error", (event) => {
@@ -111,15 +114,21 @@ function createWSClient(device) {
   }
 }
 
-/*
-  Check if a socket to the given device is still open. If not, a new socket is creaetd.
+/**
+  Checks if a socket to the given device is still open. If not, a new socket is created.
   @param {object} shellyws the previous stored websocket client for a device
   @param {object} device The device to connect to
+  @returns {boolean} true if the socket is open, false if a new socket was created
 */
 function isOpenSocket(client, device) {
-  if (client === null || typeof client === "undefined") {
-    console.warn(
-      `There is no websocket to ${device.cname}. Client is ${client}. Opening a new socket!`
+  /*
+    A client is undefined if the websocket was never created
+    A client is null if the websocket was closed
+    A client.ws.readyState is 1 if the connection is open
+  */
+  if (typeof client === "undefined") {
+    console.log(
+      `There is no open websocket to ${device.cname}. Opening a new socket!`
     );
     createWSClient(device);
     return false;
@@ -127,29 +136,39 @@ function isOpenSocket(client, device) {
   return true;
 }
 
-/*
+/**
   Using a websocket client, that is connected to the inbound websocket server on a Shelly,  
   the status is requested, converted to the form of a 'NotifyFullStatus' and then finally send
   (with a websocket client) to the 'wsHandler' websocket server, that forwards it to his clients.
-  @param: {object} device mandatory The device that represents the shelly to get the status from
+  @param {object} device mandatory The device that represents the shelly to get the status from
 */
 function sendNotifyFullStatus(device) {
   let client = shellyWSClients[device.id];
   if (!isOpenSocket(client, device)) return;
 
-  if (!client.ws.send(JSON.stringify(getStatusBody))) {
+  client.ws.send(JSON.stringify(getStatusBody));
+  outstandingCommands[device.id] = {
+    id: getStatusBody.id,
+    body: getStatusBody,
+  };
+
+  /*
+  TODO: Not needed?
+    if (!client.ws.send(JSON.stringify(getStatusBody))) {
     client = null;
   } else {
     outstandingCommands[device.id] = {
       id: getStatusBody.id,
       body: getStatusBody,
     };
-  }
+    
+  }*/
 }
 
-/*
+/**
   Sends the given RPC command WITHOUT waiting for an answer.
   This means that there's no handler in the 'onMessage' function.
+  @async
   @param {object} device The device the command will be send to.
   @param {string} method The RPC method to send
   @param {object} params Paramters for the RPC command.
@@ -162,26 +181,19 @@ function sendCommand(device, method, params) {
   body.method = method;
   body.params = params;
 
-  if (!client.ws.send(JSON.stringify(body))) {
+  client.ws.send(JSON.stringify(body));
+  outstandingCommands[device.id] = { id: body.id, body };
+
+  /*  
+if (!client.ws.send(JSON.stringify(body))) {
     client = null;
   } else {
     outstandingCommands[device.id] = { id: body.id, body };
   }
 }
-
-/*
-  Get a 'NotifyFullStatus' object from the Shelly Gen1 connector and 
-  send it to the 'wsHandler' that forwards it to his clients.
-  param {object} device A Gen1 device that is asked for its status.
-*/
-async function sendGen1Status(device) {
-  const gen1Status = await shellyGen1Conn.getNotifyFullStatus(device);
-  // console.log(JSON.stringify(gen1Status));
-  wsclient.send(gen1Status);
+  */
 }
-
 module.exports = {
   sendNotifyFullStatus,
   sendCommand,
-  sendGen1Status,
 };

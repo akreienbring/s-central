@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Component that represents the sort dialog
+  Component that represents the sort dialog in the shelly view
 */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -27,7 +27,7 @@ const SORT_OPTIONS = [
  * Component that presents several options for sorting
  * the list of devices
  * @param {function} handleSort Called when the list must be sorted
-*/
+ */
 export default function ShellySort({ handleSort }) {
   const [open, setOpen] = useState(null);
   const [selected, setSelected] = useState(0);

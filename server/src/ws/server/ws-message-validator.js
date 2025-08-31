@@ -8,8 +8,9 @@
 
 const config = require("config");
 const db = require("@db/db.js");
-const shellyGen2Conn = require("@http/shellyGen2Conn.js");
+const shellyDevices = require("@devices/shellyDevices.js");
 const digest = require("@src/utils/digest.js");
+const prettyjson = require("prettyjson");
 
 const UNBLOCK_INTERVAL = config.get("ws-server.unblock-interval") * 1000;
 const MESSAGELIMIT = config.get("ws-server.messagelimit");
@@ -39,6 +40,7 @@ const WITHOUT_SECRET = [
   "user validate",
   "pong",
   "blogposts get public",
+  "user resetpw",
 ];
 
 /**
@@ -86,6 +88,9 @@ function validateMessage(message, ws) {
     ws.close(4003, "Invalid message!");
     return null;
   }
+
+  // now try to parse the message to check its properties
+  let msg;
   try {
     msg = JSON.parse(message);
     if (!msg.src && (!msg.event || !msg.data)) {
@@ -121,8 +126,17 @@ function validateMessage(message, ws) {
         delete msg.data.auth;
         msg.data.secret = SECRET;
       } else {
+        const validateAnswer = {
+          event: "user validate",
+          data: {
+            success: false,
+            message: "_wrongpw_",
+            requestID: msg.data.requestID,
+          },
+        };
+        ws.send(JSON.stringify(validateAnswer));
         console.error(`Got invalid credentials from: ${msg.data.user.email}`);
-        msg.data.user.password = "";
+        return null;
       }
     }
   } else if (msg.event === "user reconnect") {
@@ -131,15 +145,21 @@ function validateMessage(message, ws) {
       msg.data.secret = SECRET;
     } else {
       console.error(
-        `A client with IP '${ws.clientIP}' tried to reconnect with a non existing user ${JSON.stringify(msg.data.user)}`
+        `A client with IP '${
+          ws.clientIP
+        }' tried to reconnect with a non existing user ${JSON.stringify(
+          msg.data.user
+        )}`
       );
       // without the secret attached the user will be logged out
     }
   } else if (typeof msg.src !== "undefined") {
     // check if the device exists
-    const device = shellyGen2Conn.findDeviceById(msg.src);
+    const device = shellyDevices.findDeviceById(msg.src);
     if (typeof device === "undefined") {
       console.error(`Message from a non existing device: ${msg.src}`);
+      console.log(prettyjson.render(msg));
+
       if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
       ws.close(4003, "Device doesn't exist");
       return null;
@@ -159,6 +179,11 @@ function validateMessage(message, ws) {
     return null;
   }
 
+  /*
+   If the message is valid, remove the secret an return it.
+   It will be handled by the ws-handler.
+   */
+  // delete msg.data.secret;
   return msg;
 }
 

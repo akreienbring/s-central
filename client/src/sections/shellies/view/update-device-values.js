@@ -39,7 +39,7 @@ export default function updateDeviceValues(device, params) {
   */
   if (typeof device.switches !== 'undefined') {
     let currentSwitch;
-    device.switches.forEach((aSwitch, index) => {
+    device.switches.forEach((aSwitch) => {
       currentSwitch = params[`switch:${aSwitch.id}`] || params[`rgbw:${aSwitch.id}`];
 
       // update the values of the switch if it was not altered before

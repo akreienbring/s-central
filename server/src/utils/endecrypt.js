@@ -52,9 +52,9 @@ function validate(password, hash, salt) {
 }
 
 /**
- * 
- * @param {string} username 
- * @param {string} realm 
+ *
+ * @param {string} username
+ * @param {string} realm
  * @param {string} password
  * @returns {string} The hex value for username, realm and password
  */
@@ -75,10 +75,19 @@ function createUUID() {
   );
 }
 
+function encodeBase64(text) {
+  // Create buffer object, specifying utf8 as encoding
+  const bufferObj = Buffer.from(text, "utf8");
+
+  // Encode the Buffer as a base64 string
+  return (base64String = bufferObj.toString("base64"));
+}
+
 module.exports = {
   encrypt,
   validate,
   encryptUserHA1,
   hexHash,
   createUUID,
+  encodeBase64,
 };

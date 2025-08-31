@@ -56,7 +56,7 @@ export default function Nav({ openNav, onCloseNav }) {
       }}
     >
       <Avatar
-        src={`/assets/images/avatars/avatar_${mapNumberToMax(user.id, 25)}.jpg`}
+        src={`/assets/images/avatars/avatar_${mapNumberToMax(user.userid, 25)}.jpg`}
         alt="photoURL"
       />
 

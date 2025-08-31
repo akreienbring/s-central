@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Button from '@mui/material/Button';
@@ -80,13 +79,3 @@ export default function UserTableToolbar({
     </Toolbar>
   );
 }
-
-UserTableToolbar.propTypes = {
-  selected: PropTypes.array,
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
-  placeholder: PropTypes.string,
-  handleDeleteSelected: PropTypes.func,
-  showReallyDelete: PropTypes.bool,
-  handleShowReallyDelete: PropTypes.func,
-};

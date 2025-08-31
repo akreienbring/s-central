@@ -8,7 +8,7 @@
   is forwarded to the websocket server.
 */
 
-const shellyGen2Conn = require("@http/shellyGen2Conn.js");
+const shellyDevices = require("@devices/shellyDevices.js");
 const wsclient = require("@ws/client/wsclient.js");
 
 /**
@@ -16,7 +16,7 @@ const wsclient = require("@ws/client/wsclient.js");
  * @returns {json} All configured devices
  */
 async function getDevices() {
-  return shellyGen2Conn
+  return shellyDevices
     .getDevices()
     .then((devices) => {
       console.log("Sending response for all devices");
@@ -33,8 +33,8 @@ async function getDevices() {
   @returns {json} A specific device identified by its IP
 */
 async function getDeviceByIP(ip) {
-  return shellyGen2Conn
-    .getDevice(ip)
+  return shellyDevices
+    .getDevice(ip, false)
     .then((device) => {
       if (typeof device != "undefined") {
         console.log("Sending response for device with ip " + ip);
@@ -58,8 +58,8 @@ async function getDeviceByIP(ip) {
   @returns {json} All scripts of a device identified by its IP
 */
 async function getScripts(ip) {
-  return shellyGen2Conn
-    .getDevice(ip)
+  return shellyDevices
+    .getDevice(ip, false)
     .then((device) => {
       if (typeof device != "undefined") {
         return device.scripts;
@@ -83,11 +83,11 @@ async function getScripts(ip) {
   @returns {json} The script
 */
 async function getScriptByID(ip, id) {
-  return shellyGen2Conn
-    .getDevice(ip)
+  return shellyDevices
+    .getDevice(ip, false)
     .then((device) => {
       if (typeof device != "undefined") {
-        const script = shellyGen2Conn.findScript(device.ip, id);
+        const script = shellyDevices.findScript(device.ip, id);
         if (typeof script != "undefined") {
           return script;
         } else {
@@ -117,7 +117,7 @@ async function getScriptByID(ip, id) {
   @returns {json} The send body is returned to the client
 */
 function setDevice(body, ip) {
-  const device = shellyGen2Conn.findDevice(ip);
+  const device = shellyDevices.findDeviceByIp(ip);
   if (typeof device != "undefined") {
     device.online = body.online;
     let message = {
@@ -167,8 +167,8 @@ function setDevice(body, ip) {
   @returns {json} The send body is returned to the client
 */
 function setScript(body, ip, id) {
-  const script = shellyGen2Conn.findScript(ip, id);
-  const device = shellyGen2Conn.findDevice(ip);
+  const script = shellyDevices.findScript(ip, id);
+  const device = shellyDevices.findDeviceByIp(ip);
   if (typeof script != "undefined") {
     script.running = body.running;
     const message = {
@@ -200,7 +200,7 @@ function setScript(body, ip, id) {
   @returns {json} The send body is returned to the client
 */
 function setKVS(body, id) {
-  const device = shellyGen2Conn.findDeviceById(id);
+  const device = shellyDevices.findDeviceById(id);
   if (typeof device != "undefined") {
     const kvsentry = device.kvs.find((entry) => {
       return entry.key === body.key;

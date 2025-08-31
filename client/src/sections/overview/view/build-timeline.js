@@ -58,7 +58,7 @@ export function buildTimeline(devices, rows, timeline) {
   const chartColors = [];
   let maxConsumption = 0;
   // console.log(`Got Rows: ${JSON.stringify(rows)}`);
-  rows.forEach((entry, index) => {
+  rows.forEach((entry) => {
     if (entry.consumption > maxConsumption) maxConsumption = entry.consumption;
 
     const category = fUnixTime(entry.ts, timeline.catformat);

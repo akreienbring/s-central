@@ -53,7 +53,7 @@ const DevicesForm = ({ updateuser = { updateuser } }) => {
         data: {
           source: 'Devices Form',
           message: `Updating the devices of user ${updateuser.alias}`,
-          userid: updateuser.id,
+          userid: updateuser.userid,
           userdevices: userDevices,
         },
       },
@@ -100,7 +100,7 @@ const DevicesForm = ({ updateuser = { updateuser } }) => {
         data: {
           source: 'Devices Form',
           message: 'Devices Form needs the list of devices of a user',
-          userid: updateuser.id,
+          userid: updateuser.userid,
         },
       },
       handleUserDevicesReceived
@@ -120,7 +120,7 @@ const DevicesForm = ({ updateuser = { updateuser } }) => {
       >
         <FormControl fullWidth size="subtitle2">
           <Stack spacing={0.5} sx={{ maxHeight: '99%', overflowY: 'auto' }}>
-            {devices.map((device, index) => (
+            {devices.map((device) => (
               <FormControlLabel
                 key={device.id}
                 value={device.id}
@@ -131,6 +131,7 @@ const DevicesForm = ({ updateuser = { updateuser } }) => {
             ))}
           </Stack>
         </FormControl>
+
         <Typography variant="subtitle2" color={requestResult.success ? 'success' : 'error'}>
           {t(requestResult.message)}
         </Typography>

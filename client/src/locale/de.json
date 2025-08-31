@@ -33,6 +33,7 @@
     "_wrongpw_": "Falsches Passwort!",
     "_usernotexists_": "Email nicht gefunden!",
     "_resetpw_": "Passwort wurde zurück gesetzt.",
+    "_notresetpw_": "Passwort wurde nicht zurück gesetzt.",
     "Password": "Passwort",
     "Email": "Email",
     "Firstname": "Vorname",
@@ -109,6 +110,22 @@
     "selected": "ausgewählt",
     "_assigndevices_": "Shelly zuordnen",
     "_devicesupdated_": "Zuordnung gespeichert",
-    "_devicesnotupdated": "Fehler bei der Zuordnung"
+    "_devicesnotupdated": "Fehler bei der Zuordnung",
+    "_firmwarestable_": "Aktualisiere auf stablile Version",
+    "_firmwarebeta_": "Aktualisiere auf Beta Version",
+    "Reboot": "Neustart",
+    "Name": "Name",
+    "Uptime": "Laufzeit",
+    "_betapending_": "Beta ausstehend",
+    "_stablepending_": "Stable ausstehend",
+    "_rebootpending_": "Neustart ausstehend",
+    "_required_": "notwendig",
+    "_notrequired_": "nicht notwendig",
+    "_wifiupdated_": "WiFi settings erfolgreich aktualisiert ({{successful}} von {{total}})",
+    "_wifinotupdated_": "Nicht alle aktualisiert ({{successful}} von {{total}})",
+    "_wifiwarming_": "Achtung: Das Ändern der WiFi Einstellungen kann das Gerät trennen!",
+    "_acceptrisk_": "Ich akzeptiere das Risiko",
+    "_updateavailable_": "Nur {{checked}} von {{selected}} werden auf {{type}} aktualisiert.",
+    "_noupdateavailable_": "Keine {{type}} Updates für die ausgewählten Geräte verfügbar"
   }
 }

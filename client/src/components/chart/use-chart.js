@@ -2,14 +2,15 @@ import merge from 'lodash/merge';
 
 import { alpha, useTheme } from '@mui/material/styles';
 
-import { useResponsive } from 'src/hooks/use-responsive';
-
 // ----------------------------------------------------------------------
 
+/**
+  CURRENTLY UNUSED
+  Custom hook that creates a base chart configuration to be used in all charts.
+  @param {*} options 
+ */
 export default function useChart(options) {
   const theme = useTheme();
-
-  const smUp = useResponsive('up', 'sm');
 
   const LABEL_TOTAL = {
     show: true,

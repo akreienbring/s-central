@@ -25,11 +25,12 @@ const WebSocket = require("faye-websocket");
 const dgram = require("dgram");
 const expressServer = require("@http/server");
 const requestIp = require("request-ip");
+const util = require("util");
 
 const wsHandler = require("@ws/server/wshandler.js");
 const wsMessageValidator = require("@ws/server/ws-message-validator.js");
 
-const shellyGen2Conn = require("@http/shellyGen2Conn.js");
+const shellyDevices = require("@devices/shellyDevices.js");
 
 const port = config.get("http-server.port");
 const udpAdress = config.get("udp-server.host");
@@ -37,6 +38,9 @@ const udpServer = dgram.createSocket("udp4");
 
 // express is used to handle the http endpoints and serves the static public folder
 const httpserver = expressServer.listen(port);
+
+// the NODE_ENV that was set in your package.json scripts
+console.log(`Starting Shellybroker with config ${process.env.NODE_ENV}`);
 
 /* 
   when a websocket clients connects he sends an 'upgrade' request.
@@ -77,8 +81,12 @@ httpserver.on("upgrade", function (request, socket, body) {
   The UDP Server is used to receive log messages from Shelly devices
 */
 udpServer.on("message", (msg, rinfo) => {
-  //console.log(`UDP Server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-  shellyGen2Conn.handleLogMessage(msg, rinfo);
+  if (typeof msg !== "string") {
+    const TextDecoder = new util.TextDecoder();
+    msg = TextDecoder.decode(msg);
+  }
+  // console.log(`UDP Server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  shellyDevices.handleLogMessage(msg, rinfo);
 
   /* Respond to the client
   udpServer.send('Message received by the server', rinfo.port, rinfo.address, (err) => {

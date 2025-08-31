@@ -3,7 +3,6 @@
   Renders the login, profile, security and create form.
   Depending on the passed in type property.
 */
-import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -27,7 +26,19 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
   const { login, user, request } = useShelly();
   const [currentUser, setCurrentUser] = useState(() => {
     if (type === 'profile' || type === 'settings' || type === 'security') {
-      return typeof updateuser === 'undefined' ? { ...user } : updateuser;
+      return typeof updateuser === 'undefined'
+        ? {
+            alias: user.alias,
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            password: user.password,
+            home: user.home,
+            roleid: user.roleid,
+            userid: user.userid,
+            uuid: user.uuid,
+          }
+        : updateuser;
     }
     return {
       alias: '',
@@ -67,6 +78,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
     ONLY when type = 'profile' or 'security'! 
     Called when a 'user profile update' or 'user security update' message was received upon a former
     request that was send by 'handleSubmit'
+    Presents the result of the request and 
     @param {object} msg The message that was passed with the answer from the server
   */
   const handleUserUpdate = useCallback(
@@ -75,7 +87,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
         success: msg.data.success,
         message: msg.data.message,
       });
-      if (user.id === currentUser.id) {
+      if (user.userid === currentUser.userid) {
         // update the context user
         login(currentUser);
       }
@@ -246,10 +258,3 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
   );
 };
 export default UserForm;
-
-UserForm.propTypes = {
-  type: PropTypes.string,
-  updateuser: PropTypes.object,
-  handleUsersReceived: PropTypes.func,
-  handleUpdateUser: PropTypes.func,
-};

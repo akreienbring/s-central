@@ -1,0 +1,49 @@
+/*
+  Author: André Kreienbring
+  Simple example for S-Central. It demonstrates how to log output that should be captured
+  by S-Central.
+  It generates the necesary logPrefix automatically and the logs periodically a message.
+*/
+
+let sLogPrefix = '';
+
+const CONFIG = {
+  nLogInterval: 30
+}
+
+/*
+  Log with prefix to console.
+  Will be send to Shellybroker via udp logging
+*/ 
+function log(to_log) {
+  console.log(sLogPrefix + to_log);
+}
+
+/*
+  Builds the logprefix automatically when the script starts
+*/
+function setLogPrefix(){
+  const scriptId = Shelly.getCurrentScriptId();
+  Shelly.call('Script.GetConfig',
+    {id: scriptId },
+    function(result){
+      sLogPrefix = result.name + " (#" + scriptId + "): ";
+      log('RAM: ' + Shelly.getComponentStatus("sys").ram_free + '/' + Shelly.getComponentStatus("sys").ram_size);
+      log('FS: ' + Shelly.getComponentStatus("sys").fs_free + '/' + Shelly.getComponentStatus("sys").fs_size);  
+      log("Welcome to the S-Central logging example!")
+      Timer.set(
+        CONFIG.nLogInterval * 1000,
+        true,
+        function() {
+          log("Please participate and help the project become better!");
+          console.log("Looks like with Firmware 1.7.0 messages without prefix can also be captured")
+          
+          //uncomment next line to provoce an error. S-Central should receive a notification
+          // scriptId = 666;
+        }
+      );     
+    }
+  );
+}
+
+setLogPrefix();

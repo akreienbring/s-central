@@ -21,20 +21,33 @@ function handleLogMessage(device, msg) {
   if (typeof errorBuffer[device.id] === "undefined")
     errorBuffer[device.id] = [];
 
-  // check if the msg containes a script name of the device
+  /*
+    This checks for the prefix, that is added to each log message of a script.
+  */
   let script = device.scripts.find((script) => {
-    return msg.includes(script.name);
+    return msg.includes(`2|${script.name} (#id:${script.id})`);
   });
 
-  if (typeof script !== "undefined") {
-    lastScriptPerDevice[device.id] = script;
-    errorBuffer[device.id] = [];
+  if (typeof script === "undefined") {
+    // new since firmware 1.7.0?
+    const position = msg.search("script:");
+    if (position !== -1) {
+      const scriptId = msg.substring(position + 7, position + 8);
+      script = device.scripts.find((script) => {
+        return script.id === parseInt(scriptId);
+      });
+    }
   }
 
   /*
     Some log messages (e.g. error messages) don't include the script name.
     In this case the last detected script of the device will be assumed
   */
+  if (typeof script !== "undefined") {
+    lastScriptPerDevice[device.id] = script;
+    errorBuffer[device.id] = [];
+  }
+
   if (
     typeof script === "undefined" &&
     typeof lastScriptPerDevice[device.id] !== "undefined"
@@ -55,7 +68,7 @@ function handleLogMessage(device, msg) {
       );
 
       // Check if script is stopped because of an error
-      checkDeviceError(device, logmessage);
+      checkDeviceError(device, script, logmessage);
 
       // Filter out unwanted messages
       if (
@@ -70,7 +83,11 @@ function handleLogMessage(device, msg) {
 
       logmessage = logmessage.substring(2, logmessage.length);
 
-      // assume that errors start with '|2' and do not contain the script name
+      /* a
+        Assume that errors start with '|2' and do not contain the script name
+        That was the case in firmware versions < 1.7.0
+        In this case we collect the error messages in a buffer until the script stops
+      */
       if (!logmessage.includes(script.name)) {
         errorBuffer[device.id].push(logmessage);
       }
@@ -86,7 +103,7 @@ function handleLogMessage(device, msg) {
 
       /*
       Update the device on the Dashboard client by sending the message via the wsclient to the wshandler!
-      This way we prevent circle requirements, because wshandler requires the shellyGen2Conn!
+      This way we prevent circle requirements, because wshandler requires the shellyConnector!
       */
       const wsmessage = {
         event: "ShellyUpdate",
@@ -109,14 +126,19 @@ function handleLogMessage(device, msg) {
   @param {object} device The device that logged a message.
   @param {string} logmessage The logmessage that was logged by the given device.
 */
-function checkDeviceError(device, logmessage) {
-  if (logmessage.includes("{") && logmessage.includes("}")) {
+function checkDeviceError(device, script, logmessage) {
+  if (
+    logmessage.includes("{") &&
+    logmessage.includes("}") &&
+    logmessage.includes('"running":false') &&
+    logmessage.includes(`Status change of script:${script.id}:`)
+  ) {
     const sScriptNotification = logmessage.substring(
       logmessage.indexOf("{"),
       logmessage.indexOf("}") + 1
     );
 
-    // assume that this is a notification that the script was stopped
+    // Assume that this is a notification that the script was stopped
     try {
       const oScriptNotification = JSON.parse(sScriptNotification);
 
@@ -124,21 +146,27 @@ function checkDeviceError(device, logmessage) {
         typeof oScriptNotification.running !== "undefined" &&
         !oScriptNotification.running
       ) {
-        if (errorBuffer[device.id].length > 0) {
-          /*
-            This is only an error when error messages were collected before.
-            Construct the error from the buffer
+        if (
+          errorBuffer[device.id].length > 0 ||
+          typeof oScriptNotification.error_msg !== "undefined"
+        ) {
+          /* The format of log messages that indicate an error has changed with firmware 1.7.0
+             - For <1.7.0 this is only an error when error messages were collected before.
+               Construct the error from the buffer
+             - For >= 1.7.0 we can use the error_msg property of the notification
           */
-          let errorMessage = "";
-          errorBuffer[device.id].forEach((logmessage, index) => {
-            if (index > 0) errorMessage += "\n";
-            errorMessage += logmessage;
-          });
+          let error_msg = oScriptNotification.error_msg;
+          if (typeof error_msg === "undefined") {
+            errorBuffer[device.id].forEach((logmessage, index) => {
+              if (index > 0) error_msg += "\n";
+              error_msg += logmessage;
+            });
 
-          errorBuffer[device.id] = [];
+            errorBuffer[device.id] = [];
+          }
 
           console.error(
-            `Error of ${device.cname} in script with id  ${oScriptNotification.id}: ${errorMessage}`
+            `Error of ${device.cname} in script with id  ${script.id}: ${error_msg}`
           );
 
           /*
@@ -148,13 +176,13 @@ function checkDeviceError(device, logmessage) {
             event: "notification create",
             data: {
               name: "Loghandler",
-              message: `Error of ${device.cname} in script with id  ${oScriptNotification.id}`,
+              message: `Error of ${device.cname} in script with id  ${script.id}`,
               notification: {
                 type: "script-error",
                 device_ip: device.ip,
                 device_cname: device.cname,
-                script_id: oScriptNotification.id,
-                notification: errorMessage,
+                script_id: script.id,
+                notification: error_msg,
               },
             },
           };

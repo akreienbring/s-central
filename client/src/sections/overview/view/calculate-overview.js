@@ -27,7 +27,7 @@ export default function calculateOverview(devices) {
 
   let deviceConsumption = { hasSwitch: false, totalPower: 0, powerPerDevice: [] };
 
-  Object.values(devices).forEach((device, index) => {
+  Object.values(devices).forEach((device) => {
     const params = device?.wsmessages?.NotifyFullStatus?.params;
     if (device.online) onlineCount += 1;
 

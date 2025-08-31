@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      window.scconfig = {
+        /*
+          In development websocket communication is not encrypted.
+        */
+        WSURL: 'ws://192.168.1.2:3031',
+        WSSURL: 'wss://192.168.1.2:3031',
+        RECONNECT_DELAY: 2,
+        RECONNECT_MAX: 10,
+        LANDING_PAGE: 'login',
+      };
+    </script>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon (generated with https://favycon.vercel.app/) -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/favicon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/favicon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/favicon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/favicon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/favicon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/favicon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/favicon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-180x180.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/favicon-192x192.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/favicon-144x144.png" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>S-Central</title>
+    <meta name="description" content="Shelly Central for your Shelly devices" />
+    <meta name="keywords" content="react,application,dashboard,admin" />
+    <meta name="author" content="André Kreienbring" />
+    <script type="module" crossorigin src="/assets/index-pfyqZ81J.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/i18next-CO45VQzB.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-i18next-m5toO21s.js">
+    <link rel="modulepreload" crossorigin href="/assets/scheduler-SPyfQU6S.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-dom-DiGrC_4W.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-fast-compare-BpcXi7xd.js">
+    <link rel="modulepreload" crossorigin href="/assets/invariant-Cni9POrp.js">
+    <link rel="modulepreload" crossorigin href="/assets/shallowequal-wfPe1HzH.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-helmet-async-C7lQZXof.js">
+    <link rel="modulepreload" crossorigin href="/assets/prop-types-C6oFCY0U.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-router-B-PzIy_Z.js">
+    <link rel="modulepreload" crossorigin href="/assets/hoist-non-react-statics-C-Qo8PK8.js">
+    <link rel="modulepreload" crossorigin href="/assets/@babel-B5c2X20U.js">
+    <link rel="modulepreload" crossorigin href="/assets/stylis-BqmD5Vow.js">
+    <link rel="modulepreload" crossorigin href="/assets/@emotion-CqV0AzBE.js">
+    <link rel="modulepreload" crossorigin href="/assets/clsx-B-dksMZM.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-transition-group-BpTLEanp.js">
+    <link rel="modulepreload" crossorigin href="/assets/@popperjs-B_2vCoY7.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-is-BPJnJB5S.js">
+    <link rel="modulepreload" crossorigin href="/assets/@mui-Dcuc591Q.js">
+    <link rel="modulepreload" crossorigin href="/assets/date-fns-BGICL5-d.js">
+    <link rel="modulepreload" crossorigin href="/assets/numeral-MI4i5EM7.js">
+    <link rel="modulepreload" crossorigin href="/assets/apexcharts-C3Y1NT8T.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-apexcharts-D-_s-s_p.js">
+    <link rel="modulepreload" crossorigin href="/assets/tslib-Cl2D6AzD.js">
+    <link rel="modulepreload" crossorigin href="/assets/hey-listen--dyuUo0b.js">
+    <link rel="modulepreload" crossorigin href="/assets/style-value-types-BAfJXZRZ.js">
+    <link rel="modulepreload" crossorigin href="/assets/framesync-BEUTIEb0.js">
+    <link rel="modulepreload" crossorigin href="/assets/popmotion-D6DFATwb.js">
+    <link rel="modulepreload" crossorigin href="/assets/framer-motion-BbHstrI0.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-material-ui-carousel-CS9XfEsu.js">
+    <link rel="modulepreload" crossorigin href="/assets/orderedmap-C4TimWWB.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-model-BeEvkDM6.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-transform-2Ouwqz82.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-state-ChlmXDrH.js">
+    <link rel="modulepreload" crossorigin href="/assets/tippy.js-T2NbCdtq.js">
+    <link rel="modulepreload" crossorigin href="/assets/linkifyjs-D1E_6M9a.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-view-BDCVSZTi.js">
+    <link rel="modulepreload" crossorigin href="/assets/w3c-keyname-DEtA-KhA.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-keymap-DL2ZCKxC.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-tables-B9Tm3w7H.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-dropcursor-DSn0vDGy.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-gapcursor-BBeXi_IQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/rope-sequence-Cxv9J64N.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-history-DJ2E3SMw.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-commands-Cj2ZrUhE.js">
+    <link rel="modulepreload" crossorigin href="/assets/prosemirror-schema-list-DJgnbLu-.js">
+    <link rel="modulepreload" crossorigin href="/assets/@tiptap-CFbbXN2V.js">
+    <link rel="modulepreload" crossorigin href="/assets/highlight.js-DzbieIK9.js">
+    <link rel="modulepreload" crossorigin href="/assets/lowlight-HkzL583q.js">
+    <link rel="modulepreload" crossorigin href="/assets/mui-tiptap-editor-BOU4kAcX.js">
+    <link rel="modulepreload" crossorigin href="/assets/lodash-4lwYQPXq.js">
+    <link rel="modulepreload" crossorigin href="/assets/es5-ext-B-aRoSt4.js">
+    <link rel="modulepreload" crossorigin href="/assets/websocket-XZy_nFgd.js">
+    <link rel="modulepreload" crossorigin href="/assets/sha256-uint8array-DNUmUZDr.js">
+    <link rel="modulepreload" crossorigin href="/assets/@iconify-CHzKCzOs.js">
+    <link rel="modulepreload" crossorigin href="/assets/mui-color-input-M8MIX8Iy.js">
+    <link rel="modulepreload" crossorigin href="/assets/lodash-es-BFDc8I3u.js">
+    <link rel="modulepreload" crossorigin href="/assets/simplebar-core-Dgrngn7n.js">
+    <link rel="modulepreload" crossorigin href="/assets/simplebar-react-BvwG2ii2.js">
+    <link rel="modulepreload" crossorigin href="/assets/index-pfyqZ81J.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-CFyJEAuc.js">
+    <link rel="stylesheet" crossorigin href="/assets/mui-tiptap-editor-DLGMMGBK.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-BiY0_sXQ.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      const global = globalThis;
+    </script>
+  </body>
+</html>

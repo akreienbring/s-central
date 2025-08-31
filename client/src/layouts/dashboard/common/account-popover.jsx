@@ -59,8 +59,8 @@ export default function AccountPopover() {
   };
 
   /**
-   * Opens the Popover itself 
-   * @param {object} event 
+   * Opens the Popover itself
+   * @param {object} event
    */
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -71,7 +71,7 @@ export default function AccountPopover() {
 
   /**
    * Maps the type to a title that is displayed in the Popover
-   * @param {string} type 
+   * @param {string} type
    * @returns The (translated) title
    */
   const getTitle = (type) => {
@@ -99,7 +99,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={`/assets/images/avatars/avatar_${mapNumberToMax(user.id, 25)}.jpg`}
+          src={`/assets/images/avatars/avatar_${mapNumberToMax(user.userid, 25)}.jpg`}
           alt={user.name}
           sx={{
             width: 36,

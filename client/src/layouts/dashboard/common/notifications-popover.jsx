@@ -3,7 +3,6 @@
   Lists notifications that are retrieved from the server.
   Presents functions to manage them.
 */
-import PropTypes from 'prop-types';
 import { es, de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
@@ -75,7 +74,7 @@ export default function NotificationsPopover() {
     (msg) => {
       isNotificationLoaded.current = true;
 
-      const allNotifications = msg.data.notifications.map((notification, index) => ({
+      const allNotifications = msg.data.notifications.map((notification) => ({
         id: notification.id,
         type: notification.type,
         title: notification.title,
@@ -122,7 +121,6 @@ export default function NotificationsPopover() {
     /*
       Clean up the websocket subscription when unmounting the component.
     */
-    // eslint-disable-next-line consistent-return
     return () => {
       unsubscribe(currentSubscriptionID, ['notification create']);
     };
@@ -327,7 +325,7 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
 
   return (
     <ListItemButton
-      onClick={(event) => {
+      onClick={() => {
         if (notification.isUnread) handleItemClick(notification);
       }}
       sx={{
@@ -340,7 +338,9 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
       }}
     >
       <ListItemAvatar>
-        <Avatar sx={{ bgcolor: 'background.neutral' }}>{avatar}</Avatar>
+        <Avatar alt={notification.title} sx={{ bgcolor: 'background.neutral' }}>
+          {avatar}
+        </Avatar>
       </ListItemAvatar>
       <Stack direction="row" spacing={3} alignItems="start" justifyContent="space-between">
         <ListItemText
@@ -366,7 +366,7 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
         />
         {!notification.isUnread && (
           <IconButton
-            onClick={(event) => {
+            onClick={() => {
               handleItemDelete(notification.id);
             }}
           >
@@ -401,30 +401,16 @@ function renderContent(notification) {
 
   if (notification.type === 'script-error') {
     return {
-      avatar: <img alt={notification.title} src="/assets/icons/ic_notification_error.svg" />,
+      avatar: <img src="/assets/icons/notification/ic_notification_error.svg" />,
       title,
     };
   }
 
   if (notification.type === 'device-offline') {
     return {
-      avatar: <img alt={notification.title} src="/assets/icons/ic_notification_offline.svg" />,
+      avatar: <img src="/assets/icons/notification/ic_notification_offline.svg" />,
       title,
     };
   }
   return null;
 }
-
-NotificationItem.propTypes = {
-  handleItemDelete: PropTypes.func,
-  handleItemClick: PropTypes.func,
-  notification: PropTypes.shape({
-    createdAt: PropTypes.instanceOf(Date),
-    id: PropTypes.number,
-    isUnread: PropTypes.bool,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    type: PropTypes.string,
-    avatar: PropTypes.any,
-  }),
-};

@@ -116,7 +116,7 @@ export default function BlogView() {
             key={createUUID()}
             blogpost={blogpost}
             index={index}
-            handleDeletePost={(event) => handleDeletePost(blogpost.id)}
+            handleDeletePost={() => handleDeletePost(blogpost.id)}
           />
         ))}
       </Grid>

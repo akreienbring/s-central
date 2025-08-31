@@ -12,13 +12,15 @@ const ws = new WebSocket.Client(
 
 const SECRET = config.get("ws-server.secret");
 
-/*
-  Sends a strinyfied message to the internal WS Server.
+/**
+  Sends a stringyfied message to the internal WS Server.
   On internal messages the secret is added to pass the server validation.
-  The message will then be forwarded to all WS clients
+  The message will then be forwarded to the websocket server.
   @param {object} msg mandatory The message to forward.
 */
 function send(msg) {
+  if (typeof msg === "undefined") return;
+
   if (!msg.src) msg.data.secret = SECRET;
   ws.send(JSON.stringify(msg));
 }
