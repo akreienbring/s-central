@@ -141,7 +141,7 @@ because of performance reasons this information is only retrieved on Server star
 
 ## Server Configuration
 
-Check/ Change the Settings marked with (!)
+**Check/ Change the Settings marked with (!) and rename the _example_ files!**
 
 File: _/sb/config/devices.json_
 
