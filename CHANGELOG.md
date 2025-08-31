@@ -96,3 +96,15 @@
   - how to log output that is captured by the Shellybroker server
   - how to use the webservice endpoints of the Shellybroker
   - how script Errors are detected and send to the Shellybroker as notification
+
+### Release v2.1.1
+
+##### 31.08.2025
+
+**Client (2.1.1)**
+
+- fixed: Firmware updates not working
+
+**Server (2.1.1)**
+
+- new: Available Firmware versions constantly updated from NotifyFullStatus

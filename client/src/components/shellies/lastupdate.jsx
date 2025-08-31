@@ -16,7 +16,7 @@ import { subscribeEvent, unsubscribeEvent } from 'src/events/pubsub';
 
 import Iconify from 'src/components/iconify';
 
-/*
+/**
   When the wbsocket receives data it publishes the custom event 'lastUpdateAt' with the current time.
   When the websocket is closed it publishes the event 'lastUpdateAt' with a null value.
   During rendering 'lastUpdateAt' may be undefined.

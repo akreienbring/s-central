@@ -82,8 +82,23 @@ async function getNotifyFullStatus(device) {
           uptime: status.uptime,
           restart_required: false, //Does not exixt for Gen1
           available_updates: {
-            stable: { version: device.stable },
-            beta: { version: device.beta },
+            stable: {
+              version:
+                typeof status?.update?.new_version !== "undefined" &&
+                status?.update?.has_update
+                  ? status.update.new_version.substring(
+                      status.update.new_version.indexOf("/") + 1
+                    )
+                  : undefined,
+            },
+            beta: {
+              version:
+                typeof status?.update?.beta_version !== "undefined"
+                  ? status.update.beta_version.substring(
+                      status.update.beta_version.indexOf("/") + 1
+                    )
+                  : undefined,
+            },
           },
         },
       },

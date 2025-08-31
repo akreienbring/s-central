@@ -81,11 +81,11 @@ export default function ShellyTableRow({
         break;
       }
       case 'stable': {
-        handleFirmwareUpdates(['stable', myRow.id]);
+        handleFirmwareUpdates('stable', [myRow.id]);
         break;
       }
       case 'beta': {
-        handleFirmwareUpdates(['beta', myRow.id]);
+        handleFirmwareUpdates('beta', [myRow.id]);
         break;
       }
       case 'wifi': {

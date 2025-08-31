@@ -32,7 +32,7 @@ import updateDeviceValues from 'src/sections/shellies/view/update-device-values'
 // ----------------------------------------------------------------------
 
 const ExpandKVS = styled((props) => {
-  const { ...other } = props;
+  const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',

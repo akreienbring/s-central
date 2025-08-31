@@ -127,14 +127,20 @@ function handleMessage(msg, ws) {
         typeof msg.params !== "undefined"
       ) {
         updateDeviceValues.update(device, msg.params);
+
+        const newStable = msg.params.sys.available_updates?.stable?.version;
+        const newBeta = msg.params.sys.available_updates?.beta?.version;
+
+        // device.stable = msg.params.sys.available_updates?.stable?.version;
+        // device.beta = msg.params.sys.available_updates?.beta?.version;
+
         delete device.rebootPending;
 
-        /*
-        if the device sends a ws message, it is considered as online
-        */
         if (
           (typeof device.online !== "undefined" && !device.online) ||
           device.name === "unknown" ||
+          device.stable !== newStable ||
+          device.beta !== newBeta ||
           (typeof device.updateStablePending !== "undefined" &&
             device.updateStablePending) ||
           (typeof device.updateBetaPending !== "undefined" &&
@@ -144,6 +150,7 @@ function handleMessage(msg, ws) {
             Reload an offline device because it's obviously online.
             If an update is pending, the device will be reloaded
             to get the current firmware of the device.
+            If stable or beta update has changed, the device was updated outside of this app.
           */
           device.online = true;
           console.warn(`Reloading device ${device.cname}`);
@@ -151,7 +158,7 @@ function handleMessage(msg, ws) {
           device.old_fw_id = device.fw_id;
 
           shellyDevices.getDevice(device.ip, true).then((reloadedDevice) => {
-            prettyjson.render(reloadedDevice);
+            // prettyjson.render(reloadedDevice);
             if (reloadedDevice.fw_id === device.old_fw_id) {
               console.warn(
                 `Reloaded device ${reloadedDevice.cname}. Firmware is still the same (${device.old_fw_id}).`

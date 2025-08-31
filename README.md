@@ -135,7 +135,6 @@ The server must be restartet when
 - You add / delete a script on a device
 - You add / delete a KVS key<br/>
 - You change server configuration values<br/>
-- You updated the Firmware of a device with some other application
 
 because of performance reasons this information is only retrieved on Server startup.
 

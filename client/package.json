@@ -2,7 +2,7 @@
   "author": "André Kreienbring",
   "name": "@s-central/react-client",
   "license": "AGPL-3.0",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Frontend of the S-Central",
   "private": false,
   "scripts": {

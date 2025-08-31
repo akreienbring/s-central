@@ -34,7 +34,7 @@ export default function LanguagePopover() {
   const [languageIndex, setLanguageIndex] = useState(0);
 
   /**
-   * When the language was changes the according states are set and
+   * When the language was changed the according states are set and
    * i18next is used
    * @param {string} value
    * @param {number} index
