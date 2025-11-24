@@ -1,16 +1,16 @@
 import { lazy, Suspense } from 'react';
-import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import { Outlet, Navigate, useRoutes } from 'react-router';
 
 import { useShelly } from 'src/sccontext';
 import DashboardLayout from 'src/layouts/dashboard';
 
-export const AppPage = lazy(() => import('src/pages/app'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
-export const UserPage = lazy(() => import('src/pages/user'));
-export const LoginPage = lazy(() => import('src/pages/login'));
-export const LandingPage = lazy(() => import('src/pages/landing'));
-export const ShelliesPage = lazy(() => import('src/pages/shellies'));
-export const Page404 = lazy(() => import('src/pages/page-not-found'));
+const AppPage = lazy(() => import('src/pages/app'));
+const BlogPage = lazy(() => import('src/pages/blog'));
+const UserPage = lazy(() => import('src/pages/user'));
+const LoginPage = lazy(() => import('src/pages/login'));
+const LandingPage = lazy(() => import('src/pages/landing'));
+const ShelliesPage = lazy(() => import('src/pages/shellies'));
+const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
 

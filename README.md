@@ -31,9 +31,14 @@ S-Central supports English, Spanish and German.
 
 ## Why use it?
 
-Managing many Shellies in a network is a challenge. The original Shelly Control app is a good choice. But it is cloudbased. Hence you need an internet connection to control your devices. S-Central needs only Wifi and your local network. It is Open Source and transparent. You are welcome to participate and enhance the features.
+Managing / Monitoring many Shellies in a network is a challenge. With S-Central you have the overview. How do you switch your relays? The original Shelly Control app (or Alexa) is a good choice. But both are cloudbased. Hence you need an internet connection to control your devices No Internet - no switch. S-Central needs only Wifi and your local network. So you can also look at it as an emergancy fallback. It is Open Source and transparent. You are welcome to participate and enhance the features.
 
-## How to install
+## Supported operating systems (OS)
+
+- Server: Needs nodejs be installed in your local network. Node ist available for Windows, MacOs, Linux and AIX.
+- Client: Runs in the browser, hence is OS independent. Desktop and Smartphones are supported thanks to the responsive design of Material UI!
+
+## How to install the erver with the included Client release
 
 - **Prerequisites**<br/>
   Install nodejs. Normally it includes the NPM packet manager. I tested the system with nodejs 20.x.
@@ -88,12 +93,10 @@ So to get this working you need to preceed every output with the name of the Scr
 and then a function like
 
 ```
-
   //log with prefix to console
   function log(to_log) {
   console.log(CONFIG.logPrefix, to_log);
   }
-
 ```
 
 to output messages to the console prefixed by script name and script id<br/>
@@ -197,6 +200,13 @@ File: _/sb/public/index.html_
 | RECONNECT_MAX   | number             | Number of reconnect attemps after loosing the connection                                       |
 | LANDING_PAGE    | 'login' or 'blogs' | If 'blogs' and public blogs exist, they are shown directly                                     |
 
+## Update an existing installation
+
+Every release comes with an _index.html_. So take care of the values you configured in this file (see above). These two way's should work:
+
+1. Delete _/sb/public/index.html_ from the release before storing the release on your server (because normaly it does not change)
+2. Copy the whole release to your server and restore your values like described above
+
 ## Building the Client or starting the development server
 
 The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses the
@@ -233,6 +243,16 @@ Add images to the project. Images are missing because I don't own all of the ava
 
 **The Developer way**<br/>
 Fork the whole Github project and start making pullrequests! Your welcome! As with the images I'm sure other devices (I don't own) have special switches, RPC commands, JSON formats etc... Let's enhance this software to support more devices for the sake of all Shelly users!
+
+Once forked here are some usefull tips:
+
+- Install nodejs on the developer machine
+- Run npm i --force in both the server and the client folder
+- Make changes to add new functionaliy :-)
+- If you use vscode, there's a 'launch' script included to start and debug the nodejs Server
+- To start the vite development server use the npm sript 'dev'
+- To start and debug the client, there's a 'launch' script included (Firefox and Chrome)
+- For testing with Cypress: Start the nodejs server and use the npm script 'cy'
 
 ## Screenshots
 

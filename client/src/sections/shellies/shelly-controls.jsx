@@ -84,6 +84,7 @@ const ShellyControls = ({ device, handleSwitchSet }) => {
         <>
           <Typography variant="subtitle">{t('Brightness')}</Typography>
           <Slider
+            data-testid="shelly_brightness_slider"
             value={brightness}
             min={0}
             max={100}
@@ -100,6 +101,7 @@ const ShellyControls = ({ device, handleSwitchSet }) => {
         <>
           <Typography variant="subtitle">{t('White')}</Typography>
           <Slider
+            data-testid="shelly_white_slider"
             value={white}
             min={0}
             max={device.gen === 1 ? 100 : 255}
@@ -114,6 +116,7 @@ const ShellyControls = ({ device, handleSwitchSet }) => {
       )}
       {typeof rgbSwitch !== 'undefined' && (
         <MuiColorInput
+          data-testid="shelly_multicolor_input"
           format="rgb"
           isAlphaHidden
           value={rgb}

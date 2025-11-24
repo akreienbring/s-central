@@ -4,7 +4,6 @@
   Every device is presented in his own ShellyCard component or, in case
   of the table tab, a table of the devices is shown.
 */
-import { memo } from 'react';
 
 import Grid from '@mui/material/Grid';
 
@@ -44,7 +43,7 @@ const TabPanel = ({ index, devices }) => {
       spacing={2}
       size={{ xs: { xs }, sm: { sm }, md: { md }, lg: { lg }, xl: { xl } }}
     >
-      {devices.map((device) => {
+      {devices.map((device, index) => {
         /*
           Check for existing switch controls
         */
@@ -70,7 +69,7 @@ const TabPanel = ({ index, devices }) => {
         if (showDevice)
           return (
             <Grid key={createUUID()} sx={{ minWidth: type === 'sk' || type === 'ctrl' ? 0 : 1 }}>
-              <ShellyCard shelly={device} key={device.id} type={type} />
+              <ShellyCard deviceId={device.id} deviceGen={device.gen} key={device.id} type={type} />
             </Grid>
           );
         return null;
@@ -79,4 +78,4 @@ const TabPanel = ({ index, devices }) => {
   );
 };
 
-export default memo(TabPanel);
+export default TabPanel;

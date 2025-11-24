@@ -3,7 +3,7 @@
   Builds the list of wsmessages of a device shown besides a ShellyCard component.
   
 */
-import { memo, Fragment } from 'react';
+import { Fragment } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -58,4 +58,4 @@ const WSMessageList = ({ deviceName, wsmessages }) => {
   return elements;
 };
 
-export default memo(WSMessageList);
+export default WSMessageList;

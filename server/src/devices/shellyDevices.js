@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  ShellyDEvices maintains an internal array of devices.
+  ShellyDevices maintains an internal array of devices.
   These devices are initially loaded from a json file (devices.json)
   and then enriched by data requested from the Shelly devices that 
   are associated to the configured IP adresses.

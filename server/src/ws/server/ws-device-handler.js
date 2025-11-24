@@ -37,6 +37,20 @@ function handle(msg, ws) {
       answer.data.devices = devices;
       ws.send(JSON.stringify(answer));
     });
+  } else if (msg.event === "device get") {
+    /*
+      A dashboard client needs a single device.
+    */
+    const device = shellyDevices.findDeviceById(msg.data.deviceId);
+    const answer = {
+      event: "device get",
+      data: {
+        message: `OK! Here is device ${device.cname}`,
+        device,
+        requestID: msg.data.requestID,
+      },
+    };
+    ws.send(JSON.stringify(answer));
   } else if (msg.event === "devices timeline get") {
     /*
       A dashboard client needs the list of devices.
@@ -64,6 +78,7 @@ function handle(msg, ws) {
       const device = shellyDevices.findDeviceById(id);
       if (typeof device !== "undefined") {
         device.updateStablePending = true;
+        device.old_fw_id = device.fw_id;
         delete device.wsmessages.NotifyFullStatus;
         const updateMessage = {
           event: "ShellyUpdate",
@@ -90,6 +105,7 @@ function handle(msg, ws) {
       const device = shellyDevices.findDeviceById(id);
       if (typeof device !== "undefined") {
         device.updateBetaPending = true;
+        device.old_fw_id = device.fw_id;
         delete device.wsmessages.NotifyFullStatus;
         const updateMessage = {
           event: "ShellyUpdate",

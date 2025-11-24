@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 import { fWh, fShortenNumber } from 'src/utils/format-number';
 import { createUUID, mapNumberToMax } from 'src/utils/general';
@@ -24,8 +24,6 @@ import { createUUID, mapNumberToMax } from 'src/utils/general';
 import { useShelly } from 'src/sccontext';
 
 import { useChartColors } from 'src/components/chart/chart';
-
-import ViewTitle from 'src/sections/shellies/view-title';
 
 import AppWidgetSummary from '../app-widget-summary';
 import calculateOverview from './calculate-overview';
@@ -241,14 +239,11 @@ export default function AppView() {
   if (devices.length === 0) return null;
   return (
     <Container maxWidth="xl">
-      <Stack direction="row">
-        <ViewTitle
-          title={`${t('_welcome_')} ${user.firstname !== null ? user.firstname : user.alias}`}
-        />
-      </Stack>
+      <Typography variant="h4">{`${t('_welcome_')} ${user.firstname !== null ? user.firstname : user.alias}`}</Typography>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AppWidgetSummary
+            data-testid="dashboard_shellies_component"
             title={`${onlineCount.online}/${onlineCount.count}`}
             subtitle={`Shellies ${t('Connected')}`}
             color="success"
@@ -258,6 +253,7 @@ export default function AppView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AppWidgetSummary
+            data-testid="dashboard_totalconsumption_component"
             title={fWh(totalPower)}
             subtitle={t('_consumption_')}
             color="info"
@@ -267,6 +263,7 @@ export default function AppView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AppWidgetSummary
+            data-testid="dashboard_scripts_component"
             title={`${scripts.running}/${scripts.count}`}
             subtitle={t('Running')}
             color="success"
@@ -276,6 +273,7 @@ export default function AppView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AppWidgetSummary
+            data-testid="dashboard_cloud_component"
             title={fShortenNumber(cloudCount)}
             subtitle={t('Connected')}
             color="error"
@@ -285,6 +283,7 @@ export default function AppView() {
 
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
           <CurrentConsumption
+            data-testid="dashboard_current_consumption_component"
             title={t('_consumption_')}
             subheader={t('_perShelly_')}
             colors={colorPerDevice}
@@ -294,6 +293,7 @@ export default function AppView() {
 
         <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
           <TimelineConsumption
+            data-testid="dashboard_timeline_component"
             title="Timeline"
             subheader={t('_perShelly_')}
             chart={timelineByDevice}

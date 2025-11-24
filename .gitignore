@@ -1,8 +1,8 @@
 /HowTo.md
-/.vscode
 server/broker.db
 server/node_modules/
-server/.vscode
+server/.vscode/*
+!server/.vscode/launch.json
 server/config/default.json
 server/config/dev.json
 server/config/devices.json
@@ -10,5 +10,6 @@ server/config/kvsdisplays.json
 
 
 client/node_modules/
-client/.vscode
+client/.vscode/*
+!client/.vscode/launch.json
 client/dist/

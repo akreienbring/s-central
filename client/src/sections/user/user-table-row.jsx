@@ -106,7 +106,13 @@ export default function UserTableRow({
 
   return (
     <>
-      <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
+      <TableRow
+        data-testid="user_tablerow_component"
+        hover
+        tabIndex={-1}
+        role="checkbox"
+        selected={selected}
+      >
         <TableCell padding="checkbox">
           {userid !== 1 && // main admin must not be deleted
             userid !== appUser.userid && // self deletion is not allowed
@@ -133,7 +139,7 @@ export default function UserTableRow({
         <TableCell>{home}</TableCell>
 
         <TableCell align="right">
-          <IconButton onClick={handleOpenMenu}>
+          <IconButton data-testid={`user${userid}_openmenue_button`} onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -152,6 +158,7 @@ export default function UserTableRow({
         }}
       >
         <MenuItem
+          data-testid="user_editprofile_button"
           disabled={userid === 1 && appUser.userid !== 1}
           onClick={() => handleOpenUpdate('profile')}
         >

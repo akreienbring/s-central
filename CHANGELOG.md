@@ -108,3 +108,13 @@
 **Server (2.1.1)**
 
 - new: Available Firmware versions constantly updated from NotifyFullStatus
+
+### Release v2.2.0
+
+##### xx.xx.xxxx
+
+**Client (2.2.0)**
+
+- feature: Added tests with Cypress.
+- fixed: Dataloss when switching tabs in ShellyView
+- fixed: too many rerenders in ShellyView

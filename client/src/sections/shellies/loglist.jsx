@@ -5,8 +5,6 @@
   as 'updates' to the devices.
 
 */
-import { memo } from 'react';
-import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -46,8 +44,4 @@ const LogList = ({ scripts }) => {
     return null;
   });
 };
-export default memo(LogList);
-
-LogList.propTypes = {
-  scripts: PropTypes.array.isRequired,
-};
+export default LogList;

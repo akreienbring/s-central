@@ -9,11 +9,13 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { validateEmail } from 'src/utils/general';
 
@@ -31,6 +33,7 @@ import Iconify from 'src/components/iconify';
   @param {function} setCurrentUser called everytime an input is changed to reflect the updated user.
   @param {function} handleForgotten called when a password must be reset.
   @param {function} handleCurrentUser called when the user was changed.
+  @returns {JSX.Element}
 */
 const UserFormDisplay = ({
   type,
@@ -43,6 +46,8 @@ const UserFormDisplay = ({
   handleCurrentUser,
 }) => {
   const { user } = useShelly();
+  const [isTest, setIsTest] = useState(false);
+
   const [homeSelection, setHomeSelection] = useState(
     type === 'create' ? 'dashboard' : currentUser.home
   );
@@ -92,6 +97,8 @@ const UserFormDisplay = ({
     } else if (target.name === 'alias') {
       // no spaces on alias
       updatedUser[target.name] = target.value.trim();
+    } else if (target.name === 'test') {
+      setIsTest(target.checked);
     } else {
       updatedUser[target.name] = target.value;
     }
@@ -107,7 +114,7 @@ const UserFormDisplay = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     origUser.current = currentUser;
-    handleCurrentUser(currentUser);
+    handleCurrentUser(currentUser, isTest);
   };
 
   /**
@@ -164,6 +171,7 @@ const UserFormDisplay = ({
         <Stack spacing={3} sx={{ px: 3, py: 3 }}>
           {(type === 'login' || type === 'create' || type === 'security') && (
             <TextField
+              slotProps={{ htmlInput: { 'data-testid': 'security_email_input' } }}
               required
               value={currentUser.email}
               name="email"
@@ -173,25 +181,36 @@ const UserFormDisplay = ({
             />
           )}
           {(type === 'login' || type === 'security') && (
-            <TextField
-              name="password"
-              required
-              label={t('Password')}
-              onFocus={handleInputFocus}
-              onChange={handleInputChange}
-              type={showPassword ? 'text' : 'password'}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
+            <>
+              <TextField
+                name="password"
+                required
+                label={t('Password')}
+                onFocus={handleInputFocus}
+                onChange={handleInputChange}
+                type={showPassword ? 'text' : 'password'}
+                slotProps={{
+                  htmlInput: { 'data-testid': 'security_password_input' },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                          <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              {type === 'login' && (
+                <FormControlLabel
+                  data-testid="login_test_checkbox"
+                  control={<Checkbox name="test" checked={isTest} onChange={handleInputChange} />}
+                  label="Test"
+                  sx={{ display: 'none' }}
+                />
+              )}
+            </>
           )}
           {type === 'security' && (
             <TextField
@@ -202,6 +221,7 @@ const UserFormDisplay = ({
               onChange={handleInputChange}
               type={showPassword ? 'text' : 'password'}
               slotProps={{
+                htmlInput: { 'data-testid': 'security_password2_input' },
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
@@ -223,6 +243,9 @@ const UserFormDisplay = ({
                 label={t('Alias')}
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
+                slotProps={{
+                  htmlInput: { 'data-testid': 'profile_alias_input' },
+                }}
               />
               <TextField
                 value={currentUser.firstname ? currentUser.firstname : ''}
@@ -230,6 +253,9 @@ const UserFormDisplay = ({
                 label={t('Firstname')}
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
+                slotProps={{
+                  htmlInput: { 'data-testid': 'profile_firstname_input' },
+                }}
               />
               <TextField
                 value={currentUser.lastname ? currentUser.lastname : ''}
@@ -237,6 +263,9 @@ const UserFormDisplay = ({
                 label={t('Lastname')}
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
+                slotProps={{
+                  htmlInput: { 'data-testid': 'profile_lastname_input' },
+                }}
               />
               <TextField
                 disabled={user.userid === currentUser.userid || currentUser.userid === 1}
@@ -247,6 +276,9 @@ const UserFormDisplay = ({
                 label={t('Role')}
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
+                slotProps={{
+                  htmlInput: { 'data-testid': 'profile_role_select' },
+                }}
               >
                 {typeof roles !== 'undefined'
                   ? roles.map((role) => (
@@ -267,9 +299,16 @@ const UserFormDisplay = ({
               label={t('Home')}
               onChange={handleInputChange}
               onFocus={handleInputFocus}
+              slotProps={{
+                htmlInput: { 'data-testid': 'settings_home_select' },
+              }}
             >
-              <MenuItem value="dashboard">Dashboard</MenuItem>
-              <MenuItem value="shellies">Shellies</MenuItem>
+              <MenuItem data-testid="home_dashboard_option" value="dashboard">
+                Dashboard
+              </MenuItem>
+              <MenuItem data-testid="home_shellies_option" value="shellies">
+                Shellies
+              </MenuItem>
             </TextField>
           )}
           <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
@@ -290,6 +329,7 @@ const UserFormDisplay = ({
           </Stack>
           {type === 'login' ? (
             <Button
+              data-testid="login_submit_button"
               disabled={checkSubmitCriterias()}
               fullWidth
               size="large"
@@ -301,6 +341,7 @@ const UserFormDisplay = ({
             </Button>
           ) : (
             <Button
+              data-testid="account_save_button"
               disabled={checkSubmitCriterias()}
               fullWidth
               size="large"

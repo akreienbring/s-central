@@ -84,7 +84,7 @@ async function digest(url, shellyMethod, params, password) {
     console.error(err.message);
     const res = err.cause.response;
 
-    if (typeof res !== "undefined" && res.status === 401) {
+    if (res?.status === 401) {
       // Not authenticated. Add the credentials to the predefined standard body / payload
       body.auth = shellyAuth.getHTTPCredentials(res.headers, password);
 

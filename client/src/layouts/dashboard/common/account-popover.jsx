@@ -4,11 +4,12 @@
   and to log out from the system
 */
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Popover from '@mui/material/Popover';
 import { alpha } from '@mui/material/styles';
@@ -87,6 +88,7 @@ export default function AccountPopover() {
   return (
     <>
       <IconButton
+        data-testid="open_account_popover_button"
         onClick={handleOpen}
         sx={{
           width: 40,
@@ -140,26 +142,38 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem key="Home" onClick={handleHome}>
+        <MenuItem data-testid="accountpopover_home_item" key="Home" onClick={handleHome}>
           <ListItemIcon>
             <Iconify icon="eva:home-fill" />
           </ListItemIcon>
           <ListItemText primary={t('Home')} />
         </MenuItem>
-        <MenuItem key="Profile" onClick={() => handleOpenUpdate('profile')}>
+        <MenuItem
+          data-testid="accountpopover_profile_item"
+          key="Profile"
+          onClick={() => handleOpenUpdate('profile')}
+        >
           <ListItemIcon>
             <Iconify icon="eva:person-fill" />
           </ListItemIcon>
           <ListItemText primary={t('Profile')} />
         </MenuItem>
 
-        <MenuItem key="Security" onClick={() => handleOpenUpdate('security')}>
+        <MenuItem
+          data-testid="accountpopover_security_item"
+          key="Security"
+          onClick={() => handleOpenUpdate('security')}
+        >
           <ListItemIcon>
             <Iconify icon="eva:lock-fill" />
           </ListItemIcon>
           <ListItemText primary={t('Security')} />
         </MenuItem>
-        <MenuItem key="Settings" onClick={() => handleOpenUpdate('settings')}>
+        <MenuItem
+          data-testid="accountpopover_settings_item"
+          key="Settings"
+          onClick={() => handleOpenUpdate('settings')}
+        >
           <ListItemIcon>
             <Iconify icon="eva:settings-2-fill" />
           </ListItemIcon>
@@ -168,14 +182,17 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
-        <MenuItem
-          disableRipple
-          disableTouchRipple
+        <Button
+          data-testid="accountpopover_logout_button"
+          fullWidth
+          color="inherit"
+          variant="outlined"
           onClick={logout}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+          startIcon={<Iconify icon="formkit:submit" />}
+          sx={{ color: 'error.main', width: '80%', ml: 2, mb: 2 }}
         >
           {t('Logout')}
-        </MenuItem>
+        </Button>
       </Popover>
       <UpdateUser
         title={getTitle(openUpdate.type)}

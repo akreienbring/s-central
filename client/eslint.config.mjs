@@ -35,7 +35,7 @@ const commonRules = () => ({
   'react/react-in-jsx-scope': 0,
   'react/jsx-no-useless-fragment': [1, { allowExpressions: true }],
   'react/jsx-curly-brace-presence': [2, { props: 'never', children: 'never' }],
- });
+});
 
 /**
  * @rules import
@@ -152,7 +152,7 @@ export const customConfig = {
     perfectionist: perfectionistPlugin,
     import: importPlugin,
   },
-  
+
   rules: {
     ...commonRules(),
     // ...importRules(),
@@ -169,6 +169,9 @@ export default [
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
+    },
+    linterOptions: {
+      reportUnusedInlineConfigs: 'off',
     },
     settings: { react: { version: 'detect' } },
   },

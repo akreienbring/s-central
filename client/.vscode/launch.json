@@ -1,0 +1,45 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Server",
+      "program": "${workspaceFolder}/server.js"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Chrome Browser",
+      "url": "http://localhost:3030",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Firefox Browser",
+      "url": "http://localhost:3030",
+      "reAttach": false,
+      "webRoot": "${workspaceFolder}/src",
+      "pathMappings": [
+        {
+          "url": "http://localhost:3030/src",
+          "path": "${workspaceFolder}/src"
+        }
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Server/Client",
+      "configurations": ["Dev Server", "Chrome Browser"],
+      "preLaunchTask": "${defaultBuildTask}",
+      "stopAll": true
+    }
+  ]
+}

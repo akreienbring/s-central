@@ -66,14 +66,14 @@ async function getScripts(device) {
       console.error(err.message);
     });
 
-  if (res.status === 200 && typeof res.data.result.scripts !== "undefined") {
+  if (res?.status === 200 && typeof res.data.result.scripts !== "undefined") {
     device.scripts = res.data.result.scripts;
     console.log(
       `Successfully got ${device.scripts.length} scripts of ${device.cname}`
     );
   } else {
     if (typeof res !== "undefined") {
-      console.error(`Error:  ${res.status} ${res.message}`);
+      console.error(`Error:  ${res?.status} ${res.message}`);
     }
     throw new Error(`Could not get Scripts of ${device.cname}`);
   }
@@ -98,7 +98,7 @@ async function getKVS(device) {
       console.error(err.message);
     });
 
-  if (res.status === 200 && typeof res.data.result.items !== "undefined") {
+  if (res?.status === 200 && typeof res.data.result.items !== "undefined") {
     const kvsentries = res.data.result.items;
     for (let entry of kvsentries) {
       const kvsdisplay = kvsdisplays[entry.key];
@@ -118,7 +118,7 @@ async function getKVS(device) {
     );
   } else {
     if (typeof res !== "undefined") {
-      console.error(`Error:  ${res.status} ${res.message}`);
+      console.error(`Error:  ${res?.status} ${res.message}`);
     }
     throw new Error(`Could not get the KVS entries of ${device.cname}`);
   }
@@ -144,7 +144,7 @@ async function getSwitches(device) {
     .catch((err) => {
       console.error(err.message);
     });
-  if (res.status === 200 && typeof res.data.result !== "undefined") {
+  if (res?.status === 200 && typeof res.data.result !== "undefined") {
     Object.keys(res.data.result).forEach((entry) => {
       if (entry.startsWith("switch") || entry.startsWith("rgbw")) {
         const aSwitch = res.data.result[entry];
@@ -170,7 +170,7 @@ async function getSwitches(device) {
     );
   } else {
     if (typeof res !== "undefined") {
-      console.error(`Error:  ${res.status} ${res.message}`);
+      console.error(`Error:  ${res?.status} ${res.message}`);
     }
     throw new Error(`Could not get the Switches of ${device.cname}`);
   }
@@ -192,13 +192,13 @@ async function getAvailableUpdates(device) {
       console.error(err.message);
     });
 
-  if (res.status === 200) {
+  if (res?.status === 200) {
     console.log("Successfully got the available updates of " + device.cname);
     device.stable = res.data.result?.stable?.version;
     device.beta = res.data.result?.beta?.version;
   } else {
     if (typeof res !== "undefined") {
-      console.error(`Error:  ${res.status} ${res.message}`);
+      console.error(`Error:  ${res?.status} ${res.message}`);
     }
     throw new Error(`Could not get available updates of ${device.cname}`);
   }

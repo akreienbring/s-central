@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -11,9 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
+import LastUpdate from 'src/layouts/dashboard/common/lastupdate';
 
 import Iconify from 'src/components/iconify';
-import LastUpdate from 'src/components/shellies/lastupdate';
 
 import { NAV, HEADER } from './config-layout';
 import AccountPopover from './common/account-popover';
@@ -31,7 +30,7 @@ export default function Header({ onOpenNav }) {
   const renderContent = (
     <>
       {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
+        <IconButton data-testid="nav_open_button" onClick={onOpenNav} sx={{ mr: 1 }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
@@ -78,7 +77,3 @@ export default function Header({ onOpenNav }) {
     </AppBar>
   );
 }
-
-Header.propTypes = {
-  onOpenNav: PropTypes.func,
-};

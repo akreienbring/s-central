@@ -155,7 +155,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
               value={currentBlogpost.title}
               name="title"
               label={t('Title')}
-              slotProps={{ htmlInput: { maxLength: 40 } }}
+              slotProps={{ htmlInput: { 'data-testid': 'blogpost_title_input', maxLength: 40 } }}
               onChange={handleInputChange}
               sx={{ width: 280 }}
             />

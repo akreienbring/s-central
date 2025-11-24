@@ -18,7 +18,8 @@ const CONFIG = {
    
   //These scripts will be checked by interval 
   oScripts: [
-    {sScriptname: 'Example', sIP: '192.168.68.20', nID: 1, isRunning: null, isDeviceOnline: null, isLocal: true},
+    {sScriptname: 'Example', sIP: '192.168.68.20', nID: 1, isRunning: null, isDeviceOnline: null, isLocal: false},
+    {sScriptname: 'Test', sIP: '192.168.68.29', nID: 1, isRunning: null, isDeviceOnline: null, isLocal: false},
   ],
 }
 
@@ -63,13 +64,7 @@ function responseCheckHTTP(result, error_code, error_msg, ud){
     bSuccess = (nCode != 200) ? false : true;
     if(bSuccess){
       result = JSON.parse(sBody);
-    } else {
-      /*
-        103 (timeout) indicates that the device is offline
-        see: https://shelly-api-docs.shelly.cloud/gen2/General/CommonErrors
-      */
-      if(nCode == 103) result = null;
-    }
+    } 
   } else {
     // this was a local call
     bSuccess = true;
@@ -115,8 +110,12 @@ function handleStatus(bSuccess, status, ud){
     }
          
     oScript.isRunning = status.running;
-  } else if(result = null) {
-    //call was not successfull and a timeout was received. Consider that the device is offline!
+  } else if(result.code == 103) {
+     /*
+       103 (timeout) indicates that the device is offline
+       see: https://shelly-api-docs.shelly.cloud/gen2/General/CommonErrors
+       call was not successfull and a timeout was received. Consider that the device is offline!
+    */
     if(oScript.isDeviceOnline){
       log(ud.sIP + ' is OFFLINE');
       bStateChanged  = true;      
@@ -166,7 +165,7 @@ function checkScript(){
       If the device is protected with a password use:
       const sCheckURL = 'http://admin:[Password]@' + oScript.sIP + '/rpc/Script.GetStatus?id=' + oScript.nID;
     */
-    const sCheckURL = 'http://' + oScript.sIP + '/rpc/Script.GetStatus?id=' + oScript.nID;
+    const sCheckURL = 'http://admin:test@' + oScript.sIP + '/rpc/Script.GetStatus?id=' + oScript.nID;
     log('Checking ' + oScript.sScriptname + ' URL: ' + sCheckURL);
   
     Shelly.call('HTTP.GET',

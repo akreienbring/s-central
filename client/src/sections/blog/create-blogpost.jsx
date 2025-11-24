@@ -36,6 +36,7 @@ export default function CreateBlogpost({
   return (
     <>
       <Button
+        data-testid="blog_newblog_button"
         variant="contained"
         color="inherit"
         startIcon={<Iconify icon="eva:plus-fill" />}
@@ -62,7 +63,7 @@ export default function CreateBlogpost({
           <Typography variant="h6" sx={{ ml: 1 }}>
             {t('_newpost_')}
           </Typography>
-          <IconButton onClick={onCloseCreate}>
+          <IconButton data-testid="blogpost_close_button" onClick={onCloseCreate}>
             <Iconify icon="eva:close-fill" />
           </IconButton>
         </Stack>

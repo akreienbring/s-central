@@ -3,7 +3,6 @@
   Implementation of https://github.com/tiavina-mika/mui-tiptap-editor
   Used for creating and updating blogposts.
 */
-import PropTypes from 'prop-types';
 import { TextEditor } from 'mui-tiptap-editor';
 import { useTranslation } from 'react-i18next';
 
@@ -117,11 +116,7 @@ export default function BlogEditor({ handleContentChange, content }) {
         labels={customLabels}
         withBubbleMenu={false}
       />
+      <div data-testid="blogpost_content_component" />
     </div>
   );
 }
-
-BlogEditor.propTypes = {
-  handleContentChange: PropTypes.func.isRequired,
-  content: PropTypes.string,
-};

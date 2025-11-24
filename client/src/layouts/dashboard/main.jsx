@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -35,8 +33,3 @@ export default function Main({ children, sx, ...other }) {
     </Box>
   );
 }
-
-Main.propTypes = {
-  children: PropTypes.node,
-  sx: PropTypes.object,
-};

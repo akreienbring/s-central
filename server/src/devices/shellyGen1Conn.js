@@ -45,7 +45,7 @@ async function getSwitches(device) {
   console.log("Getting Switches for the device " + device.cname);
 
   const res = await getStatus(device.ip, device.password);
-  if (res.status === 200) {
+  if (res?.status === 200) {
     return buildSwitches(device.ip, res.data);
   }
   return [];
@@ -65,7 +65,7 @@ async function getNotifyFullStatus(device) {
     console.error(err.message);
   });
 
-  if (res.status === 200) {
+  if (res?.status === 200) {
     const status = res.data; //
 
     const notifyFullStatus = {
@@ -246,7 +246,7 @@ async function getAvailableUpdates(device) {
       console.error(err.message);
     });
 
-  if (res.status === 200) {
+  if (res?.status === 200) {
     console.log("Successfully got the available updates of " + device.cname);
     const ota = res.data;
     device.stable =

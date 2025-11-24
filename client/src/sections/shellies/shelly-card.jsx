@@ -2,8 +2,11 @@
   Author: André Kreienbring
   This component is shown on one of the tab panels of the shelly view.
   Every device is presented in his own ShellyCard component.
+
+  Every ShellyCard requests the current device information from the shellybroker websocket server.
+  This prevents rendering all cards again when the tab in the ShellyView changes.
+  Further updates on single devices are received and handled accordingly.
 */
-import PropTypes from 'prop-types';
 import { memo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -32,8 +35,9 @@ import updateDeviceValues from 'src/sections/shellies/view/update-device-values'
 // ----------------------------------------------------------------------
 
 const ExpandKVS = styled((props) => {
+  // eslint-disable-next-line no-unused-vars
   const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return <IconButton data-testid="shelly_openkvs_button" {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
@@ -46,20 +50,29 @@ const ExpandKVS = styled((props) => {
   ShellyCard shows an image of a Shelly device. Device, script, KVS, WS and Log information is presented on a Card
   and Boxes for the device.
   The type of the selected tab panel is indicated by the type prop.
-  @param shelly The shelly device that will be rendered on the different tab panels
-  @param {string) type The current tab panel to show. Can be:
+  @param {string} deviceId The shelly deviceId that will be rendered on the different tab panels
+  @param {number} deviceGen The generation of the shelly device
+  @param {string} type The current tab panel to show. Can be:
    'sk': script/kvs 
    'ws': websocket messages from a shelly device
    'log': log messages
    'ctrl': controls of a shelly device
 */
-const ShellyCard = ({ shelly, type }) => {
+const ShellyCard = ({ deviceId, deviceGen, type }) => {
   const [expanded, setExpanded] = useState(false);
-  const [device, setDevice] = useState(shelly);
-  const [scripts, setScripts] = useState(shelly.scripts);
-  const [wsmessages, setWSmessages] = useState(shelly.wsmessages);
-  const [kvs, setKVS] = useState(shelly.kvs);
-  const { subscribe, unsubscribe, send } = useShelly();
+  const [device, setDevice] = useState();
+  const [scripts, setScripts] = useState([]);
+  const [wsmessages, setWSmessages] = useState({});
+  const [kvs, setKVS] = useState([]);
+  const { request, subscribe, unsubscribe, send } = useShelly();
+
+  const handleDeviceReceived = useCallback((msg) => {
+    const device = msg.data.device;
+    setDevice(() => device);
+    setScripts(() => device.scripts);
+    setWSmessages(() => device.wsmessages);
+    setKVS(() => device.kvs);
+  }, []);
 
   /**
     Will be called when an updated device was received via websocket from shellybroker.
@@ -70,6 +83,7 @@ const ShellyCard = ({ shelly, type }) => {
     (msg) => {
       const updateType = msg.type;
       const wsDevice = msg.data.device;
+      if (wsDevice.cname === 'Flur2') console.log(JSON.stringify(wsDevice));
 
       switch (updateType) {
         case 'script':
@@ -109,7 +123,7 @@ const ShellyCard = ({ shelly, type }) => {
             altered setDevice is called.
           */
           if (typeof params !== 'undefined') {
-            const updatedDevice = updateDeviceValues(device, params);
+            const updatedDevice = updateDeviceValues(wsDevice, params);
             if (updatedDevice !== null) {
               setDevice(() => updatedDevice);
             }
@@ -126,7 +140,7 @@ const ShellyCard = ({ shelly, type }) => {
           setDevice(() => wsDevice);
       }
     },
-    [device, setDevice, setScripts, setWSmessages, setKVS]
+    [setDevice, setScripts, setWSmessages, setKVS]
   );
 
   // --------------------- Websocket Implementation BEGIN----------------
@@ -136,15 +150,29 @@ const ShellyCard = ({ shelly, type }) => {
   */
   useEffect(() => {
     // don't subcribe to the ws server, if the device is not capable of sending updates
-    if (shelly.gen === 0) return;
+    if (deviceGen === 0) return;
 
     subscribe(
       {
-        subscriptionID: shelly.id,
+        subscriptionID: deviceId,
         callback: handleDeviceUpdate,
         all: false,
       },
       ['ShellyUpdate']
+    );
+
+    if (typeof device !== 'undefined') return;
+
+    request(
+      {
+        event: 'device get',
+        data: {
+          source: 'ShellyCard',
+          message: 'ShellyCard needs a device',
+          deviceId,
+        },
+      },
+      handleDeviceReceived
     );
 
     /*
@@ -152,9 +180,9 @@ const ShellyCard = ({ shelly, type }) => {
      */
     // eslint-disable-next-line consistent-return
     return () => {
-      unsubscribe(shelly.id, ['ShellyUpdate']);
+      unsubscribe(deviceId, ['ShellyUpdate']);
     };
-  }, [shelly, subscribe, unsubscribe, handleDeviceUpdate]);
+  }, [device, request, subscribe, unsubscribe, handleDeviceUpdate, handleDeviceReceived]);
   // --------------------- Websocket Implementation END------------------
 
   const handleExpandClick = () => {
@@ -175,7 +203,7 @@ const ShellyCard = ({ shelly, type }) => {
       event: `toggleSwitch`,
       data: {
         name: 'Shelly Device',
-        message: `${shelly.cname} wants to toggle a switch`,
+        message: `${device.cname} wants to toggle a switch`,
         switch: aSwitch,
       },
     });
@@ -204,11 +232,13 @@ const ShellyCard = ({ shelly, type }) => {
       event: `setSwitch`,
       data: {
         name: 'Shelly Device',
-        message: `${shelly.cname} wants to toggle a switch`,
+        message: `${device.cname} wants to toggle a switch`,
         switch: aSwitch,
       },
     });
   };
+
+  if (typeof device === 'undefined') return null;
 
   return (
     <Card raised>
@@ -312,8 +342,3 @@ const ShellyCard = ({ shelly, type }) => {
 };
 
 export default memo(ShellyCard);
-
-ShellyCard.propTypes = {
-  shelly: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
-};

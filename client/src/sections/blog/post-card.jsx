@@ -4,7 +4,6 @@
   embedded in the BlogView Component
 */
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { TextEditorReadOnly } from 'mui-tiptap-editor';
 
@@ -30,7 +29,7 @@ import UpdateBlogpost from './update-blogpost';
 
 // ----------------------------------------------------------------------
 /**
- * A Component to display one single blogpost object with 
+ * A Component to display one single blogpost object with
  * available functions like e.g. a menue.
  * @param {object} blogpost The blogpost to display in the card
  * @param {number} index The index of the post in the blogpost array (determines size and design)
@@ -325,9 +324,3 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
     </Grid>
   );
 }
-
-PostCard.propTypes = {
-  blogpost: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  handleDeletePost: PropTypes.func,
-};

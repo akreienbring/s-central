@@ -59,6 +59,13 @@ function validateMessage(message, ws) {
     return null;
   }
 
+  if (message === null || typeof message === "undefined") {
+    console.error(`${ws.clientIP} send an undefined message`);
+    if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
+    ws.close(4003, "Invalid message!");
+    return null;
+  }
+
   // Limit the the number of messages / minute a client can sent in the configured time
   if (!clientLimits[ws.clientIP]) {
     clientLimits[ws.clientIP] = {
@@ -80,13 +87,6 @@ function validateMessage(message, ws) {
       clientLimit.count = 1;
       clientLimit.startTime = Date.now();
     }
-  }
-
-  if (message === null || typeof message === "undefined") {
-    console.error(`${ws.clientIP} send an undefined message`);
-    if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
-    ws.close(4003, "Invalid message!");
-    return null;
   }
 
   // now try to parse the message to check its properties

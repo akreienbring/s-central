@@ -3,7 +3,7 @@
   If 'blogs' is configured as the landing page, then
   this component presents public posts on the langing page.
 */
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -97,7 +97,12 @@ export default function LandingView() {
         <Stack direction="row" spacing={10} sx={{ justifyContent: 'space-between' }}>
           <Logo sx={{ mt: 3 }} />
           <Stack direction="row" sx={{ alignItems: 'center' }}>
-            <IconButton onClick={handleLogin} sx={{ pt: 3 }} aria-label="Login">
+            <IconButton
+              data-testid="landing_login_button"
+              onClick={handleLogin}
+              sx={{ pt: 3 }}
+              aria-label="Login"
+            >
               <Iconify icon="eva:lock-fill" />
               <Typography variant="h6">Login</Typography>
             </IconButton>

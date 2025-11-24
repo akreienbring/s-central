@@ -211,7 +211,11 @@ export default function NotificationsPopover() {
 
   return (
     <>
-      <IconButton color={open ? 'primary' : 'default'} onClick={handleOpen}>
+      <IconButton
+        data-testid="open_notifications_popover_button"
+        color={open ? 'primary' : 'default'}
+        onClick={handleOpen}
+      >
         <Badge badgeContent={totalUnRead} color="error">
           <Iconify width={24} icon="solar:bell-bing-bold-duotone" />
         </Badge>

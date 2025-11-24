@@ -35,7 +35,9 @@ function open() {
   const email = config.get("db.standardem");
   const HA1 = endecrypt.encryptUserHA1(email, digest.REALM, password);
   endecrypt.encrypt(password).then((secret) => {
-    console.log("wsserver: Inserting standard admin into the database");
+    console.log(
+      "wsserver: Inserting standard admin and roles into the database"
+    );
     insert("roles", { id: 1, name: "Admin" }, true);
     insert("roles", { id: 2, name: "Blogger" }, true);
     insert("roles", { id: 3, name: "User" }, true);

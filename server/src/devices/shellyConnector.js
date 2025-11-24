@@ -18,6 +18,7 @@ const clientImagePath = "/assets/images/devices/";
  * Configures Gen2+ devices with WebSocket and UDP settings.
   After loading the devices, shellyDevices triggers this function once
   to send WebSocket and UDP configuration to all devices.
+  This reboots the Gen2+ devices!
  * @param {array} devices 
  */
 function configureShellies(devices) {
@@ -102,7 +103,7 @@ function setSwitch(device, aSwitch) {
       return createUnknownDevice(device, false, "unknown");
     });
 
-  if (res.status === 200) {
+  if (res?.status === 200) {
     if (typeof res.data.app === "undefined") {
       if (typeof res.data.type !== "undefined")
         // the device is Gen1

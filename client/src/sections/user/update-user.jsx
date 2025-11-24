@@ -54,7 +54,7 @@ export default function UpdateUser({
         <Typography variant="h6" sx={{ ml: 1 }}>
           {title}
         </Typography>
-        <IconButton onClick={onCloseUpdate}>
+        <IconButton data-testid="updateuser_close_button" onClick={onCloseUpdate}>
           <Iconify icon="eva:close-fill" />
         </IconButton>
       </Stack>

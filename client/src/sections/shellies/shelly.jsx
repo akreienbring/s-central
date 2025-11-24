@@ -4,7 +4,7 @@
   and some additional information like name and generation.
   Used by the shelly card on different tab panels.
 */
-import { memo, useState } from 'react';
+import { useState } from 'react';
 
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -77,4 +77,4 @@ const Shelly = ({ device, handleSwitchToggle }) => {
     </>
   );
 };
-export default memo(Shelly);
+export default Shelly;

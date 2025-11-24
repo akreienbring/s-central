@@ -131,9 +131,6 @@ function handleMessage(msg, ws) {
         const newStable = msg.params.sys.available_updates?.stable?.version;
         const newBeta = msg.params.sys.available_updates?.beta?.version;
 
-        // device.stable = msg.params.sys.available_updates?.stable?.version;
-        // device.beta = msg.params.sys.available_updates?.beta?.version;
-
         delete device.rebootPending;
 
         if (
@@ -153,20 +150,28 @@ function handleMessage(msg, ws) {
             If stable or beta update has changed, the device was updated outside of this app.
           */
           device.online = true;
+
           console.warn(`Reloading device ${device.cname}`);
-
-          device.old_fw_id = device.fw_id;
-
           shellyDevices.getDevice(device.ip, true).then((reloadedDevice) => {
             // prettyjson.render(reloadedDevice);
-            if (reloadedDevice.fw_id === device.old_fw_id) {
+            if (
+              (device.updateStablePending || device.updateSBetaPending) &&
+              reloadedDevice.fw_id === device.old_fw_id
+            ) {
               console.warn(
                 `Reloaded device ${reloadedDevice.cname}. Firmware is still the same (${device.old_fw_id}).`
               );
               return; // keep the pending update flags until the firmware is updated
+            } else {
+              console.log(
+                `Firmaware update of ${device.cname} was successfull!`
+              );
             }
 
+            console.log(`Device ${device.cname} was reloaded.`);
+
             device = reloadedDevice;
+            // TODO: check if the next three lines are necessary
             delete device.updateBetaPending;
             delete device.updateStablePending;
             delete device.old_fw_id;

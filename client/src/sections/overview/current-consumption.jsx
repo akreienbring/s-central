@@ -65,7 +65,14 @@ export default function CurrentConsumption({ title, subheader, colors, powerPerD
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 5 }} />
 
-      <ApexChart type="pie" series={series} options={options} width="100%" height={280} />
+      <ApexChart
+        data-testid="chart_current_component"
+        type="pie"
+        series={series}
+        options={options}
+        width="100%"
+        height={280}
+      />
     </Card>
   );
 }

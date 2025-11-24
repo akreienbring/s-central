@@ -2,7 +2,7 @@
   "author": "André Kreienbring",
   "name": "@s-central/react-client",
   "license": "AGPL-3.0",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Frontend of the S-Central",
   "private": false,
   "scripts": {
@@ -10,65 +10,59 @@
     "start": "vite preview",
     "build": "vite build --mode private",
     "build release": "vite build --mode release",
+    "test": "vitest --no-cache",
+    "cy:open-e2e": "cypress open --e2e --browser chrome",
+    "cy": "start-server-and-test vite http://localhost:3030 cy:open-e2e",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-    "rm:all": "rm -rf node_modules .next out dist build",
-    "re:start": "yarn rm:all && yarn install && yarn dev",
-    "re:build": "yarn rm:all && yarn install && yarn build",
-    "re:build-npm": "npm run rm:all && npm install && npm run build",
-    "dev:host": "vite --host",
-    "vite:start": "vite",
-    "vite:build": "vite build"
+    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@iconify/react": "^6.0.0",
-    "@mui/material": "^7.3.1",
-    "apexcharts": "^5.3.4",
+    "@iconify/react": "^6.0.2",
+    "@mui/material": "^7.3.5",
+    "apexcharts": "^5.3.6",
+    "cypress-real-events": "^1.15.0",
     "date-fns": "^4.1.0",
-    "i18next": "^25.4.2",
+    "i18next": "^25.6.3",
     "lodash": "^4.17.21",
     "mui-color-input": "^7.0.0",
     "mui-tiptap-editor": "^0.11.6",
     "numeral": "^2.0.6",
     "prop-types": "^15.8.1",
-    "react": "^19.1.1",
-    "react-apexcharts": "^1.7.0",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-apexcharts": "^1.8.0",
+    "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
-    "react-i18next": "^15.7.3",
+    "react-i18next": "^16.3.5",
     "react-material-ui-carousel": "^3.4.2",
-    "react-router-dom": "^7.8.2",
+    "react-router-dom": "^7.9.6",
     "sha256-uint8array": "^0.10.7",
     "simplebar-react": "^3.3.2",
     "websocket": "^1.0.35"
   },
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "@vitejs/plugin-react-swc": "^4.0.1",
-    "eslint": "^9.34.0",
+    "@eslint/js": "^9.39.1",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "cypress": "^15.7.0",
+    "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-perfectionist": "^4.15.0",
+    "eslint-plugin-perfectionist": "^4.15.1",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-unused-imports": "^4.2.0",
-    "globals": "^16.3.0",
+    "eslint-plugin-react-hooks": "^6.1.1",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "globals": "^16.5.0",
     "prettier": "^3.6.2",
-    "vite": "^7.1.3",
-    "vite-plugin-checker": "^0.10.3"
+    "start-server-and-test": "^2.1.3",
+    "vite": "^7.2.4",
+    "vite-plugin-eslint2": "^5.0.4"
   },
   "overrides": {
-    "mui-tiptap-editor": {
-      "@mui/material": "7.1.1",
-      "react": "19.1.0",
-      "react-dom": "19.1.0"
-    },
-    "mui-color-input": {
-      "react": "19.1.0",
-      "react-dom": "19.1.0"
+    "react-material-ui-carousel": {
+      "react": "19.2.0",
+      "react-dom": "19.2.0"
     }
   },
-  "packageManager": "npm@11.5.2"
+  "packageManager": "npm@11.6.1"
 }

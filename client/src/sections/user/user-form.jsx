@@ -3,8 +3,8 @@
   Renders the login, profile, security and create form.
   Depending on the passed in type property.
 */
+import { useNavigate, useLocation } from 'react-router';
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useShelly } from 'src/sccontext';
 import { publishEvent } from 'src/events/pubsub';
@@ -48,6 +48,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
       password: '',
       home: 'dashboard',
       roleid: 3,
+      test: false,
     };
   });
   const [roles, setRoles] = useState([]);
@@ -159,6 +160,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
   // --------------------- Websocket Implementation END------------------
 
   /**
+    Called when the user form was submitted.
     Sends a validation request to the websocket server (type = 'login')
     OR updates the current user profile data (type = 'profile)
     OR creates the current user (type = 'create)
@@ -167,7 +169,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
     The answer is received as a websocket message.
     @param {object} formUser The user that was submitted from the form
   */
-  const handleCurrentUser = (formUser) => {
+  const handleCurrentUser = (formUser, isTest) => {
     if (type === 'login') {
       // send a validation request to validate the credentials
       const msg = {
@@ -176,6 +178,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
           source: 'User Form',
           message: 'User Form wants to validate a user',
           user: formUser,
+          isTest,
         },
       };
       request(msg, handleUserValidation);

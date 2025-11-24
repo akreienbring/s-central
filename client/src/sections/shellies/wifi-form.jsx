@@ -144,7 +144,7 @@ export default function WifiForm({ type, title, openWifi, row, onCloseWifi, sele
         <Typography variant="h6" sx={{ ml: 1 }}>
           {title}
         </Typography>
-        <IconButton onClick={onCloseWifi}>
+        <IconButton data-testid="device_closewifi_button" onClick={onCloseWifi}>
           <Iconify icon="eva:close-fill" />
         </IconButton>
       </Stack>
@@ -167,6 +167,9 @@ export default function WifiForm({ type, title, openWifi, row, onCloseWifi, sele
               name="ssid"
               value={wifiSettings.ssid}
               onChange={handleInputChange}
+              slotProps={{
+                htmlInput: { 'data-testid': 'wifi_ssid_input' },
+              }}
             />
             <TextField
               required

@@ -59,6 +59,7 @@ export default function LanguagePopover() {
   return (
     <>
       <IconButton
+        data-testid="open_language_popover_button"
         onClick={handleOpen}
         sx={{
           width: 40,

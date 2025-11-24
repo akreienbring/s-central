@@ -117,6 +117,7 @@ export default function TimelineConsumption({
 
       <Box sx={{ p: 3, pb: 1 }}>
         <ApexChart
+          data-testid="chart_timeline_component"
           dir="ltr"
           type={series[0].type}
           series={series}

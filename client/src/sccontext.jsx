@@ -1,7 +1,7 @@
 /*
     Author: André Kreienbring
     Provides a general context for the whole Application.
-    The context is used for user authentication and websocke access
+    The context is used for user authentication and websocket access
 
     The basic concept of websocket management is described here:
     https://blog.stackademic.com/websockets-and-react-wscontext-and-components-subscription-pattern-4e580fc67bb5
@@ -23,6 +23,8 @@ import { getWSCredentials } from 'src/utils/client-auth';
 
 import { publishEvent } from 'src/events/pubsub';
 
+import { testDevices } from '../cypress/support/testdevices.js';
+
 const Context = createContext();
 
 export const useShelly = () => useContext(Context);
@@ -37,6 +39,7 @@ export const SCProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
   const [devices, setDevices] = useState([]);
   const [validationRequest, setValidationRequest] = useState(null);
+  const [isTest, setIsTest] = useState(false);
   const [retryCount, setRetryCount] = useState(0.001);
   const ws = useRef(null);
   const subscribtions = useRef({});
@@ -68,8 +71,7 @@ export const SCProvider = ({ children }) => {
     @param {number} currentRetryCount Used to count the number of retries
     @param {boolean} isInit If true the retry count is reset
   */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const startRetryTimeout = (currentRetryCount, isInit) => {
+  const startRetryTimeout = useCallback((currentRetryCount, isInit) => {
     if (reconnectMsg.current.data.user === null) return;
     if (isInit) currentRetryCount = 0.001;
     isReconnecting.current = true;
@@ -86,12 +88,13 @@ export const SCProvider = ({ children }) => {
           return;
         }
         console.log(`Trying to reconnect: ${currentRetryCount}`);
+        // setRetryCount(currentRetryCount => currentRetryCount + 1);
         setRetryCount(currentRetryCount + 1); // this triggers the useEffect Hook
         startRetryTimeout(currentRetryCount + 1, false);
       },
       currentRetryCount * window.scconfig.RECONNECT_DELAY * 1000
     );
-  };
+  }, []);
 
   /**
     A component can subscribe to one or more events.
@@ -177,26 +180,14 @@ export const SCProvider = ({ children }) => {
   */
   const request = useCallback(
     (msg, callback) => {
-      /*
-      Discard existing messages. This can happen, if the websocket is closed
-      and the user triggers requests more then once.
-    */
-      let isExistingMessage = false;
-      Object.values(requests.current).forEach((aRequest) => {
-        if (aRequest.msg.event === msg.event) {
-          isExistingMessage = true;
-        }
-      });
-
-      if (!isExistingMessage) {
-        if (msg.event === 'user validate') {
-          // if the socket is closed, this will trigger a reconnection
-          setValidationRequest({ msg, callback });
-        } else {
-          const requestID = createUUID();
-          msg.data.requestID = requestID;
-          requests.current[requestID] = { msg, callback };
-        }
+      if (msg.event === 'user validate') {
+        // if the socket is closed, this will trigger a reconnection
+        setIsTest(msg.data.isTest);
+        setValidationRequest({ msg, callback });
+      } else {
+        const requestID = createUUID();
+        msg.data.requestID = requestID;
+        requests.current[requestID] = { msg, callback };
       }
 
       const isSecretNeeded = !WITHOUT_SECRET.current.includes(msg.event);
@@ -234,9 +225,9 @@ export const SCProvider = ({ children }) => {
   }, []);
 
   const logout = useCallback(() => {
-    ws.current.close(4001, 'User logged out');
+    // ws.current.close(4001, 'User logged out');
     setUser(null);
-    setDevices([]);
+    //setDevices([]);
   }, []);
 
   useEffect(() => {
@@ -298,7 +289,11 @@ export const SCProvider = ({ children }) => {
         const [requestID, request] = entry;
         if (WITHOUT_SECRET.current.includes(request.msg.event)) {
           console.log(`Sending '${request.msg.event}' after opening the websocket`);
-          ws.current.send(JSON.stringify(request.msg));
+          try {
+            ws.current.send(JSON.stringify(request.msg));
+          } catch (e) {
+            console.error(e);
+          }
         }
         // delete the requests that don't receive an answer and hence have no callback
         if (typeof request.callback === 'undefined') delete requests[requestID];
@@ -310,19 +305,6 @@ export const SCProvider = ({ children }) => {
       const msg = JSON.parse(event.data);
 
       if (msg !== null) {
-        if (msg.event === 'ShellyUpdate') {
-          /*
-            a device update was received. Replace ONLY the device in the devices array.
-            This DOES NOT trigger a rerender of the components that use the devices.
-            The component that is subscribed to the ShellyUpdate event will rerender itself.
-            But it is necessary to update the devices array in the context
-            to have the latest data available.
-          */
-          const updatedDevice = msg.data.device;
-          devices[devices.findIndex((device) => device.id === updatedDevice.id)] = updatedDevice;
-          setDevices(devices);
-        }
-
         if (msg.event === 'user validate') {
           if (
             validationRequest !== null &&
@@ -330,7 +312,6 @@ export const SCProvider = ({ children }) => {
             msg.data.error.code === 401
           ) {
             // Not authenticated. Add the credentials to the message
-
             validationRequest.msg.data.auth = getWSCredentials(
               msg.data.error,
               msg.data.error.message,
@@ -345,6 +326,7 @@ export const SCProvider = ({ children }) => {
             // authenticated: forward the message to userform to perform a login
             secret.current = msg.data.secret;
             delete msg.data.secret;
+
             validationRequest.callback(msg);
             setValidationRequest(null);
             console.log(
@@ -359,7 +341,8 @@ export const SCProvider = ({ children }) => {
               `Just reconnected with user ${connectedUser.alias}. There are ${Object.entries(requests.current).length} outstanding requests`
             );
             secret.current = msg.data.secret;
-            if (devices.length === 0) {
+            if (!isTest) {
+              // if isTest is false: request the devices from the server
               console.log(`Requesting devices of user ${connectedUser.alias}.`);
               ws.current.send(
                 JSON.stringify({
@@ -372,6 +355,9 @@ export const SCProvider = ({ children }) => {
                   },
                 })
               );
+            } else {
+              setDevices(testDevices);
+              console.log(`Test mode active. Using ${testDevices.length} test devices`);
             }
             /*
             Send all messages that arrived while the socket was not open
@@ -412,6 +398,11 @@ export const SCProvider = ({ children }) => {
           typeof msg.data.requestID !== 'undefined' &&
           typeof requests.current[msg.data.requestID] !== 'undefined'
         ) {
+          if (isTest && msg.event === 'device get') {
+            // in test mode: sent the test device instead of the received one
+            msg.data.device = testDevices[0];
+          }
+
           /*
             Find the request with the provided id and forward the message
             to the stored callback function
@@ -459,7 +450,7 @@ export const SCProvider = ({ children }) => {
         );
       }
     };
-  }, [validationRequest, startRetryTimeout, retryCount, logout, devices, user]);
+  }, [validationRequest, startRetryTimeout, retryCount, logout]);
 
   return (
     <Context.Provider

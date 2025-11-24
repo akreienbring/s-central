@@ -2,6 +2,11 @@
   Author: André Kreienbring
   A single row in the Shelly table that shows information about a Shelly device.
   It also provides a menu for actions on the device.
+
+  Every TableRow requests the current device information from the shellybroker websocket server.
+  This prevents rendering all cards again when the tab in the ShellyView changes.
+  Further updates on single devices are received and handled accordingly.
+
 */
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
@@ -43,7 +48,7 @@ export default function ShellyTableRow({
   updateRow,
 }) {
   const { t } = useTranslation();
-  const { subscribe, unsubscribe } = useShelly();
+  const { request, subscribe, unsubscribe } = useShelly();
   const [myRow, setMyRow] = useState(row);
   const [openMenue, setOpenMenue] = useState(null);
   const [openWifi, setOpenWifi] = useState({ open: false });
@@ -135,6 +140,19 @@ export default function ShellyTableRow({
      Further updates on single devices are received and handled accordingly.
    */
   useEffect(() => {
+    //Although the device data is already passed to the row, we request it again to have the latest data
+    request(
+      {
+        event: 'device get',
+        data: {
+          source: 'ShellyCard',
+          message: 'ShellyCard needs a device',
+          deviceId: row.id,
+        },
+      },
+      handleDeviceUpdate
+    );
+
     // don't subcribe to the ws server, if the device is not capable of sending updates
     if (row.gen === 0) return;
 
@@ -231,7 +249,7 @@ export default function ShellyTableRow({
           </Typography>
         </TableCell>
         <TableCell align="right">
-          <IconButton onClick={handleOpenMenu}>
+          <IconButton data-testid={`device${myRow.id}_openmenue_button`} onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -274,7 +292,10 @@ export default function ShellyTableRow({
           <Iconify icon="ix:reboot" sx={{ mr: 2 }} />
           {t('Reboot')}
         </MenuItem>
-        <MenuItem onClick={() => handleAction('wifi')}>
+        <MenuItem
+          data-testid={`device${myRow.id}_openwifi_button`}
+          onClick={() => handleAction('wifi')}
+        >
           <Iconify icon="material-symbols:wifi" sx={{ mr: 2 }} />
           Wifi
         </MenuItem>

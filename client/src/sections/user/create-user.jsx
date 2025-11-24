@@ -36,6 +36,7 @@ export default function CreateUser({
   return (
     <>
       <Button
+        data-testid="users_newuser_button"
         variant="contained"
         color="inherit"
         startIcon={<Iconify icon="eva:plus-fill" />}
@@ -62,7 +63,7 @@ export default function CreateUser({
           <Typography variant="h6" sx={{ ml: 1 }}>
             {t('_newuser_')}
           </Typography>
-          <IconButton onClick={onCloseCreate}>
+          <IconButton data-testid="createuser_close_button" onClick={onCloseCreate}>
             <Iconify icon="eva:close-fill" />
           </IconButton>
         </Stack>

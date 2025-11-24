@@ -1,6 +1,6 @@
 /*
   Author: André Kreienbring
-  Contains database related functions. 
+  Creates the database tables if they don't exist. 
 */
 
 /**

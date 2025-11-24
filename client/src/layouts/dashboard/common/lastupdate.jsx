@@ -1,10 +1,10 @@
+import { useNavigate } from 'react-router';
 /*
     Author: André Kreienbring
     Displays the time of the last received websocket message.
     Also indicates if the client is connected to the Shellybroker WS server
 */
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 
 import Button from '@mui/material/Button';
@@ -63,6 +63,7 @@ const LastUpdate = () => {
 
   return (
     <Button
+      data-testid="info_lastUpdate_button"
       variant="contained"
       color={lastUpdateAt !== null && lastUpdateAt !== 'connecting' ? 'success' : 'error'}
       startIcon={

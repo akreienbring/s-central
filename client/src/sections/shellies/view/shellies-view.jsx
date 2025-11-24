@@ -13,13 +13,13 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 import { sortText, sortNumeric } from 'src/utils/sort-array';
 
 import { useShelly } from 'src/sccontext';
 
 import TabPanel from 'src/sections/shellies/tabpanel';
-import ViewTitle from 'src/sections/shellies/view-title';
 
 import ShellySort from '../shelly-sort';
 import ShellyFilters from '../shelly-filters';
@@ -183,7 +183,7 @@ export default function ShelliesView() {
 
   return (
     <Container>
-      <ViewTitle title="Shellies" />
+      <Typography variant="h4">Shellies</Typography>
       <Stack
         direction="row"
         alignItems="center"
@@ -212,11 +212,11 @@ export default function ShelliesView() {
           scrollButtons="auto"
           aria-label="shelly tabs"
         >
-          <Tab label="Script / KVS" />
-          <Tab label={t('Control')} />
-          <Tab label="Logs" />
-          <Tab label="WS Inspector" />
-          <Tab label="List / Batch" />
+          <Tab data-testid="shellies_script_tab" label="Script / KVS" />
+          <Tab data-testid="shellies_control_tab" label={t('Control')} />
+          <Tab data-testid="shellies_logs_tab" label="Logs" />
+          <Tab data-testid="shellies_ws_tab" label="WS Inspector" />
+          <Tab data-testid="shellies_list_tab" label="List / Batch" />
         </Tabs>
       </Box>
       <TabPanel

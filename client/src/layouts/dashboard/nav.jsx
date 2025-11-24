@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Box from '@mui/material/Box';
@@ -167,11 +166,6 @@ export default function Nav({ openNav, onCloseNav }) {
   );
 }
 
-Nav.propTypes = {
-  openNav: PropTypes.bool,
-  onCloseNav: PropTypes.func,
-};
-
 // ----------------------------------------------------------------------
 
 function NavItem({ item }) {
@@ -182,6 +176,7 @@ function NavItem({ item }) {
 
   return (
     <ListItemButton
+      data-testid={`nav_item_${item.title}`}
       component={RouterLink}
       href={item.path}
       sx={{
@@ -209,7 +204,3 @@ function NavItem({ item }) {
     </ListItemButton>
   );
 }
-
-NavItem.propTypes = {
-  item: PropTypes.object,
-};

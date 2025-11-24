@@ -2,6 +2,9 @@
   Author: André Kreienbring
   A set of helpers used to publish and subsribe to custom Events.
   These are Browser events as usually used in the DOM
+
+  As in JSDOM while testing document is undefined, the check protects from errors 
+  while testing.
 */
 
 /**
@@ -10,7 +13,7 @@
  * @param {function} listener The callback function that will be added
  */
 const subscribeEvent = (eventName, listener) => {
-  document.addEventListener(eventName, listener);
+  if (typeof document !== 'undefined') document.addEventListener(eventName, listener);
 };
 
 /**
@@ -19,7 +22,7 @@ const subscribeEvent = (eventName, listener) => {
  * @param {*} listener The callback function that will be removed
  */
 const unsubscribeEvent = (eventName, listener) => {
-  document.removeEventListener(eventName, listener);
+  if (typeof document !== 'undefined') document.removeEventListener(eventName, listener);
 };
 
 /**
@@ -29,7 +32,7 @@ const unsubscribeEvent = (eventName, listener) => {
  */
 const publishEvent = (eventName, data) => {
   const event = new CustomEvent(eventName, { detail: data });
-  document.dispatchEvent(event);
+  if (typeof document !== 'undefined') document.dispatchEvent(event);
 };
 
 export { publishEvent, subscribeEvent, unsubscribeEvent };

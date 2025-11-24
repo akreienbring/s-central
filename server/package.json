@@ -2,7 +2,7 @@
   "author": "André Kreienbring",
   "name": "@s-central/server",
   "license": "AGPL-3.0",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Server for S-Central",
   "private": false,
   "scripts": {
@@ -17,21 +17,21 @@
   },
   "keywords": [],
   "dependencies": {
-    "axios": "^1.11.0",
-    "better-sqlite3": "^12.2.0",
+    "axios": "^1.13.2",
+    "better-sqlite3": "^12.4.6",
     "config": "^4.1.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "faye-websocket": "^0.11.4",
     "module-alias": "^2.2.3",
-    "pm2": "^6.0.8",
+    "pm2": "^6.0.13",
     "prettyjson": "^1.2.5",
     "request-ip": "^3.3.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "eslint": "^9.34.0",
-    "globals": "^16.3.0"
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
   },
   "_moduleAliases": {
     "@root": ".",
