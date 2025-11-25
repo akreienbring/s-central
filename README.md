@@ -207,6 +207,8 @@ Every release comes with an _index.html_. So take care of the values you configu
 1. Delete _/sb/public/index.html_ from the release before storing the release on your server (because normaly it does not change)
 2. Copy the whole release to your server and restore your values like described above
 
+Run _mpm install_ in the _/sb_ folder
+
 ## Building the Client or starting the development server
 
 The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses the
