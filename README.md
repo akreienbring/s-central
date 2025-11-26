@@ -184,7 +184,7 @@ File: _/sb/config/default.json_
 | standardpw (!)       | text                    | Standard password for all created users                                                                           |
 | standardal           | text                    | Standard alias for the admin user (Created on first run)                                                          |
 | standardem           | email                   | Standard email for the admin user (Created on first run)                                                          |
-| standardhome         | 'dashboard / 'shellies' | Standard homepage for all created users                                                                           |
+| standardhome         | 'dashboard' / 'shellies'| Standard homepage for all created users                                                                           |
 
 ## Client Configuration
 
