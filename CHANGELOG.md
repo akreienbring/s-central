@@ -119,7 +119,7 @@
 - fixed: Dataloss when switching tabs in ShellyView
 - fixed: too many rerenders in ShellyView
 
-### Release v2.2.0
+### Release v2.2.1
 
 ##### 01.12.2025
 
