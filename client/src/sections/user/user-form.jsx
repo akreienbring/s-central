@@ -3,7 +3,7 @@
   Renders the login, profile, security and create form.
   Depending on the passed in type property.
 */
-import { useNavigate, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { useState, useEffect, useCallback } from 'react';
 
 import { useShelly } from 'src/sccontext';
@@ -53,7 +53,6 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
   });
   const [roles, setRoles] = useState([]);
   const [requestResult, setRequestResult] = useState({ success: true, message: '' });
-  const navigate = useNavigate();
   const location = useLocation();
 
   /**
@@ -62,18 +61,13 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
     request that was send by 'handleSubmit'
     @param {object} msg The message that was passed with the answer
   */
-  const handleUserValidation = useCallback(
-    (msg) => {
-      if (msg.data.success) {
-        setCurrentUser(msg.data.user);
-        login(msg.data.user);
-        navigate(`/${msg.data.user.home !== null ? msg.data.user.home : 'dashboard'}`);
-      } else {
-        setRequestResult({ success: false, message: msg.data.message });
-      }
-    },
-    [navigate, login]
-  );
+  const handleUserValidation = useCallback((msg) => {
+    if (msg.data.success) {
+      setCurrentUser(msg.data.user);
+    } else {
+      setRequestResult({ success: false, message: msg.data.message });
+    }
+  }, []);
 
   /**
     ONLY when type = 'profile' or 'security'! 
@@ -90,6 +84,7 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
       });
       if (user.userid === currentUser.userid) {
         // update the context user
+        if(type === 'security') delete currentUser.password2;
         login(currentUser);
       }
       if (typeof handleUpdateUser !== 'undefined') {

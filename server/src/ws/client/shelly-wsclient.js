@@ -8,6 +8,7 @@ const WebSocket = require("faye-websocket");
 const wsclient = require("@ws/client/wsclient");
 const shellyAuth = require("@src/utils/shelly-auth.js");
 const prettyjson = require("prettyjson");
+const c = require("config");
 
 /*
   Predefined standard bodies with the RPC channel that will be used for the communication
@@ -91,9 +92,13 @@ function onMessage(event) {
 function createWSClient(device) {
   if (device.gen > 1) {
     const shellyws = new WebSocket.Client(`ws://${device.ip}/rpc`);
-    // add the id to identify the device on an event.
+    // add the id to identify the device websocket on an event.
     shellyws.id = device.id;
-    shellyWSClients[device.id] = { ws: shellyws, password: device.password };
+    shellyWSClients[device.id] = {
+      ws: shellyws,
+      password: device.password,
+      cname: device.cname,
+    };
 
     shellyws.on("open", (event) => {
       console.log(`Opened a ws connection to Shelly ${device.cname} `);
@@ -103,7 +108,9 @@ function createWSClient(device) {
 
     shellyws.on("close", (event) => {
       console.warn(
-        `Websocket to Shelly ${shellyws.id} was closed with code ${event.code}. Reason: ${event.reason}`
+        `Websocket to Shelly ${
+          shellyWSClients[shellyws.id].cname
+        } was closed with code ${event.code}. Reason: ${event.reason}`
       );
       delete shellyWSClients[shellyws.id];
     });
@@ -151,18 +158,6 @@ function sendNotifyFullStatus(device) {
     id: getStatusBody.id,
     body: getStatusBody,
   };
-
-  /*
-  TODO: Not needed?
-    if (!client.ws.send(JSON.stringify(getStatusBody))) {
-    client = null;
-  } else {
-    outstandingCommands[device.id] = {
-      id: getStatusBody.id,
-      body: getStatusBody,
-    };
-    
-  }*/
 }
 
 /**

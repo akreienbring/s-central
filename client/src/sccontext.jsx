@@ -8,6 +8,7 @@
 */
 
 import websocket from 'websocket';
+import { useNavigate } from 'react-router';
 import {
   useRef,
   useMemo,
@@ -46,6 +47,8 @@ export const SCProvider = ({ children }) => {
   const requests = useRef({});
   const isReconnecting = useRef(false);
   const secret = useRef(null);
+  const navigate = useNavigate();
+
   const reconnectMsg = useRef({
     event: 'user reconnect',
     data: {
@@ -217,11 +220,10 @@ export const SCProvider = ({ children }) => {
     @param {object} theUser The user that was provided by the login form.
   */
   const login = useCallback((theUser) => {
+    reconnectMsg.current.data.user = theUser; 
     setUser(theUser);
-    reconnectMsg.current.data.user = theUser;
-    console.log(`Connecting the logged in user '${theUser.alias}'`);
-    // this will send a message with a channelID. Used to manage the connection on the serverside!
-    ws.current.send(JSON.stringify(reconnectMsg.current));
+    navigate(`/${theUser.home !== null ? theUser.home : 'dashboard'}`);
+    console.log(`Loggin in user '${theUser.alias}'`);
   }, []);
 
   const logout = useCallback(() => {
@@ -240,7 +242,7 @@ export const SCProvider = ({ children }) => {
     }
   }, [user]);
 
-  // --------------------- Websocket Implementation END----------------
+  // --------------------- Websocket Implementation BEGIN----------------
   /*
     When this effect is executed, a new WebSocket is created that will directly
     connect to the server. Rerunning the effect reconnects when the socket was closed.
@@ -278,7 +280,7 @@ export const SCProvider = ({ children }) => {
         );
       } else if (reconnectMsg.current.data.user !== null) {
         console.log(
-          `Reconnecting the previously logged in user '${reconnectMsg.current.data.user.alias}'`
+          `Reconnecting the previously logged in user '${reconnectMsg.current.data.user.alias}' on websocket open`
         );
         // this will send a message with a channelID. Used to manage the connection on the serverside!
         ws.current.send(JSON.stringify(reconnectMsg.current));
@@ -329,6 +331,14 @@ export const SCProvider = ({ children }) => {
 
             validationRequest.callback(msg);
             setValidationRequest(null);
+
+            // this will send a message with a channelID. Used to manage the connection on the serverside!
+            reconnectMsg.current.data.user = msg.data.user;
+            console.log(
+              `Reconnecting the previously logged in user '${reconnectMsg.current.data.user.alias}' after successful validation`
+            );
+            ws.current.send(JSON.stringify(reconnectMsg.current));
+
             console.log(
               `Deleted the 'user validate' request. Now have ${Object.entries(requests.current).length} requests left`
             );
@@ -341,6 +351,7 @@ export const SCProvider = ({ children }) => {
               `Just reconnected with user ${connectedUser.alias}. There are ${Object.entries(requests.current).length} outstanding requests`
             );
             secret.current = msg.data.secret;
+            login(connectedUser);
             if (!isTest) {
               // if isTest is false: request the devices from the server
               console.log(`Requesting devices of user ${connectedUser.alias}.`);
@@ -442,7 +453,7 @@ export const SCProvider = ({ children }) => {
 
       if (ws.current) {
         console.log(
-          `WebSocket connection closed by the server for SC Context. Reason: ${e.reason}!`
+          `WebSocket connection closed by the server with code ${e.code} for SC Context. Reason: ${e.reason}!`
         );
       } else {
         console.log(
@@ -450,7 +461,8 @@ export const SCProvider = ({ children }) => {
         );
       }
     };
-  }, [validationRequest, startRetryTimeout, retryCount, logout]);
+  }, [validationRequest, startRetryTimeout, retryCount, logout, user]);
+  // --------------------- Websocket Implementation END----------------
 
   return (
     <Context.Provider

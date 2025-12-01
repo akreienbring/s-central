@@ -130,7 +130,8 @@ function validateMessage(message, ws) {
           event: "user validate",
           data: {
             success: false,
-            message: "_wrongpw_",
+            message:
+              typeof dbUser === "undefined" ? "_usernotexists_" : "_wrongpw_",
             requestID: msg.data.requestID,
           },
         };

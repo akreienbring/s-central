@@ -63,6 +63,7 @@ function handle(msg, ws) {
           role: row.rolename,
           roleid: row.roleid,
         };
+        validateAnswer.data.secret = msg.data.secret;
       }
     } else {
       validateAnswer.data.message = "_usernotexists_";

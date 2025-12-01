@@ -118,3 +118,15 @@
 - feature: Added tests with Cypress.
 - fixed: Dataloss when switching tabs in ShellyView
 - fixed: too many rerenders in ShellyView
+
+### Release v2.2.0
+
+##### 01.12.2025
+
+**Client (2.2.1)**
+- fixed: Problem with automatic Logins
+- fixed: Password shown in local storage after credentials update
+
+**Server (2.2.1)**
+- fixed: When logging in with a non existant user "Wrong Password" was returned
+

@@ -13,3 +13,4 @@ client/node_modules/
 client/.vscode/*
 !client/.vscode/launch.json
 client/dist/
+client/.env.private

@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Shellybroker via NPM",
+      "name": "Shellybroker DEV Mode",
       "request": "launch",
       "cwd": "${workspaceRoot}",
       "runtimeArgs": ["run-script", "dev"],

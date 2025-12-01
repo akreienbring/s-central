@@ -162,29 +162,29 @@ File: _/sb/config/kvsdisplays.json_
 
 File: _/sb/config/default.json_
 
-| Option               | Value                   | Description                                                                                                       |
-| -------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Option               | Value                    | Description                                                                                                       |
+| -------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | **HTTP server**      |
-| host (!)             | xxx.xxx.xxx.xxx         | The IP address of the HTTP server (nodejs)                                                                        |
-| port                 | TCP Port                | The TCP port of the HTTP server. Defaults to 3031                                                                 |
+| host (!)             | xxx.xxx.xxx.xxx          | The IP address of the HTTP server (nodejs)                                                                        |
+| port                 | TCP Port                 | The TCP port of the HTTP server. Defaults to 3031                                                                 |
 | UDP server           |
-| host (!)             | xxx.xxx.xxx.xxx         | The IP of the UDP server. Must be configured in the Shelly device                                                 |
-| port                 | UDP Port                | The UDP port of the UDP server. Defaults to 3031                                                                  |
+| host (!)             | xxx.xxx.xxx.xxx          | The IP of the UDP server. Must be configured in the Shelly device                                                 |
+| port                 | UDP Port                 | The UDP port of the UDP server. Defaults to 3031                                                                  |
 | **Websocket server** |
-| host (!)             | xxx.xxx.xxx.xxx         | The IP of the Websocket server                                                                                    |
-| port                 | TCP Port                | The TCP port of the Websocket server. Defaults to 3031                                                            |
-| ping-interval        | nr. of seconds          | Websocket keep-alive interval to check if the client is connected                                                 |
-| unblock-interval     | nr. of seconds          | Security feature. After this time a blocked client is unblocked                                                   |
-| messagelimit         | number                  | Security feature. Number of allowed WS messages per minute                                                        |
-| secret (!)           | secret text             | Security feature. Is exchanged between WS client and server                                                       |
+| host (!)             | xxx.xxx.xxx.xxx          | The IP of the Websocket server                                                                                    |
+| port                 | TCP Port                 | The TCP port of the Websocket server. Defaults to 3031                                                            |
+| ping-interval        | nr. of seconds           | Websocket keep-alive interval to check if the client is connected                                                 |
+| unblock-interval     | nr. of seconds           | Security feature. After this time a blocked client is unblocked                                                   |
+| messagelimit         | number                   | Security feature. Number of allowed WS messages per minute                                                        |
+| secret (!)           | secret text              | Security feature. Is exchanged between WS client and server                                                       |
 | **Shelly config**    |
-| set-udp              | true / false            | If true, all shellies are configured to sent UDP Logs                                                             |
-| set-ws               | true / false            | If true, all shellies are configured to send WS messages to the server (Reboots the Shelly on every server start) |
+| set-udp              | true / false             | If true, all shellies are configured to sent UDP Logs                                                             |
+| set-ws               | true / false             | If true, all shellies are configured to send WS messages to the server (Reboots the Shelly on every server start) |
 | **Database**         |
-| standardpw (!)       | text                    | Standard password for all created users                                                                           |
-| standardal           | text                    | Standard alias for the admin user (Created on first run)                                                          |
-| standardem           | email                   | Standard email for the admin user (Created on first run)                                                          |
-| standardhome         | 'dashboard' / 'shellies'| Standard homepage for all created users                                                                           |
+| standardpw (!)       | text                     | Standard password for all created users                                                                           |
+| standardal           | text                     | Standard alias for the admin user (Created on first run)                                                          |
+| standardem           | email                    | Standard email for the admin user (Created on first run)                                                          |
+| standardhome         | 'dashboard' / 'shellies' | Standard homepage for all created users                                                                           |
 
 ## Client Configuration
 
@@ -207,7 +207,7 @@ Every release comes with an _index.html_. So take care of the values you configu
 1. Delete _/sb/public/index.html_ from the release before storing the release on your server (because normaly it does not change)
 2. Copy the whole release to your server and restore your values like described above
 
-Run _mpm install_ in the _/sb_ folder
+Run _npm install --force_ in the _/sb_ folder
 
 ## Building the Client or starting the development server
 

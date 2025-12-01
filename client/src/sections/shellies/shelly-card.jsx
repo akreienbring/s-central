@@ -83,7 +83,6 @@ const ShellyCard = ({ deviceId, deviceGen, type }) => {
     (msg) => {
       const updateType = msg.type;
       const wsDevice = msg.data.device;
-      if (wsDevice.cname === 'Flur2') console.log(JSON.stringify(wsDevice));
 
       switch (updateType) {
         case 'script':

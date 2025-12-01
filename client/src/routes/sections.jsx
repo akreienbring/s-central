@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router';
 
 import { useShelly } from 'src/sccontext';
@@ -26,9 +26,7 @@ export default function Router() {
       // only if logged in
       element: user ? (
         <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </DashboardLayout>
       ) : (
         <Navigate to="/" replace />
