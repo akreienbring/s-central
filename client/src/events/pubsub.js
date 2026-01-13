@@ -31,7 +31,7 @@ const unsubscribeEvent = (eventName, listener) => {
  * @param {object} data Custom data published witch the event
  */
 const publishEvent = (eventName, data) => {
-  const event = new CustomEvent(eventName, { detail: data });
+  const event = new CustomEvent(eventName, { detail: data, bubbles: false, cancelable: true });
   if (typeof document !== 'undefined') document.dispatchEvent(event);
 };
 

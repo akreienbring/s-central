@@ -116,9 +116,6 @@
     "Reboot": "Neustart",
     "Name": "Name",
     "Uptime": "Laufzeit",
-    "_betapending_": "Beta ausstehend",
-    "_stablepending_": "Stable ausstehend",
-    "_rebootpending_": "Neustart ausstehend",
     "_required_": "notwendig",
     "_notrequired_": "nicht notwendig",
     "_wifiupdated_": "WiFi settings erfolgreich aktualisiert ({{successful}} von {{total}})",
@@ -126,6 +123,11 @@
     "_wifiwarming_": "Achtung: Das Ändern der WiFi Einstellungen kann das Gerät trennen!",
     "_acceptrisk_": "Ich akzeptiere das Risiko",
     "_updateavailable_": "Nur {{checked}} von {{selected}} werden auf {{type}} aktualisiert.",
-    "_noupdateavailable_": "Keine {{type}} Updates für die ausgewählten Geräte verfügbar"
+    "_noupdateavailable_": "Keine {{type}} Updates für die ausgewählten Geräte verfügbar",
+    "_copysettings_": "Diese Einstellungen kopieren",
+    "_copyreset_": "Kopieren abbrechen",
+    "_pastesettingsfrom_": "Einstellungen von {{deviceName}} verwenden",
+    "_showall_": "Alles anzeigen",
+    "showmin": "Minimieren"
   }
 }

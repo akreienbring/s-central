@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CardHeader from '@mui/material/CardHeader';
 import FormControl from '@mui/material/FormControl';
 
+import { fDateTime } from 'src/utils/format-time';
 import { fWh, fKWh } from 'src/utils/format-number';
 
 /**
@@ -49,6 +50,9 @@ export default function TimelineConsumption({
     },
     chart: {
       stacked: timeline.data !== 'Minute',
+      zoom: {
+        enabled: false,
+      },
     },
     yaxis: {
       labels: {
@@ -66,20 +70,26 @@ export default function TimelineConsumption({
     xaxis: {
       type: 'datetime',
       labels: {
-        format: timeline.format,
+        formatter: (value, timestamp) => {
+          if (typeof value !== 'undefined') {
+            return fDateTime(timestamp, timeline.format);
+          }
+          return value;
+        },
         datetimeUTC: false,
       },
       // categories: labels,
     },
     stroke: {
-      width: 3,
+      width: 5,
       curve: 'smooth',
       lineCap: 'round',
     },
 
     tooltip: {
-      shared: true,
-      intersect: false,
+      shared: false,
+      followCursor: true,
+      intersect: timeline.data === 'Minute' ? false : true,
       x: {
         show: true,
         format: timeline.format || 'undefined',

@@ -26,7 +26,7 @@ function createConsupmtionTables(db) {
     The 'cBy[period]' tables contain timeline information for the respective period.
     For each of this tables a trigger is defined, that deletes old data. 
   */
-  sql = `CREATE TABLE IF NOT EXISTS cByMinute (
+  let sql = `CREATE TABLE IF NOT EXISTS cByMinute (
       device_id NOT NULL,
       device_cname NOT NULL,
       ts NOT NULL,
@@ -119,7 +119,7 @@ function createConsupmtionTables(db) {
   If they don't exist! Can therefor be called many times.
   @param {object} db The (already open) database
 */ function createUserTables(db) {
-  sql = `CREATE TABLE IF NOT EXISTS users (
+  let sql = `CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     uuid TEXT UNIQUE NOT NULL,
     alias TEXT UNIQUE NOT NULL,
@@ -158,7 +158,7 @@ function createConsupmtionTables(db) {
   @param {object} db The (already open) database
 */
 function createNotificationTable(db) {
-  sql = `CREATE TABLE IF NOT EXISTS notifications (
+  const sql = `CREATE TABLE IF NOT EXISTS notifications (
       id INTEGER PRIMARY KEY,
       type NOT NULL,
       title NOT NULL,
@@ -180,7 +180,7 @@ function createNotificationTable(db) {
   @param {object} db The (already open) database
 */
 function createBlogpostTable(db) {
-  sql = `CREATE TABLE IF NOT EXISTS blogposts (
+  const sql = `CREATE TABLE IF NOT EXISTS blogposts (
       id INTEGER PRIMARY KEY,
       title NOT NULL,
       content NOT NULL,

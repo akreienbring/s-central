@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
+import Tooltip from '@mui/material/Tooltip';
 import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
@@ -20,10 +21,10 @@ import IconButton from '@mui/material/IconButton';
 
 import { fDate } from 'src/utils/format-time';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
+
+import { useShelly } from 'src/sccontext';
 
 import UpdateBlogpost from './update-blogpost';
 
@@ -88,25 +89,27 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
   };
 
   const renderAvatar = (
-    <Avatar
-      alt={currentBlogpost.author.name}
-      src={currentBlogpost.author.avatarUrl}
-      sx={{
-        zIndex: 9,
-        width: 32,
-        height: 32,
-        position: 'absolute',
-        left: (theme) => theme.spacing(3),
-        bottom: (theme) => theme.spacing(-2),
-        ...((latestPostLarge || latestPost) && {
+    <Tooltip title={currentBlogpost.author.name}>
+      <Avatar
+        alt={currentBlogpost.author.name}
+        src={currentBlogpost.author.avatarUrl}
+        sx={{
           zIndex: 9,
-          top: 24,
-          left: 24,
-          width: 40,
-          height: 40,
-        }),
-      }}
-    />
+          width: 32,
+          height: 32,
+          position: 'absolute',
+          left: (theme) => theme.spacing(3),
+          bottom: (theme) => theme.spacing(-2),
+          ...((latestPostLarge || latestPost) && {
+            zIndex: 9,
+            top: 24,
+            left: 24,
+            width: 40,
+            height: 40,
+          }),
+        }}
+      />
+    </Tooltip>
   );
 
   const renderPost = (
@@ -154,16 +157,18 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
           >
             {currentBlogpost.title}
           </Typography>
-          <Iconify
-            icon="mdi:text-box"
-            onClick={() => setOpenContent(!openContent)}
-            sx={{
-              cursor: 'pointer',
-              ...((latestPostLarge || latestPost) && {
-                color: 'white',
-              }),
-            }}
-          />
+          <Tooltip title={openContent ? t('showmin') : t('_showall_')}>
+            <Iconify
+              icon="mdi:text-box"
+              onClick={() => setOpenContent(!openContent)}
+              sx={{
+                cursor: 'pointer',
+                ...((latestPostLarge || latestPost) && {
+                  color: 'white',
+                }),
+              }}
+            />
+          </Tooltip>
         </Stack>
         <Typography
           variant="caption"
@@ -174,9 +179,22 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
             }),
           }}
         >
-          <TextEditorReadOnly
-            value={`${currentBlogpost.content.substring(0, 150)} ${currentBlogpost.content.length > 150 ? '...' : ''}`}
-          />
+          <Box
+            sx={{
+              display: 'flex',
+              width: 1,
+              overflowX: 'auto',
+              overflowY: 'auto',
+            }}
+          >
+            <TextEditorReadOnly
+              value={
+                openContent
+                  ? currentBlogpost.content
+                  : `${currentBlogpost.content.substring(0, 150)}...`
+              }
+            />
+          </Box>
         </Typography>
       </Stack>
     </Box>
@@ -267,19 +285,6 @@ export default function PostCard({ blogpost, index, handleDeletePost }) {
         </Box>
         {renderPost}
       </Card>
-      {openContent && (
-        <Box
-          sx={{
-            m: 3,
-            display: 'flex',
-            width: 1,
-            overflowX: 'auto',
-            overflowY: 'auto',
-          }}
-        >
-          <TextEditorReadOnly value={currentBlogpost.content} />
-        </Box>
-      )}
       {user !== null && user.roleid < 3 && (
         <Popover
           open={!!openMenue}

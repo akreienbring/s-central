@@ -1,6 +1,5 @@
 {
   "http-server": {
-    "host": "192.168.68.2",
     "port": 3031
   },
   "udp-server": {
@@ -13,7 +12,7 @@
     "ping-interval": 10,
     "unblock-interval": 10,
     "messagelimit": 120,
-    "secret": "djfjfjfj_fjeoweruwrfsfsjf12242"
+    "secret": "[YOUR SECRET]"
   },
   "shelly": {
     "set-udp": true,

@@ -51,6 +51,7 @@ describe('Just visit e2e test', () => {
     cy.getBySel('shelly_brightness_slider').should('exist');
     cy.getBySel('shelly_white_slider').should('exist');
     cy.getBySel('shelly_multicolor_input').should('exist');
+    cy.getBySel('shelly_setcopysource_button').should('exist');
     //***Logs Tab***
     cy.getBySel('shellies_logs_tab').click();
     cy.contains('Test');

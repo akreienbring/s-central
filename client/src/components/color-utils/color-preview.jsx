@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
@@ -34,9 +32,3 @@ export default function ColorPreview({ colors, limit = 3, sx }) {
     </Stack>
   );
 }
-
-ColorPreview.propTypes = {
-  colors: PropTypes.arrayOf(PropTypes.string),
-  limit: PropTypes.number,
-  sx: PropTypes.object,
-};

@@ -14,7 +14,7 @@ const CONFIG = {
   logPrefix: 'Watchdog (#' + Shelly.getCurrentScriptId() + '): ',
   nCheckInterval: 30,
   sShellyBrokerURL: '${broker}/ws/v1/',
-  sShellyBrokerSECRECT: 'djfjfjfj_fjeoweruwrfsfsjf12242',
+  sShellyBrokerSECRECT: '[YOUR SECRET]',
    
   //These scripts will be checked by interval 
   oScripts: [

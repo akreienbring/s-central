@@ -2,8 +2,7 @@
   Author: André Kreienbring
   Builds the list of KVS entries of a device shown on a ShellyCard component
 */
-import PropTypes from 'prop-types';
-
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -18,9 +17,10 @@ const COLORS = ['#00AB55', '#D22B2B', '#000000'];
   This value is configured on the Shellybroker and used to convert tecnical
   values into readable ones.
   The values are presented depending on their type (boolean, text, etc.)
+  @param {string} deviceIp The IP adress of the device.
   @param {array} kvs The KVS entries of a device.
 */
-function ShellyKVSList({ kvs }) {
+function ShellyKVSList({ deviceIp, kvs }) {
   return kvs.map((kvsentry) => {
     const key = typeof kvsentry.display !== 'undefined' ? kvsentry.display : kvsentry.key;
 
@@ -52,9 +52,19 @@ function ShellyKVSList({ kvs }) {
         flexWrap="wrap"
         key={createUUID()}
       >
-        <Typography key={createUUID()} variant="caption" sx={{ minWidth: 100 }}>
-          {key.substring(0, 14)}
-        </Typography>
+        <Link
+          href={`http://${deviceIp}/#/key-value-store/edit?key=${kvsentry.key}`}
+          target="_blank"
+          color="inherit"
+          underline="hover"
+          variant="subtitle2"
+          noWrap
+          sx={{ minWidth: 100 }}
+        >
+          <Typography key={createUUID()} noWrap variant="caption">
+            {key.substring(0, 14)}
+          </Typography>
+        </Link>
         <Typography key={createUUID()} variant="caption">
           {convertValue()}
         </Typography>
@@ -64,7 +74,3 @@ function ShellyKVSList({ kvs }) {
 }
 
 export default ShellyKVSList;
-
-ShellyKVSList.propTypes = {
-  kvs: PropTypes.array.isRequired,
-};

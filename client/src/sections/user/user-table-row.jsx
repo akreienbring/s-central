@@ -1,5 +1,10 @@
-import { useState } from 'react';
+/*
+  Author: André Kreienbring
+  Presents a single row in the user table
+*/
+import isEqual from 'lodash/isEqual';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect, useCallback } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -15,6 +20,8 @@ import Iconify from 'src/components/iconify';
 
 import UpdateUser from 'src/sections/user/update-user';
 import AddDevices from 'src/sections/user/add-devices';
+
+import { useShelly } from 'src/sccontext';
 
 // ----------------------------------------------------------------------
 
@@ -34,6 +41,7 @@ import AddDevices from 'src/sections/user/add-devices';
   @param {function} handleClick Called when clicking the checkbox of an user entry
   @param {function} handleDeleteUser Called when a user must be deleted
   @param {function} handleUpdateUser Called when a user was updated
+  @param {array} devices The array of all available devices
 */
 export default function UserTableRow({
   userid,
@@ -51,13 +59,109 @@ export default function UserTableRow({
   handleClick,
   handleDeleteUser,
   handleUpdateUser,
+  devices,
 }) {
   const [openMenue, setOpenMenue] = useState(null);
   const [showReallyDelete, setShowReallyDelete] = useState(false);
   const { t } = useTranslation();
   const [openUpdate, setOpenUpdate] = useState({ open: false, type: '' });
-
+  const { user, request } = useShelly();
+  const [userDevices, setUserDevices] = useState([]);
+  const [origUserDevices, setOrigUserDevices] = useState([]);
+  const [requestResult, setRequestResult] = useState({ success: true, message: '' });
   const [openDevices, setOpenDevices] = useState({ open: false });
+  const [isChanged, setIsChanged] = useState(false);
+
+  /**
+    Called when the requested list of devices currntly assigned to the user
+    is received from the server.
+    @param {object} msg The received ws message with the list of devices
+  */
+  const handleUserDevicesReceived = useCallback((msg) => {
+    setUserDevices(msg.data.userdevices);
+    setOrigUserDevices(msg.data.userdevices);
+  }, []);
+
+  // --------------------- Websocket Implementation BEGIN----------------
+  /*
+      Get all devices of the current user from the websocket server.
+    */
+  useEffect(() => {
+    request(
+      {
+        event: 'user devices get all',
+        data: {
+          source: 'Devices Form',
+          message: 'Devices Form needs the list of devices of a user',
+          userid,
+        },
+      },
+      handleUserDevicesReceived
+    );
+  }, [handleUserDevicesReceived, request, userid, user]);
+  // --------------------- Websocket Implementation BEGIN----------------
+
+  /**
+    Add the selected Devices to the user
+    Send the updated user devices to the websocket server
+    @param {object} e The event
+  */
+  const handleDevicesSubmit = () => {
+    request(
+      {
+        event: 'user devices update',
+        data: {
+          source: 'Devices Form',
+          message: `Updating the devices of user ${alias}`,
+          userid,
+          userdevices: userDevices,
+        },
+      },
+      handleDevicesUpdate
+    );
+  };
+
+  /**
+    Called when a 'user devices update' message was received upon a former
+    request that was send by 'handleDevicesSubmit'. 
+    @param {object} msg The message that was passed with the answer from the server
+  */
+  const handleDevicesUpdate = (msg) => {
+    setRequestResult({
+      success: msg.data.success,
+      message: msg.data.message,
+    });
+    if (msg.data.success) {
+      const newUserDevices = [...userDevices];
+      setUserDevices(newUserDevices);
+      setOrigUserDevices(newUserDevices);
+      setIsChanged(false);
+    }
+  };
+
+  /**
+   * Called when a device checkbox was clicked.
+   * The userDevices array must be updated accordingly
+   * @param {string} device_id The id of the device that was clicked
+   */
+  const handleUserDeviceChange = (device_id) => {
+    const newUserDevices = [...userDevices];
+    if (newUserDevices.includes(device_id)) {
+      newUserDevices.splice(
+        newUserDevices.findIndex((id) => id === device_id),
+        1
+      );
+    } else {
+      newUserDevices.push(device_id);
+    }
+    setUserDevices(newUserDevices);
+    setRequestResult({ success: true, message: '' });
+    if (!isEqual(newUserDevices, origUserDevices)) {
+      setIsChanged(true);
+    } else {
+      setIsChanged(false);
+    }
+  };
 
   /**
     Open / Close the UserUpdate Dialog
@@ -102,6 +206,8 @@ export default function UserTableRow({
   };
   const handleCloseDevices = () => {
     setOpenDevices({ open: false });
+    setRequestResult({ success: true, message: '' });
+    setIsChanged(false);
   };
 
   return (
@@ -198,10 +304,15 @@ export default function UserTableRow({
         handleUpdateUser={handleUpdateUser}
       />
       <AddDevices
-        title={t('_assigndevices_')}
         updateuser={{ alias, firstname, lastname, userid }}
         openDevices={openDevices.open}
         onCloseDevices={handleCloseDevices}
+        devices={devices}
+        userDevices={userDevices}
+        handleUserDeviceChange={handleUserDeviceChange}
+        handleDevicesSubmit={handleDevicesSubmit}
+        requestResult={requestResult}
+        isChanged={isChanged}
       />
     </>
   );

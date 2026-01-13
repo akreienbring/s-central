@@ -42,6 +42,11 @@ function handle(msg, ws) {
       A dashboard client needs a single device.
     */
     const device = shellyDevices.findDeviceById(msg.data.deviceId);
+    if (typeof device === "undefined") {
+      console.error(`Device with ID ${msg.data.deviceId} not found`);
+      console.error(JSON.stringify(msg));
+      return;
+    }
     const answer = {
       event: "device get",
       data: {
@@ -65,7 +70,14 @@ function handle(msg, ws) {
           requestID: msg.data.requestID,
         },
       };
-      answer.data.rows = db.select("cByMinute", [], [], [], null, "ts");
+      answer.data.rows = db.select(
+        "cByMinute",
+        [],
+        [],
+        [],
+        null,
+        "device_id, ts"
+      );
       ws.send(JSON.stringify(answer));
     });
   } else if (msg.event === "devices stable update") {
@@ -79,6 +91,7 @@ function handle(msg, ws) {
       if (typeof device !== "undefined") {
         device.updateStablePending = true;
         device.old_fw_id = device.fw_id;
+        device.reloads = 0;
         delete device.wsmessages.NotifyFullStatus;
         const updateMessage = {
           event: "ShellyUpdate",
@@ -106,6 +119,7 @@ function handle(msg, ws) {
       if (typeof device !== "undefined") {
         device.updateBetaPending = true;
         device.old_fw_id = device.fw_id;
+        device.reloads = 0;
         delete device.wsmessages.NotifyFullStatus;
         const updateMessage = {
           event: "ShellyUpdate",

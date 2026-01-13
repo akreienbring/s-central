@@ -3,12 +3,12 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { alpha, useTheme } from '@mui/material/styles';
 
-import { bgGradient } from 'src/theme/css';
-
 import Logo from 'src/components/logo';
 
 import UserForm from 'src/sections/user/user-form';
 import DeviceCarousel from 'src/sections/login/device-carousel';
+
+import { bgGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 

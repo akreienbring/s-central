@@ -1,8 +1,7 @@
 /*
   Author: André Kreienbring
-  Render the current consumption of a Shelly PM device.
+  Render the current consumption of a Shelly device.
 */
-import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -35,7 +34,3 @@ const Energy = ({ consume }) => (
   </Stack>
 );
 export default Energy;
-
-Energy.propTypes = {
-  consume: PropTypes.number.isRequired,
-};

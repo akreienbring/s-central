@@ -15,12 +15,12 @@ import Typography from '@mui/material/Typography';
 
 import { createUUID, mapNumberToMax } from 'src/utils/general';
 
-import { useShelly } from 'src/sccontext';
-
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
 import PostCard from 'src/sections/blog/post-card';
+
+import { useShelly } from 'src/sccontext';
 
 export default function LandingView() {
   const [blogposts, setBlogposts] = useState([]);

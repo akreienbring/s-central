@@ -13,19 +13,22 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { Typography } from '@mui/material';
 import Popover from '@mui/material/Popover';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { fSToTime } from 'src/utils/format-time';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
+import CircularProgressCount from 'src/components/userinfo/circular-progress-count';
 
 import WifiForm from 'src/sections/shellies/wifi-form';
+
+import { useShelly } from 'src/sccontext';
 
 /**
   A single row in the Shelly table that shows information about a Shelly device.
@@ -126,6 +129,7 @@ export default function ShellyTableRow({
           firmware: device.fw_id,
           stable: device.updateStablePending ? 'stable pending' : device.stable,
           beta: device.updateBetaPending ? 'beta pending' : device.beta,
+          reloads: device.reloads,
         };
         updateRow(newRow);
         setMyRow(newRow);
@@ -172,7 +176,8 @@ export default function ShellyTableRow({
     return () => {
       unsubscribe(row.id, ['ShellyUpdate']);
     };
-  }, [row, subscribe, unsubscribe, handleDeviceUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -213,39 +218,54 @@ export default function ShellyTableRow({
         </TableCell>
         <TableCell align="left">
           <Typography color={myRow.restart === 'reboot pending' ? 'success' : 'string'}>
-            {myRow.restart === 'reboot pending'
-              ? t('_rebootpending_')
-              : myRow.restart
-                ? t('_required_')
-                : t('_notrequired_')}
+            {myRow.restart === 'reboot pending' ? (
+              <CircularProgress size={25} variant="indeterminate" color="success" />
+            ) : myRow.restart ? (
+              <Tooltip title={t('_required_')}>
+                <Iconify icon="mdi:restart-alert" width={25} height={25} sx={{ color: 'red' }} />
+              </Tooltip>
+            ) : (
+              <Tooltip title={t('_notrequired_')}>
+                <Iconify icon="mdi:restart-off" width={25} height={25} />
+              </Tooltip>
+            )}
           </Typography>
         </TableCell>
         <TableCell align="left">
           <Typography>
             {typeof myRow.firmware === 'undefined'
               ? '--'
-              : myRow.firmware.substring(
-                  myRow.firmware.lastIndexOf('/') + 1,
-                  myRow.firmware.length
-                )}
+              : myRow.gen === 1
+                ? myRow.firmware.substring(
+                    myRow.firmware.lastIndexOf('/') + 2,
+                    myRow.firmware.lastIndexOf('g') - 1
+                  )
+                : myRow.firmware.substring(
+                    myRow.firmware.lastIndexOf('/') + 1,
+                    myRow.firmware.lastIndexOf('-')
+                  )}
           </Typography>
         </TableCell>
         <TableCell align="left">
           <Typography color={myRow.stable === 'stable pending' ? 'success' : 'string'}>
-            {typeof myRow.stable === 'undefined'
-              ? '--'
-              : myRow.stable === 'stable pending'
-                ? t('_stablepending_')
-                : myRow.stable.substring(myRow.stable.lastIndexOf('/') + 1)}
+            {typeof myRow.stable === 'undefined' ? (
+              '--'
+            ) : myRow.stable === 'stable pending' ? (
+              <CircularProgressCount count={myRow.reloads} max={5} />
+            ) : (
+              myRow.stable
+            )}
           </Typography>
         </TableCell>
         <TableCell align="left">
           <Typography color={myRow.beta === 'beta pending' ? 'success' : 'string'}>
-            {typeof myRow.beta === 'undefined'
-              ? '--'
-              : myRow.beta === 'beta pending'
-                ? t('_betapending_')
-                : myRow.beta.substring(myRow.beta.lastIndexOf('/') + 1)}
+            {typeof myRow.beta === 'undefined' ? (
+              '--'
+            ) : myRow.beta === 'beta pending' ? (
+              <CircularProgressCount count={myRow.reloads} max={5} />
+            ) : (
+              myRow.beta
+            )}
           </Typography>
         </TableCell>
         <TableCell align="right">

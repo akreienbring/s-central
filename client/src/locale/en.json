@@ -116,9 +116,6 @@
     "Reboot": "Reboot",
     "Name": "Name",
     "Uptime": "Uptime",
-    "_betapending_": "Beta pending",
-    "_stablepending_": "Stable pending",
-    "_rebootpending_": "Reboot pending",
     "_required_": "requiered",
     "_notrequired_": "not required",
     "_wifiupdated_": "Successfully updated WiFi settings ({{successful}} of {{total}})",
@@ -126,6 +123,11 @@
     "_wifiwarming_": "Warning: Changing WiFi settings can disconnect the device!",
     "_acceptrisk_": "I accept the risk",
     "_updateavailable_": "Only {{checked}} of {{selected}} need an {{type}} update",
-    "_noupdateavailable_": "No {{type}} updates available for the selected devices"
+    "_noupdateavailable_": "No {{type}} updates available for the selected devices",
+    "_copysettings_": "Copy this settings",
+    "_copyreset_": "Cancel copy",
+    "_pastesettingsfrom_": "Paste settings from {{deviceName}}",
+    "_showall_": "Show all",
+    "showmin": "Minimize"
   }
 }

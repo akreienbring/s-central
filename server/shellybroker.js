@@ -32,12 +32,13 @@ const wsMessageValidator = require("@ws/server/ws-message-validator.js");
 
 const shellyDevices = require("@devices/shellyDevices.js");
 
-const port = config.get("http-server.port");
-const udpAdress = config.get("udp-server.host");
+const httpPort = config.get("http-server.port");
+const updHost = config.get("udp-server.host");
+const udpPort = config.get("udp-server.port");
 const udpServer = dgram.createSocket("udp4");
 
 // express is used to handle the http endpoints and serves the static public folder
-const httpserver = expressServer.listen(port);
+const httpserver = expressServer.listen(httpPort);
 
 // the NODE_ENV that was set in your package.json scripts
 console.log(`Starting Shellybroker with config ${process.env.NODE_ENV}`);
@@ -55,6 +56,18 @@ httpserver.on("upgrade", function (request, socket, body) {
     if (wsMessageValidator.blockedIPs.includes(clientIP)) {
       console.error(`${clientIP} is currently blocked. Upgrade is denied`);
       return;
+    }
+
+    /*
+      Wait until all devices were loaded.
+      Websocket messages should be buffered on the client side.
+    */
+    while (shellyDevices.getIsLoaded() === false) {
+      const wait = setTimeout(
+        console.warn("Waiting for all devices to be loaded"),
+        1000
+      );
+      clearTimeout(wait);
     }
 
     const ws = new WebSocket(request, socket, body);
@@ -114,7 +127,7 @@ udpServer.on("error", (err) => {
 });
 
 udpServer.bind({
-  address: udpAdress,
-  port: port,
+  address: updHost,
+  port: udpPort,
   exclusive: true,
 });

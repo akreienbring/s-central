@@ -1,8 +1,5 @@
 /*
-    Author: André Kreienbring
-*/
-
-/*
+  Author: André Kreienbring
   Calculates the consumption from all the switches of a notification message.
   The websocket msg 'Notify(Full)Status' may contain up to four switches or an 'rgbw' switch.
   The given 'params' part of a 'Notify(Full)Status' is queried for this data.

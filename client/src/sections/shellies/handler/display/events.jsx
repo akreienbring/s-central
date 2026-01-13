@@ -7,8 +7,6 @@ import 'src/custom.css';
   The event can be a BLE event sent by a bluetooth gateway or
   an other type of event like for example a button press...
 */
-import PropTypes from 'prop-types';
-
 import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
@@ -17,6 +15,7 @@ import BLEEvent from './ble-event';
 import ButtonEvent from './button-event';
 
 /**
+ * Displays the NotifyEvent events
   @param {array} events mandatory The events sent by on NotifyEvent websocket message
 */
 const NotifyEvents = ({ events }) => {
@@ -55,6 +54,3 @@ const NotifyEvents = ({ events }) => {
 };
 
 export default NotifyEvents;
-NotifyEvents.propTypes = {
-  events: PropTypes.array.isRequired,
-};

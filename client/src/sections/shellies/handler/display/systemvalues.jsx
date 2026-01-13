@@ -2,8 +2,6 @@
   Author: André Kreienbring
   Displays system values sent with a 'NotifyFullStatus' websocket message.
 */
-import PropTypes from 'prop-types';
-
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -35,7 +33,3 @@ const SystemValues = ({ sys }) => (
 );
 
 export default SystemValues;
-
-SystemValues.propTypes = {
-  sys: PropTypes.object.isRequired,
-};

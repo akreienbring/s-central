@@ -3,7 +3,6 @@
   Component that represents the sort dialog in the shelly view
 */
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Menu from '@mui/material/Menu';
@@ -52,7 +51,7 @@ export default function ShellySort({ handleSort }) {
   const onMenuItemClick = (e, index) => {
     setOpen(null);
     setSelected(index);
-    handleSort(SORT_OPTIONS[index]);
+    handleSort(SORT_OPTIONS[index].value);
   };
 
   return (
@@ -98,7 +97,3 @@ export default function ShellySort({ handleSort }) {
     </>
   );
 }
-
-ShellySort.propTypes = {
-  handleSort: PropTypes.func.isRequired,
-};

@@ -13,7 +13,6 @@ import isEqual from 'lodash/isEqual';
 */
 export default function updateDeviceValues(device, params) {
   let isChanged = !device.online; // the device is obviosly online
-
   if (typeof device.scripts !== 'undefined') {
     /*
       check the status of the scripts of the device.
@@ -31,19 +30,19 @@ export default function updateDeviceValues(device, params) {
     });
   }
 
-  /*
+  if (typeof device.switches !== 'undefined') {
+    /*
     check the status of the switches of the device.
     Get the id from the device switch and use the value
     of the last NotifyFullStatus Event ONLY if the timestamp is 
     younger than the last manual switching.
   */
-  if (typeof device.switches !== 'undefined') {
     let currentSwitch;
     device.switches.forEach((aSwitch) => {
       currentSwitch = params[`switch:${aSwitch.id}`] || params[`rgbw:${aSwitch.id}`];
-
       // update the values of the switch if it was not altered before
-      const doUpdate = typeof aSwitch.ts === 'undefined' || params.ts * 1000 > aSwitch.ts;
+      // A difference of 2 seconds is considered as a manual change
+      const doUpdate = typeof aSwitch.ts === 'undefined' || params.ts - aSwitch.ts > 2;
       if (typeof currentSwitch !== 'undefined' && doUpdate) {
         if (aSwitch.output !== currentSwitch.output) {
           isChanged = true;
@@ -73,8 +72,16 @@ export default function updateDeviceValues(device, params) {
             `Switch ${aSwitch.key} of device ${device.cname} rgb was set to ${aSwitch.rgb}`
           );
         }
+      } else {
+        console.log(
+          `Skipping update of switch ${aSwitch.id} of device ${device.cname} to prevent overwrite of manual changes.`
+        );
       }
     });
+  }
+  if (isChanged) {
+    device.scripts = [...device.scripts];
+    device.switches = [...device.switches];
   }
 
   return isChanged ? { ...device } : null;

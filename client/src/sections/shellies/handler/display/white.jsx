@@ -2,7 +2,6 @@
   Author: André Kreienbring
   Displays the white value sent with a 'NotifyFullStatus' websocket message.
 */
-import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -31,7 +30,3 @@ const White = ({ white }) => (
 );
 
 export default White;
-
-White.propTypes = {
-  white: PropTypes.number,
-};

@@ -84,7 +84,7 @@ function handle(msg, ws) {
       },
     };
 
-    const info = db.del("blogposts", ["id"], msg.data.ids);
+    db.del("blogposts", ["id"], msg.data.ids);
 
     const sql = `SELECT blogposts.id AS blogpostid, title, content, createdAt, public, users.alias, users.firstname, users.lastname, users.id AS userid FROM blogposts INNER JOIN users ON blogposts.userid = users.id ORDER BY createdAt`;
     deleteAnswer.data.blogposts = db.get(sql);

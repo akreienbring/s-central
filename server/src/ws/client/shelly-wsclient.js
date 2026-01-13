@@ -8,7 +8,6 @@ const WebSocket = require("faye-websocket");
 const wsclient = require("@ws/client/wsclient");
 const shellyAuth = require("@src/utils/shelly-auth.js");
 const prettyjson = require("prettyjson");
-const c = require("config");
 
 /*
   Predefined standard bodies with the RPC channel that will be used for the communication
@@ -75,8 +74,7 @@ function onMessage(event) {
       method: "NotifyFullStatus",
       params: msg.result,
     };
-    const date = new Date();
-    notifyFullStatus.params.ts = Math.floor(date.getTime() / 1000);
+    notifyFullStatus.params.ts = Math.floor(Date.now()) / 1000;
     wsclient.send(notifyFullStatus);
     delete outstandingCommands[msg.src];
   } else if (typeof msg.method !== "undefined") {
@@ -101,7 +99,16 @@ function createWSClient(device) {
     };
 
     shellyws.on("open", (event) => {
-      console.log(`Opened a ws connection to Shelly ${device.cname} `);
+      console.log(`Opened a ws connection to ${device.cname}`);
+      const command = outstandingCommands[shellyws.id];
+      if (typeof command !== "undefined") {
+        console.log(
+          `Sending outstanding command: ${JSON.stringify(command.body)} to ${
+            device.cname
+          }`
+        );
+        shellyws.send(JSON.stringify(command.body));
+      }
     });
 
     shellyws.on("message", onMessage);
@@ -123,17 +130,17 @@ function createWSClient(device) {
 
 /**
   Checks if a socket to the given device is still open. If not, a new socket is created.
-  @param {object} shellyws the previous stored websocket client for a device
+  @param {object} shellyWSClient the previous stored websocket client for a device
   @param {object} device The device to connect to
   @returns {boolean} true if the socket is open, false if a new socket was created
 */
-function isOpenSocket(client, device) {
+function isOpenSocket(shellyWSClient, device) {
   /*
     A client is undefined if the websocket was never created
     A client is null if the websocket was closed
     A client.ws.readyState is 1 if the connection is open
   */
-  if (typeof client === "undefined") {
+  if (typeof shellyWSClient === "undefined") {
     console.log(
       `There is no open websocket to ${device.cname}. Opening a new socket!`
     );
@@ -150,14 +157,15 @@ function isOpenSocket(client, device) {
   @param {object} device mandatory The device that represents the shelly to get the status from
 */
 function sendNotifyFullStatus(device) {
-  let client = shellyWSClients[device.id];
-  if (!isOpenSocket(client, device)) return;
+  const shellyWSClient = shellyWSClients[device.id];
 
-  client.ws.send(JSON.stringify(getStatusBody));
   outstandingCommands[device.id] = {
     id: getStatusBody.id,
     body: getStatusBody,
   };
+
+  if (isOpenSocket(shellyWSClient, device))
+    shellyWSClient.ws.send(JSON.stringify(getStatusBody));
 }
 
 /**
@@ -169,25 +177,17 @@ function sendNotifyFullStatus(device) {
   @param {object} params Paramters for the RPC command.
 */
 function sendCommand(device, method, params) {
-  let client = shellyWSClients[device.id];
-  if (!isOpenSocket(client, device)) return;
+  const shellyWSClient = shellyWSClients[device.id];
 
   const body = { ...sendCommandBody };
   body.method = method;
   body.params = params;
-
-  client.ws.send(JSON.stringify(body));
   outstandingCommands[device.id] = { id: body.id, body };
 
-  /*  
-if (!client.ws.send(JSON.stringify(body))) {
-    client = null;
-  } else {
-    outstandingCommands[device.id] = { id: body.id, body };
-  }
+  if (isOpenSocket(shellyWSClient, device))
+    shellyWSClient.ws.send(JSON.stringify(body));
 }
-  */
-}
+
 module.exports = {
   sendNotifyFullStatus,
   sendCommand,

@@ -21,11 +21,11 @@ import ListItemText from '@mui/material/ListItemText';
 
 import { mapNumberToMax } from 'src/utils/general';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
 
 import UpdateUser from 'src/sections/user/update-user';
+
+import { useShelly } from 'src/sccontext';
 
 // ----------------------------------------------------------------------
 

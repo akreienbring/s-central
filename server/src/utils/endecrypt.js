@@ -80,7 +80,7 @@ function encodeBase64(text) {
   const bufferObj = Buffer.from(text, "utf8");
 
   // Encode the Buffer as a base64 string
-  return (base64String = bufferObj.toString("base64"));
+  return (bufferObj.toString("base64"));
 }
 
 module.exports = {

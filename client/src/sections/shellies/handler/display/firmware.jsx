@@ -11,6 +11,7 @@ import { createUUID } from 'src/utils/general';
 import Iconify from 'src/components/iconify';
 
 /**
+ * Diesplay of the available stable Firmware
   @param {string} version The available stable Firmware version of a Shelly device
 */
 const Firmware = ({ version }) => (

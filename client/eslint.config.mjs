@@ -1,76 +1,88 @@
 import globals from 'globals';
 import eslintJs from '@eslint/js';
+import jsdoc from 'eslint-plugin-jsdoc';
+import { defineConfig } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
 import importPlugin from 'eslint-plugin-import';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import unusedImportsPlugin from 'eslint-plugin-unused-imports';
-
 // ----------------------------------------------------------------------
 
 /**
- * @rules common
+ * common
+ * 0 " 'off'
+ * 1 " 'warn'
+ * 2 " 'error'
  * from 'react', 'eslint-plugin-react-hooks'...
  */
 const commonRules = () => ({
   ...reactHooksPlugin.configs.recommended.rules,
-  'func-names': 1,
-  'no-bitwise': 2,
-  'no-unused-vars': 1,
-  'object-shorthand': 1,
-  'no-useless-rename': 1,
-  'default-case-last': 2,
-  'consistent-return': 2,
-  'no-constant-condition': 1,
-  'default-case': [2, { commentPattern: '^no default$' }],
-  'lines-around-directive': [2, { before: 'always', after: 'always' }],
-  'arrow-body-style': [2, 'as-needed', { requireReturnForObjectLiteral: false }],
+  'func-names': 'warn',
+  'no-bitwise': 'error',
+  'no-unused-vars': 'warn',
+  'object-shorthand': 'warn',
+  'no-useless-rename': 'warn',
+  'default-case-last': 'error',
+  'consistent-return': 'error',
+  'no-constant-condition': 'warn',
+  'default-case': ['error', { commentPattern: '^no default$' }],
+  'lines-around-directive': ['error', { before: 'always', after: 'always' }],
+  'arrow-body-style': ['error', 'as-needed', { requireReturnForObjectLiteral: false }],
   // react
-  'react/jsx-key': 0,
-  'react/prop-types': 0,
-  'react/display-name': 0,
-  'react/no-children-prop': 0,
-  'react/jsx-boolean-value': 2,
-  'react/self-closing-comp': 2,
-  'react/react-in-jsx-scope': 0,
-  'react/jsx-no-useless-fragment': [1, { allowExpressions: true }],
-  'react/jsx-curly-brace-presence': [2, { props: 'never', children: 'never' }],
+  'react-hooks/rules-of-hooks': 'error',
+  'react-hooks/exhaustive-deps': 'warn',
+  'react-hooks/immutability': 'warn',
+  'react-hooks/refs': 'warn',
+  'react-hooks/set-state-in-effect': 'warn',
+  'react/jsx-key': 'warn',
+  'react/prop-types': 'off',
+  'react/display-name': 'off',
+  'react/no-children-prop': 'off',
+  'react/jsx-boolean-value': 'error',
+  'react/self-closing-comp': 'error',
+  'react/react-in-jsx-scope': 'off',
+  'react/jsx-no-useless-fragment': ['warn', { allowExpressions: true }],
+  'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
+  // jsdoc
+  'jsdoc/require-description': 'error',
+  'jsdoc/check-values': 'warn',
 });
 
 /**
- * @rules import
  * from 'eslint-plugin-import'.
  */
 const importRules = () => ({
   ...importPlugin.configs.recommended.rules,
-  'import/named': 0,
-  'import/export': 0,
-  'import/default': 0,
-  'import/namespace': 0,
-  'import/no-absolute-path': 0,
-  'import/no-named-as-default': 0,
-  'import/newline-after-import': 2,
-  'import/no-named-as-default-member': 0,
+  'import/no-unresolved': ['off', { caseSensitive: true }],
+  'import/named': 'off',
+  'import/export': 'off',
+  'import/default': 'off',
+  'import/namespace': 'off',
+  'import/no-absolute-path': 'off',
+  'import/no-named-as-default': 'off',
+  'import/newline-after-import': 'error',
+  'import/no-named-as-default-member': 'off',
   'import/no-cycle': [
-    0, // disabled if slow
+    'off', // disabled if slow
     { maxDepth: '∞', ignoreExternal: false, allowUnsafeDynamicCyclicDependency: false },
   ],
 });
 
 /**
- * @rules unused imports
+ * unused imports
  * from 'eslint-plugin-unused-imports'.
  */
 const unusedImportsRules = () => ({
-  'unused-imports/no-unused-imports': 1,
+  'unused-imports/no-unused-imports': 'warn',
   'unused-imports/no-unused-vars': [
-    0,
+    'off',
     { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
   ],
 });
 
 /**
- * @rules sort or imports/exports
+ * sort or imports/exports
  * from 'eslint-plugin-perfectionist'.
  */
 const sortImportsRules = () => {
@@ -86,16 +98,8 @@ const sortImportsRules = () => {
   };
 
   return {
-    'perfectionist/sort-named-imports': [1, { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-named-exports': [1, { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-exports': [
-      1,
-      {
-        order: 'asc',
-        type: 'line-length',
-        groupKind: 'values-first',
-      },
-    ],
+    'perfectionist/sort-named-imports': ['warn', { type: 'line-length', order: 'asc' }],
+    'perfectionist/sort-named-exports': ['warn', { type: 'line-length', order: 'asc' }],
     'perfectionist/sort-imports': [
       2,
       {
@@ -104,39 +108,31 @@ const sortImportsRules = () => {
         type: 'line-length',
         environment: 'node',
         maxLineLength: undefined,
-        newlinesBetween: 'always',
+        newlinesBetween: 1,
         internalPattern: ['^src/.+'],
         groups: [
           'style',
           'side-effect',
           'type',
           ['builtin', 'external'],
-          customGroups.mui,
-          customGroups.routes,
-          customGroups.hooks,
-          customGroups.utils,
+          'mui',
+          'routes',
+          'hooks',
+          'utils',
+          'components',
+          'sections',
           'internal',
-          customGroups.components,
-          customGroups.sections,
-          customGroups.auth,
-          customGroups.types,
           ['parent', 'sibling', 'index'],
-          ['parent-type', 'sibling-type', 'index-type'],
-          'object',
           'unknown',
         ],
-        customGroups: {
-          value: {
-            [customGroups.mui]: ['^@mui/.+'],
-            [customGroups.auth]: ['^src/auth/.+'],
-            [customGroups.hooks]: ['^src/hooks/.+'],
-            [customGroups.utils]: ['^src/utils/.+'],
-            [customGroups.types]: ['^src/types/.+'],
-            [customGroups.routes]: ['^src/routes/.+'],
-            [customGroups.sections]: ['^src/sections/.+'],
-            [customGroups.components]: ['^src/components/.+'],
-          },
-        },
+        customGroups: [
+          { groupName: 'mui', elementNamePattern: ['^@mui/.+'] },
+          { groupName: 'hooks', elementNamePattern: ['^src/hooks/.+'] },
+          { groupName: 'utils', elementNamePattern: ['^src/utils/.+'] },
+          { groupName: 'routes', elementNamePattern: ['^src/routes/.+'] },
+          { groupName: 'sections', elementNamePattern: ['^src/sections/.+'] },
+          { groupName: 'components', elementNamePattern: ['^src/components/.+'] },
+        ],
       },
     ],
   };
@@ -151,11 +147,13 @@ export const customConfig = {
     'unused-imports': unusedImportsPlugin,
     perfectionist: perfectionistPlugin,
     import: importPlugin,
+    jsdoc,
+    reactPlugin,
   },
 
   rules: {
     ...commonRules(),
-    // ...importRules(),
+    ...importRules(),
     ...unusedImportsRules(),
     ...sortImportsRules(),
   },
@@ -163,7 +161,7 @@ export const customConfig = {
 
 // ----------------------------------------------------------------------
 
-export default [
+export default defineConfig([
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   { ignores: ['*', '!src/', '!eslint.config.*'] },
   {
@@ -173,9 +171,19 @@ export default [
     linterOptions: {
       reportUnusedInlineConfigs: 'off',
     },
-    settings: { react: { version: 'detect' } },
+    settings: {
+      react: { version: 'detect' },
+      //'import/extensions': ['.js', '.jsx'],
+      settings: {
+        'import/resolver': {
+          node: {
+            extensions: [{ '.js': 'never', '.jsx': 'never' }],
+          },
+        },
+      },
+    },
   },
   eslintJs.configs.recommended,
   reactPlugin.configs.flat.recommended,
   customConfig,
-];
+]);

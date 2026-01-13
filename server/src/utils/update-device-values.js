@@ -1,7 +1,8 @@
 /*
   Author: André Kreienbring
-  Get Data from the "NotifyFullStatus" of a device
-  
+  Checks a 'NotifyFullStatus' websocket message for changes that must be
+  applied to a device. (Script and Switch status).
+  Updates the consumption values in the database.
 */
 const db = require("@db/db.js");
 
@@ -16,20 +17,38 @@ const db = require("@db/db.js");
 function update(device, params) {
   let currentPower = 0;
 
+  if (typeof device.scripts !== "undefined") {
+    /*
+      check the status of the scripts of the device.
+      Get the id from the device script and use the value
+      of the last NotifyFullStatus Event
+    */
+    let currentScript;
+    Object.values(device.scripts).forEach((script) => {
+      currentScript = params[`script:${script.id}`];
+      script.running = currentScript.running;
+    });
+  }
+
   if (typeof device.switches !== "undefined") {
     let currentSwitch;
-    device.switches.forEach((aSwitch, index) => {
+    device.switches.forEach((aSwitch) => {
       currentSwitch =
         params[`switch:${aSwitch.id}`] || params[`rgbw:${aSwitch.id}`];
 
       // update the values of the switch if it was not altered manually before
+      // A difference of more than 2 seconds is considered a manual change
       const doUpdate =
-        typeof aSwitch.ts === "undefined" || params.ts * 1000 > aSwitch.ts;
+        typeof aSwitch.ts === "undefined" || params.ts - aSwitch.ts > 2;
       if (typeof currentSwitch !== "undefined" && doUpdate) {
         aSwitch.output = currentSwitch.output;
         aSwitch.brightness = currentSwitch.brightness;
         aSwitch.white = currentSwitch.white;
         aSwitch.rgb = currentSwitch.rgb;
+      } else {
+        console.warn(
+          `Skipping update of switch ${aSwitch.id} of device ${device.cname} to prevent overwrite of manual changes.`
+        );
       }
 
       // count the current power consumption (per device NOT per switch)

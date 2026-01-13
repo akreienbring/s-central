@@ -3,7 +3,6 @@
   A simple component that display an (non-BLE) event.
   Example: button press event
 */
-import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
 
@@ -12,6 +11,7 @@ import { createUUID } from 'src/utils/general';
 import Iconify from 'src/components/iconify';
 
 /**
+ * Displays the kind of button event
   @param {object} event The event of a 'NotifyEvent' websocket message.
 */
 const ButtonEvent = ({ event }) => {
@@ -54,7 +54,3 @@ const ButtonEvent = ({ event }) => {
 };
 
 export default ButtonEvent;
-
-ButtonEvent.propTypes = {
-  event: PropTypes.object.isRequired,
-};

@@ -2,7 +2,7 @@
   "translation": {
     "English": "Inglés",
     "Spanish": "Español",
-    "German": "Aleman",
+    "German": "Alemán",
     "_consumption_": "Consumo Actual",
     "_perShelly_": "por Shelly",
     "Running": "Corriendo",
@@ -115,9 +115,6 @@
     "Reboot": "Reanudar",
     "Name": "Nombre",
     "Uptime": "Duración",
-    "_betapending_": "Beta pendiente",
-    "_stablepending_": "Stable pendiente",
-    "_rebootpending_": "Reboot pendiente",
     "_required_": "necesario",
     "_notrequired_": "no es necesario",
     "_wifiupdated_": "Configuración WiFi actualizada ({{successful}} de {{total}})",
@@ -125,6 +122,11 @@
     "_wifiwarming_": "Advertencia: ¡Cambiar la configuración de WiFi puede desconectar el dispositivo!",
     "_acceptrisk_": "Accepto el riesgo",
     "_updateavailable_": "Solo {{checked}} de {{selected}} dispositivos necesita actualización {{type}}",
-    "_noupdateavailable_": "No hay {{type}} actualizaciones para los dispositivos seleccionados"
+    "_noupdateavailable_": "No hay {{type}} actualizaciones para los dispositivos seleccionados",
+    "_copysettings_": "Copiar esta configuración",
+    "_copyreset_": "Cancelar copia",
+    "_pastesettingsfrom_": "Usar la configuración de {{deviceName}}",
+    "_showall_": "Mostrar todo",
+    "showmin": "Minimizar"
   }
 }

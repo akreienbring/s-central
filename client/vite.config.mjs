@@ -32,7 +32,7 @@ export default defineConfig(({ command, mode }) => {
       server: {
         port: 3030,
         // hmr: true,
-        hmr: { overlay: true },
+        hmr: { overlay: false },
       },
       preview: {
         port: 3030,
@@ -58,8 +58,8 @@ export default defineConfig(({ command, mode }) => {
       plugins: [
         react(),
         eslint({
-          dev: true,
-          build: false,
+          dev: false,
+          build: true,
           eslintPath: 'eslint/use-at-your-own-risk',
         }),
       ],

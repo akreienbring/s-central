@@ -6,12 +6,11 @@
   The original code was copied from an Allterco example here:
   https://github.com/ALLTERCO/gen2-sample-code
 */
-const crypto = require("crypto");
 const endecrypt = require("@src/utils/endecrypt.js");
 
 const shellyHttpHashAlgo = "sha256";
 const shellyHttpUsername = "admin"; // always
-const match_dquote_re = /^\"|\"$/g;
+const match_dquote_re = /^"|"$/g;
 const match_coma_space_re = /,? /;
 const static_noise_sha256 =
   ":auth:6370ec69915103833b5222b368555393393f098bfbfbb59f47e0590af135f062"; // = ':auth:'+hexHash("dummy_method:dummy_uri")

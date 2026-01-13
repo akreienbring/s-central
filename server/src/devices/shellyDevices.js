@@ -38,14 +38,11 @@ let isLoaded = false;
 })();
 
 /**
-  CURRENTLY UNUSED  
-  Updates a device in the internal devices array.
-  @param {number} id The id of the device to update
-  @param {object} update The updated device object 
-*/
-function updateDeviceById(id, update) {
-  let device = findDeviceById(id);
-  device = update;
+ * Provides the loading state of the devices
+ * @returns {boolean} true if the devices were loaded already, false otherwise
+ */
+function getIsLoaded() {
+  return isLoaded;
 }
 
 /**
@@ -140,7 +137,7 @@ module.exports = {
   getDevice,
   findDeviceByIp,
   findDeviceById,
-  updateDeviceById,
   findScript,
   handleLogMessage,
+  getIsLoaded,
 };

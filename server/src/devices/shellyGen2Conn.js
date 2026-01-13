@@ -7,7 +7,6 @@
   display text.
 */
 
-const { get } = require("config");
 const shellyAxios = require("@http/shellyAxios.js");
 const kvsdisplays = require("@root/config/kvsdisplays.json");
 
@@ -32,6 +31,7 @@ async function createDevice(device, data, clientImagePath) {
   device.id = data.id;
   device.image = `${clientImagePath}${device.name}.png`;
   device.wsmessages = {};
+  device.switches = [];
   return await getScripts(device)
     .then((device) =>
       getKVS(device).then((device) =>
@@ -42,6 +42,7 @@ async function createDevice(device, data, clientImagePath) {
       console.error(err.message);
     });
   /*
+    Alternative with Promise.all
     return Promise.all([
       getScripts(device),
       getKVS(device),
@@ -50,6 +51,7 @@ async function createDevice(device, data, clientImagePath) {
     ]);
     */
 }
+
 /**
   Is only used internally when a device is created after loading
   Returns all scripts of a given device
@@ -138,7 +140,6 @@ async function getKVS(device) {
 */
 async function getSwitches(device) {
   console.log("Getting Switches for the device " + device.cname);
-  const arrSwitches = [];
   const res = await shellyAxios
     .postRPCMethod(device, "Shelly.GetStatus")
     .catch((err) => {
@@ -148,9 +149,8 @@ async function getSwitches(device) {
     Object.keys(res.data.result).forEach((entry) => {
       if (entry.startsWith("switch") || entry.startsWith("rgbw")) {
         const aSwitch = res.data.result[entry];
-        arrSwitches.push({
+        device.switches.push({
           deviceIp: device.ip,
-          deviceId: device.id,
           key: entry,
           id: aSwitch.id,
           output: aSwitch.output,
@@ -164,7 +164,6 @@ async function getSwitches(device) {
         });
       }
     });
-    device.switches = arrSwitches;
     console.log(
       `Successfully got ${device.switches.length} switches of ${device.cname}`
     );

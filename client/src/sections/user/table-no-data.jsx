@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Paper from '@mui/material/Paper';
@@ -32,7 +31,3 @@ export default function TableNoData({ query }) {
     </TableRow>
   );
 }
-
-TableNoData.propTypes = {
-  query: PropTypes.string,
-};

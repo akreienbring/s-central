@@ -3,7 +3,6 @@
   Builds the list of scripts of a device shown on a ShellyCard component.
 */
 import { Fragment } from 'react';
-import PropTypes from 'prop-types';
 
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -79,8 +78,3 @@ const ShellyScriptList = ({ deviceIP, deviceOnline, scripts }) => {
   ));
 };
 export default ShellyScriptList;
-ShellyScriptList.propTypes = {
-  deviceIP: PropTypes.string.isRequired,
-  deviceOnline: PropTypes.bool.isRequired,
-  scripts: PropTypes.array.isRequired,
-};

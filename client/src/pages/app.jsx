@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 
-import { useShelly } from 'src/sccontext';
-
 import { AppView } from 'src/sections/overview/view';
+
+import { useShelly } from 'src/sccontext';
 
 // ----------------------------------------------------------------------
 

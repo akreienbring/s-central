@@ -1,82 +1,70 @@
-### Release v1.0.0
+### Release v2.3.0
 
-###### 12.01.2025
+##### 13.01.2026
 
-- Initial Release.
+**Client (2.3.0)**
+- feature: Click on a KVS entry to go to the corresponding webpage
+- feature: Using more MUI colors (72) for the comsumption charts
+- feature: Copy device controls (eg. white, brightness, rgb) from one device to another
+- feature: Display the number of device reloads after a firmware update
+- feature: Timeline now shows consumption gaps (null values) in Minute chart
+- fixed: Password visible in local storage after credentials update
+- fixed: Wrong user data when reconnecting an previously connected user
+- fixed: Unwanted navigation to user home after profile update
+- fixed: Showing wrong tooltip when hovering over charts
+- fixed: Blog entries could not be expanded to show the full text
+- fixed: Wrong devices display when using filter and sort together
+- fixed: Too many unnessesary requests send to server, when tab changes or filter / sort was used
+- fixed: Switch and Script status not updated from wsmessage
+- fixed: Script status not changed when it was stopped by an error
+- fixed: Incorrect chart data in timeline by minute because of missing null values
 
-### Release v1.0.1
+**Server (2.3.0)**
+- feature: Limit the number of device reloads after a firmware update to 5
+- fixed: Removed unnessesary Server configuraration (http-server.host)
+- fixed: An update to a beta version was not handled correctly
+- fixed: Wrong log (update successful) when a device was offline and reloaded
+- fixed: Script status not updated on the server side from wsmessage
 
-##### 18.01.2025
 
-**Client (1.0.1)**
+### Release v2.2.1
 
-- Enhanced debug information
-- Updated dependencies
+##### 01.12.2025
 
-**Server (1.0.1)**
+**Client (2.2.1)**
+- fixed: Problem with automatic Logins
+- fixed: Password2 visible in local storage after credentials update
 
-- Updated dependencies
+**Server (2.2.1)**
+- fixed: When logging in with a non existant user "Wrong Password" was returned
 
-### Release v1.0.2
 
-##### 28.01.2025
+### Release v2.2.0
 
-**Client (1.0.2)**
+##### 24.11.2025
 
-- Updated dependencies
+**Client (2.2.0)**
+- feature: Added tests with Cypress.
+- fixed: Dataloss when switching tabs in ShellyView
+- fixed: too many rerenders in ShellyView
 
-**Server (1.0.2)**
 
-- Updated dependencies
+### Release v2.1.1
 
-### Release v2.0.0
+##### 31.08.2025
 
-##### 18.06.2025
+**Client (2.1.1)**
+- fixed: Firmware updates not working
 
-**Client (2.0.0)**
+**Server (2.1.1)**
+- new: Available Firmware versions constantly updated from NotifyFullStatus
 
-- Updated dependencies
-- Migration to eslint v9, MUI v7, React v19
-- fixed a bug that affected the Chart Colors
-- fixed a bug the prevented KVS entries to be shown correctly
-
-**Server (2.0.0)**
-
-- (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
-- (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
-- Updated dependencies
-- Using express v5
-- fixed the bug that outbound websockets not were enabled if configured
-- if configured the Setting of websockets and udp debug automatically reboots the Shelly.
-- New feature: Admin can assign devices to users
-
-### Release v2.0.1
-
-##### 02.07.2025
-
-**Client (2.0.1)**
-
-- Vite v7
-- fixed: Current Consumption Chart not rerendering
-
-### Release v2.0.2
-
-##### 24.07.2025
-
-**Client (2.0.2)**
-
-- fixed: User could not change his Homepage Setting
-
-**Server (2.0.2)**
-
-- Updated axios because of a security issue
 
 ### Release v2.1.0
 
 ##### 31.08.2025
 
 **Client (2.1.0)**
-
 - new: (Batch) functions for update, reboot and WIFI settings of devices
 - fixed: Error that reset wsmessages when a device was updated-
 - fixed: Error that disallowed deleting an created administrator
@@ -84,7 +72,6 @@
 - Code refactored for better readability
 
 **Server (2.1.0)**
-
 - fixed: Error that allowed the main admin to delete himself
 - fixed: User could not be updated
 - Support for RGBW2 (Gen1)
@@ -97,36 +84,74 @@
   - how to use the webservice endpoints of the Shellybroker
   - how script Errors are detected and send to the Shellybroker as notification
 
-### Release v2.1.1
 
-##### 31.08.2025
+### Release v2.0.2
 
-**Client (2.1.1)**
+##### 24.07.2025
 
-- fixed: Firmware updates not working
+**Client (2.0.2)**
+- fixed: User could not change his Homepage Setting
 
-**Server (2.1.1)**
+**Server (2.0.2)**
+- Updated axios because of a security issue
 
-- new: Available Firmware versions constantly updated from NotifyFullStatus
 
-### Release v2.2.0
+### Release v2.0.1
 
-##### 24.11.2025
+##### 02.07.2025
 
-**Client (2.2.0)**
+**Client (2.0.1)**
+- Vite v7
+- fixed: Current Consumption Chart not rerendering
 
-- feature: Added tests with Cypress.
-- fixed: Dataloss when switching tabs in ShellyView
-- fixed: too many rerenders in ShellyView
 
-### Release v2.2.1
+### Release v2.0.0
 
-##### 01.12.2025
+##### 18.06.2025
 
-**Client (2.2.1)**
-- fixed: Problem with automatic Logins
-- fixed: Password shown in local storage after credentials update
+**Client (2.0.0)**
+- Updated dependencies
+- Migration to eslint v9, MUI v7, React v19
+- fixed a bug that affected the Chart Colors
+- fixed a bug the prevented KVS entries to be shown correctly
 
-**Server (2.2.1)**
-- fixed: When logging in with a non existant user "Wrong Password" was returned
+**Server (2.0.0)**
+- (BREAKING) The notifications table was altered. (Delete it, it will be reacreated)
+- (BREAKING) Webservices now check for the WS secret (Update your scripts if you use them)
+- Updated dependencies
+- Using express v5
+- fixed the bug that outbound websockets not were enabled if configured
+- if configured the Setting of websockets and udp debug automatically reboots the Shelly.
+- New feature: Admin can assign devices to users
+
+
+### Release v1.0.2
+
+##### 28.01.2025
+
+**Client (1.0.2)**
+- Updated dependencies
+
+**Server (1.0.2)**
+- Updated dependencies
+
+
+### Release v1.0.1
+
+##### 18.01.2025
+
+**Client (1.0.1)**
+- Enhanced debug information
+- Updated dependencies
+
+**Server (1.0.1)**
+- Updated dependencies
+
+
+### Release v1.0.0
+
+###### 12.01.2025
+
+- Initial Release.
+
 

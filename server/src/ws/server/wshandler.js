@@ -38,7 +38,7 @@ const PING_MESSAGE = {
 };
 
 /* 
-  When connected, the dashboard client sends a message. The websocket is then stored
+  When connected, the dashboard client sends a (reconnect) message. The websocket is then stored
   and managed with this object. The channelID property is used as the key
   in this object. The value is the websocket the client uses.
 */
@@ -116,16 +116,16 @@ function handleMessage(msg, ws) {
 
     let device = shellyDevices.findDeviceById(msg.src);
     if (typeof device !== "undefined") {
-      /* 
-        Update the db with consumption data and get the current
-        state of the switches ONLY if the NotifyFullStatus was
-        requested from the device.
-      */
       if (
         msg.method === "NotifyFullStatus" &&
         msg.dst === "request" &&
         typeof msg.params !== "undefined"
       ) {
+        /* 
+        Update the db with consumption data and get the current
+        state of the switches ONLY if the NotifyFullStatus was
+        requested from the device.
+        */
         updateDeviceValues.update(device, msg.params);
 
         const newStable = msg.params.sys.available_updates?.stable?.version;
@@ -136,8 +136,8 @@ function handleMessage(msg, ws) {
         if (
           (typeof device.online !== "undefined" && !device.online) ||
           device.name === "unknown" ||
-          device.stable !== newStable ||
-          device.beta !== newBeta ||
+          (typeof newStable !== "undefined" && device.stable !== newStable) ||
+          (typeof newBeta !== "undefined" && device.beta !== newBeta) ||
           (typeof device.updateStablePending !== "undefined" &&
             device.updateStablePending) ||
           (typeof device.updateBetaPending !== "undefined" &&
@@ -149,32 +149,67 @@ function handleMessage(msg, ws) {
             to get the current firmware of the device.
             If stable or beta update has changed, the device was updated outside of this app.
           */
+          if (
+            (typeof device.online !== "undefined" && !device.online) ||
+            device.name === "unknown"
+          )
+            console.log(
+              `Device ${device.cname} is back online or was unknown. Reloading...`
+            );
+          if (
+            (typeof newStable !== "undefined" && device.stable !== newStable) ||
+            (typeof newBeta !== "undefined" && device.beta !== newBeta)
+          )
+            console.log(
+              `Device ${device.cname} available firmware info changed. Reloading...`
+            );
+          if (
+            typeof device.updateStablePending !== "undefined" &&
+            device.updateStablePending
+          )
+            console.log(
+              `Device ${device.cname} stable update is pending. Reloading...`
+            );
+          if (
+            typeof device.updateBetaPending !== "undefined" &&
+            device.updateBetaPending
+          )
+            console.log(
+              `Device ${device.cname} beta update is pending. Reloading...`
+            );
+
           device.online = true;
 
-          console.warn(`Reloading device ${device.cname}`);
           shellyDevices.getDevice(device.ip, true).then((reloadedDevice) => {
             // prettyjson.render(reloadedDevice);
-            if (
-              (device.updateStablePending || device.updateSBetaPending) &&
-              reloadedDevice.fw_id === device.old_fw_id
-            ) {
-              console.warn(
-                `Reloaded device ${reloadedDevice.cname}. Firmware is still the same (${device.old_fw_id}).`
-              );
-              return; // keep the pending update flags until the firmware is updated
-            } else {
-              console.log(
-                `Firmaware update of ${device.cname} was successfull!`
-              );
+            if (device.updateStablePending || device.updateBetaPending) {
+              reloadedDevice.reloads++;
+              if (
+                reloadedDevice.fw_id === device.old_fw_id &&
+                device.reloads <= 5
+              ) {
+                console.warn(
+                  `Reloaded device ${reloadedDevice.cname} ${device.reloads} time(s). Firmware is still the same (${device.fw_id}).`
+                );
+              } else {
+                if (device.reloads <= 5) {
+                  console.log(
+                    `Firmaware update of ${device.cname} was successfull!`
+                  );
+                } else {
+                  console.warn(
+                    `Firmaware update of ${device.cname} was NOT successfull!`
+                  );
+                }
+                delete device.updateBetaPending;
+                delete device.updateStablePending;
+                delete device.old_fw_id;
+                delete device.reloads;
+              }
             }
 
-            console.log(`Device ${device.cname} was reloaded.`);
-
             device = reloadedDevice;
-            // TODO: check if the next three lines are necessary
-            delete device.updateBetaPending;
-            delete device.updateStablePending;
-            delete device.old_fw_id;
+            console.log(`Device ${device.cname} was reloaded`);
 
             const reloadMessage = {
               event: "ShellyUpdate",
@@ -188,7 +223,7 @@ function handleMessage(msg, ws) {
             };
             broadcast(reloadMessage);
           });
-          // don't send any message to the client if an update is pending
+          // don't send any further message to the client if a device was reloaded
           return;
         }
       }
@@ -250,7 +285,14 @@ function handleMessage(msg, ws) {
         },
       };
       if (msg.event === "getTimelineMinute") {
-        answer.data.rows = db.select("cByMinute", [], [], [], null, "ts");
+        answer.data.rows = db.select(
+          "cByMinute",
+          [],
+          [],
+          [],
+          null,
+          "device_id, ts"
+        );
       } else if (msg.event === "getTimelineHour") {
         answer.data.rows = db.select("cByHour", [], [], [], null, "ts");
       } else if (msg.event === "getTimelineDay") {
@@ -264,15 +306,20 @@ function handleMessage(msg, ws) {
         ws.send(JSON.stringify(answer));
       }
     } else if (msg.event === "toggleSwitch") {
-      shellyConnector.toggleSwitch(
-        shellyDevices.findDeviceByIp(msg.data.switch.deviceIp),
-        msg.data.switch
-      );
+      const aSwitch = msg.data.switch;
+      // add a timestamp to prevent sync problems with 'NotifyFullStatus'
+      aSwitch.ts = Math.floor(Date.now()) / 1000;
+
+      const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
+      device.switches[aSwitch.index] = aSwitch;
+      shellyConnector.toggleSwitch(device, aSwitch);
     } else if (msg.event === "setSwitch") {
-      shellyConnector.setSwitch(
-        shellyDevices.findDeviceByIp(msg.data.switch.deviceIp),
-        msg.data.switch
-      );
+      const aSwitch = msg.data.switch;
+      // add a timestamp to prevent sync problems with 'NotifyFullStatus'
+      aSwitch.ts = Math.floor(Date.now()) / 1000;
+      const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
+      device.switches[aSwitch.index] = aSwitch;
+      shellyConnector.setSwitch(device, aSwitch);
     } else if (msg.event.startsWith("user")) {
       wsUserHandler.handle(msg, ws);
     } else if (msg.event.startsWith("role")) {
@@ -294,6 +341,9 @@ function handleMessage(msg, ws) {
           );
 
           if (typeof script !== "undefined") {
+            // update the script status in the device array
+            script.running = false;
+
             notification = {
               type: notification.type,
               title: `Error: ${notification.device_cname}, Script: ${script.name}`,
@@ -306,12 +356,26 @@ function handleMessage(msg, ws) {
               ts: Date.now(),
             };
 
-            info = db.insert("notifications", notification, true);
+            const info = db.insert("notifications", notification, true);
 
             // use the row id to identify the notification when it's been deleted
             notification.id = info.lastInsertRowid;
             msg.data.notification = notification;
             broadcast(msg);
+
+            const device = shellyDevices.findDeviceByIp(notification.device_ip);
+
+            const logErrorMessage = {
+              event: "ShellyUpdate",
+              type: "device",
+              data: {
+                source: "WSHandler",
+                message: "Log error notification created",
+                device,
+                subscriptionID: device.id,
+              },
+            };
+            broadcast(logErrorMessage);
           } else {
             console.error(
               `Couldn't store a notification. Script with id ${notification.scrip_id} on device ${notification.device_cname} does not exist!`
@@ -331,7 +395,7 @@ function handleMessage(msg, ws) {
             ts: Date.now(),
           };
 
-          info = db.insert("notifications", notification, true);
+          const info = db.insert("notifications", notification, true);
 
           notification.id = info.lastInsertRowid;
           msg.data.notification = notification;

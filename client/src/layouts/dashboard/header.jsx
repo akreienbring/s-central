@@ -9,10 +9,10 @@ import IconButton from '@mui/material/IconButton';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
+import Iconify from 'src/components/iconify';
+
 import { bgBlur } from 'src/theme/css';
 import LastUpdate from 'src/layouts/dashboard/common/lastupdate';
-
-import Iconify from 'src/components/iconify';
 
 import { NAV, HEADER } from './config-layout';
 import AccountPopover from './common/account-popover';

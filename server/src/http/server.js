@@ -163,6 +163,7 @@ function checkSecret(secret) {
 }
 
 server.use(express.static("public"));
+
 // handle every other route with index.html
 server.get("/*splat", function (req, res) {
   res.sendFile(path.resolve("./public/index.html"));

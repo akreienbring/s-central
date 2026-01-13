@@ -38,7 +38,6 @@ export const useShelly = () => useContext(Context);
 */
 export const SCProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-  const [devices, setDevices] = useState([]);
   const [validationRequest, setValidationRequest] = useState(null);
   const [isTest, setIsTest] = useState(false);
   const [retryCount, setRetryCount] = useState(0.001);
@@ -93,6 +92,9 @@ export const SCProvider = ({ children }) => {
         console.log(`Trying to reconnect: ${currentRetryCount}`);
         // setRetryCount(currentRetryCount => currentRetryCount + 1);
         setRetryCount(currentRetryCount + 1); // this triggers the useEffect Hook
+
+        // TODO check with futer version. Rule can's live with recursive calls?
+        // eslint-disable-next-line react-hooks/immutability
         startRetryTimeout(currentRetryCount + 1, false);
       },
       currentRetryCount * window.scconfig.RECONNECT_DELAY * 1000
@@ -218,18 +220,21 @@ export const SCProvider = ({ children }) => {
     Put the current user in the context of the application.
     This also adds him to the reconnect message to be send when reconnecting the websocket.
     @param {object} theUser The user that was provided by the login form.
+    @param {boolean} isNavigateToHome If true, navigate to the home page of the user after login
   */
-  const login = useCallback((theUser) => {
-    reconnectMsg.current.data.user = theUser; 
-    setUser(theUser);
-    navigate(`/${theUser.home !== null ? theUser.home : 'dashboard'}`);
-    console.log(`Loggin in user '${theUser.alias}'`);
-  }, []);
+  const login = useCallback(
+    (theUser, isNavigateToHome) => {
+      reconnectMsg.current.data.user = theUser;
+      setUser(theUser);
+      console.log(`Loggin in user '${theUser.alias}'`);
+      if (isNavigateToHome) navigate(theUser.home);
+    },
+    [navigate]
+  );
 
   const logout = useCallback(() => {
     // ws.current.close(4001, 'User logged out');
     setUser(null);
-    //setDevices([]);
   }, []);
 
   useEffect(() => {
@@ -238,7 +243,6 @@ export const SCProvider = ({ children }) => {
     } else {
       localStorage.removeItem('user');
       reconnectMsg.current.data.user = null;
-      setDevices([]);
     }
   }, [user]);
 
@@ -351,25 +355,7 @@ export const SCProvider = ({ children }) => {
               `Just reconnected with user ${connectedUser.alias}. There are ${Object.entries(requests.current).length} outstanding requests`
             );
             secret.current = msg.data.secret;
-            login(connectedUser);
-            if (!isTest) {
-              // if isTest is false: request the devices from the server
-              console.log(`Requesting devices of user ${connectedUser.alias}.`);
-              ws.current.send(
-                JSON.stringify({
-                  event: 'devices get all',
-                  data: {
-                    source: 'Shelly Context',
-                    message: 'Shelly Context needs the list of devices',
-                    userid: connectedUser.roleid != 1 ? connectedUser.userid : null, //an admin gets all devices
-                    secret: secret.current,
-                  },
-                })
-              );
-            } else {
-              setDevices(testDevices);
-              console.log(`Test mode active. Using ${testDevices.length} test devices`);
-            }
+            login(connectedUser, true);
             /*
             Send all messages that arrived while the socket was not open
             */
@@ -387,10 +373,6 @@ export const SCProvider = ({ children }) => {
             console.error('Reconnecting was not possible. Logging out!');
             logout();
           }
-        } else if (msg.event === 'devices get all' && typeof msg.data.requestID === 'undefined') {
-          // this is the initial request for devices sent by the context itself
-          console.log(`Context received ${msg.data.devices.length} devices for user ${user.alias}`);
-          setDevices(msg.data.devices);
         } else if (msg.event === 'ping') {
           /*
             the server sent a ping! Answer with pong to
@@ -461,14 +443,14 @@ export const SCProvider = ({ children }) => {
         );
       }
     };
-  }, [validationRequest, startRetryTimeout, retryCount, logout, user]);
+  }, [validationRequest, startRetryTimeout, retryCount, logout, user, isTest, login]);
   // --------------------- Websocket Implementation END----------------
 
   return (
     <Context.Provider
       value={useMemo(
-        () => ({ user, devices, login, logout, subscribe, unsubscribe, request, send }),
-        [user, devices, login, logout, request, send]
+        () => ({ user, login, logout, subscribe, unsubscribe, request, send, testDevices, isTest }),
+        [user, login, logout, request, send, isTest]
       )}
     >
       {children}

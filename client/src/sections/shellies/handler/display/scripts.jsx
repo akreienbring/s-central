@@ -2,7 +2,6 @@
   Author: André Kreienbring
   Renders the scripts of a Shelly devices including their 'running' status.
 */
-import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -48,7 +47,3 @@ const Scripts = ({ params }) => {
 };
 
 export default Scripts;
-
-Scripts.propTypes = {
-  params: PropTypes.object.isRequired,
-};

@@ -17,10 +17,10 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { mapNumberToMax } from 'src/utils/general';
 
-import { useShelly } from 'src/sccontext';
-
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
+
+import { useShelly } from 'src/sccontext';
 
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';

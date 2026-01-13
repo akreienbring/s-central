@@ -3,11 +3,11 @@
   Simple component that renders the online status
   of the device.
 */
-import PropTypes from 'prop-types';
 
 import Iconify from 'src/components/iconify';
 
 /**
+ * Diesplays the online (wifi) status of a Shelly device.
   @param {bool} online Is the device online or not?
 */
 const ShellyStatus = ({ online }) => (
@@ -18,6 +18,3 @@ const ShellyStatus = ({ online }) => (
 );
 
 export default ShellyStatus;
-ShellyStatus.propTypes = {
-  online: PropTypes.bool.isRequired,
-};

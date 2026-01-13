@@ -189,7 +189,7 @@ function checkDeviceError(device, script, logmessage) {
           wsclient.send(wsmessage);
         }
       }
-    } catch (error) {
+    } catch {
       // Do nothing. Script is still running;
     }
   }

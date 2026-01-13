@@ -66,7 +66,7 @@ async function getNotifyFullStatus(device) {
   });
 
   if (res?.status === 200) {
-    const status = res.data; //
+    const status = res.data;
 
     const notifyFullStatus = {
       src: device.name + device.ip,
@@ -85,17 +85,21 @@ async function getNotifyFullStatus(device) {
             stable: {
               version:
                 typeof status?.update?.new_version !== "undefined" &&
-                status?.update?.has_update
+                status?.update?.has_update &&
+                device.fw_id !== status.update.new_version
                   ? status.update.new_version.substring(
-                      status.update.new_version.indexOf("/") + 1
+                      status.update.new_version.lastIndexOf("/") + 2,
+                      status.update.new_version.lastIndexOf("g") - 1
                     )
                   : undefined,
             },
             beta: {
               version:
-                typeof status?.update?.beta_version !== "undefined"
+                typeof status?.update?.beta_version !== "undefined" &&
+                device.fw_id !== status.update.beta_version
                   ? status.update.beta_version.substring(
-                      status.update.beta_version.indexOf("/") + 1
+                      status.update.beta_version.indexOf("/") + 2,
+                      status.update.beta_version.lastIndexOf("g") - 1
                     )
                   : undefined,
             },
@@ -103,8 +107,7 @@ async function getNotifyFullStatus(device) {
         },
       },
     };
-    const date = new Date();
-    notifyFullStatus.params.ts = Math.floor(date.getTime() / 1000);
+    notifyFullStatus.params.ts = Math.floor(Date.now()) / 1000;
 
     /*
       First build the switches from the status request result.
@@ -205,8 +208,7 @@ function toggleSwitch(aSwitch, password) {
   - 'color' for a color switch
   see https://shelly.guide/webhooks-https-requests/ for details
   @param {object} aSwitch The switch that must be toggled.
-  @param {string} [password] The password that is needed if the Authentication on the device is activated
-    
+  @param {string} [password] The password that is needed if the Authentication on the device is activated   
 */
 function setSwitch(aSwitch, password) {
   let url = "";
@@ -237,7 +239,7 @@ async function getStatus(ip, password) {
   Get the status of a device identified by its IP
   @async
   @param {object} device The device to get the available updates for
-  @return {Pomise<object>} The device with the available updates added or an error
+  @return {Pomise<object>} The device with the available updates added
 */
 async function getAvailableUpdates(device) {
   const res = await shellyAxios
@@ -250,12 +252,22 @@ async function getAvailableUpdates(device) {
     console.log("Successfully got the available updates of " + device.cname);
     const ota = res.data;
     device.stable =
-      typeof ota.new_version !== "undefined" && ota.has_update
-        ? ota.new_version.substring(ota.new_version.indexOf("/") + 1)
+      typeof ota.new_version !== "undefined" &&
+      ota.has_update &&
+      device.fw_id !== ota.new_version
+        ? ota.new_version.substring(
+            ota.new_version.lastIndexOf("/") + 2,
+            ota.new_version.lastIndexOf("g") - 1
+          )
         : undefined;
     device.beta =
-      typeof ota.beta_version !== "undefined" && ota.beta_version !== ""
-        ? ota.beta_version.substring(ota.beta_version.indexOf("/") + 1)
+      typeof ota.beta_version !== "undefined" &&
+      ota.beta_version !== "" &&
+      device.fw_id !== ota.beta_version
+        ? ota.beta_version.substring(
+            ota.beta_version.lastIndexOf("/") + 2,
+            ota.beta_version.lastIndexOf("g") - 1
+          )
         : undefined;
   } else {
     if (typeof res !== "undefined") {

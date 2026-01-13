@@ -30,8 +30,9 @@ const Shelly = ({ device, handleSwitchToggle }) => {
   */
   const handleClick = (aSwitch) => {
     aSwitch.output = !aSwitch.output;
-    device.switches[aSwitch.index] = aSwitch;
-    setSwitches([...device.switches]);
+    const newSwitches = [...switches];
+    newSwitches[aSwitch.index] = aSwitch;
+    setSwitches(newSwitches);
 
     // call the function of ShellyCard component.
     handleSwitchToggle(aSwitch);
@@ -51,7 +52,7 @@ const Shelly = ({ device, handleSwitchToggle }) => {
         }}
       >
         <ShellyStatus online={device.online} />
-        <ShellySwitchList ip={device.ip} switches={switches} handleClick={handleClick} />
+        <ShellySwitchList switches={device.switches} handleClick={handleClick} />
       </Stack>
       <CardHeader
         title={

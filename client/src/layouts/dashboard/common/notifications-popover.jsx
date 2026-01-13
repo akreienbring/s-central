@@ -3,9 +3,7 @@
   Lists notifications that are retrieved from the server.
   Presents functions to manage them.
 */
-import { es, de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-import { formatDistanceToNow } from 'date-fns';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -23,12 +21,13 @@ import ListSubheader from '@mui/material/ListSubheader';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemButton from '@mui/material/ListItemButton';
 
+import { fToNow } from 'src/utils/format-time';
 import { createUUID } from 'src/utils/general';
-
-import { useShelly } from 'src/sccontext';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+
+import { useShelly } from 'src/sccontext';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +39,17 @@ export default function NotificationsPopover() {
   const subscriptionID = useRef(createUUID());
   const isNotificationLoaded = useRef(false);
   const { t } = useTranslation();
+
+  /**
+   * Used to open the Popover
+   * @param {*} event
+   */
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+  };
+  const handleClose = () => {
+    setOpen(null);
+  };
 
   /**
     Called after a new notification arrived.
@@ -85,6 +95,9 @@ export default function NotificationsPopover() {
       }));
 
       setNotifications(allNotifications);
+      if (allNotifications.length === 0) {
+        handleClose();
+      }
     },
     [setNotifications]
   );
@@ -125,17 +138,6 @@ export default function NotificationsPopover() {
       unsubscribe(currentSubscriptionID, ['notification create']);
     };
   }, [handleNotificationsReceived, handleNotificationUpdate, subscribe, unsubscribe, request]);
-
-  /**
-   * Used to open the Popover
-   * @param {*} event
-   */
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
-  };
-  const handleClose = () => {
-    setOpen(null);
-  };
 
   /**
    * Sets all notifications to read.
@@ -309,23 +311,6 @@ export default function NotificationsPopover() {
  */
 function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
   const { avatar, title } = renderContent(notification);
-  const { i18n } = useTranslation();
-
-  /*
-    Maps the current i18n language to a date-fns locale
-  */
-  const getDatefnsLocale = () => {
-    switch (i18n.language) {
-      case 'en':
-        return enUS;
-      case 'de':
-        return de;
-      case 'es':
-        return es;
-      default:
-        return enUS;
-    }
-  };
 
   return (
     <ListItemButton
@@ -360,10 +345,7 @@ function NotificationItem({ notification, handleItemClick, handleItemDelete }) {
               }}
             >
               <Iconify icon="eva:clock-outline" sx={{ mr: 0.5, width: 16, height: 16 }} />
-              {formatDistanceToNow(notification.createdAt, {
-                addSuffix: true,
-                locale: getDatefnsLocale(),
-              })}
+              {fToNow(notification.createdAt)}
             </Typography>
           }
           sx={{ maxWidth: 200 }}

@@ -15,9 +15,9 @@ import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
+
+import { useShelly } from 'src/sccontext';
 
 import BlogEditor from './post-editor';
 
@@ -107,8 +107,10 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
   const handleSubmit = (e) => {
     e.preventDefault();
     if (type === 'create') {
-      currentBlogpost.userid = user.userid;
-      currentBlogpost.createdAt = Date.now();
+      const finalBlogpost = { ...currentBlogpost };
+      finalBlogpost.userid = user.userid;
+      finalBlogpost.createdAt = Date.now();
+      setCurrentBlogpost(finalBlogpost);
 
       // send the created user to the server
       const msg = {
@@ -116,7 +118,7 @@ const BlogpostForm = ({ type, handleUpdatePost, updatepost, handleBlogpostsRecei
         data: {
           source: 'Blogpost Form',
           message: 'Blogpost Form wants to create a new post',
-          blogpost: currentBlogpost,
+          blogpost: finalBlogpost,
         },
       };
       request(msg, handleBlogpostCreate);

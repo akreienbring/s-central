@@ -101,6 +101,7 @@ function validateMessage(message, ws) {
     }
   } catch (error) {
     console.error(`Could not parse ws message: ${message} from ${ws.clientIP}`);
+    console.error(error);
     if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
     ws.close(4003, "Invalid message!");
     return null;

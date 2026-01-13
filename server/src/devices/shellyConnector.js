@@ -112,7 +112,7 @@ function setSwitch(device, aSwitch) {
           res.data,
           clientImagePath
         );
-      return await createUnknownDevice(device, true, "unknown");
+      return createUnknownDevice(device, true, "unknown");
     }
     // the device is GEN > 1
     return await shellyGen2Conn.createDevice(device, res.data, clientImagePath);
@@ -331,10 +331,7 @@ async function getWifiSettings(device) {
         nameserver: settings.dns,
       };
     } else {
-      console.error(
-        `Error getting wifi settings for device ${device.cname}:`,
-        error
-      );
+      console.error(`Error getting wifi settings for device ${device.cname}:`);
     }
   } else if (device.gen > 1) {
     const res = await shellyAxios
@@ -349,10 +346,7 @@ async function getWifiSettings(device) {
     if (res?.status === 200) {
       return res.data.result.sta;
     } else {
-      console.error(
-        `Error getting wifi settings for device ${device.cname}:`,
-        error
-      );
+      console.error(`Error getting wifi settings for device ${device.cname}:`);
     }
   }
 }

@@ -17,10 +17,10 @@ import TablePagination from '@mui/material/TablePagination';
 import { mapNumberToMax } from 'src/utils/general';
 import { emptyRows, applyFilter, getComparator } from 'src/utils/sort-array';
 
+import Scrollbar from 'src/components/scrollbar';
+
 import { useShelly } from 'src/sccontext';
 import { subscribeEvent, unsubscribeEvent } from 'src/events/pubsub';
-
-import Scrollbar from 'src/components/scrollbar';
 
 import CreateUser from '../create-user';
 import TableNoData from '../table-no-data';
@@ -40,7 +40,7 @@ export default function UserView() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
-  const { request, user } = useShelly();
+  const { request, user, isTest, testDevices } = useShelly();
   const [openCreate, setOpenCreate] = useState(false);
   const isUsersLoaded = useRef(false);
   const [showReallyDelete, setShowReallyDelete] = useState(false);
@@ -48,6 +48,22 @@ export default function UserView() {
     // remmove administrators from the users list.
     user.roleid === 1 && user.userid !== 1 ? users.length - 2 : users.length - 1,
   ]);
+  const [devices, setDevices] = useState([]);
+
+  /**
+   * Will be called when devices were received via websocket from shellybroker.
+   * @param {object} msg The message with a 'device get all' event.
+   */
+  const handleDevicesReceived = useCallback(
+    (msg) => {
+      if (isTest) {
+        setDevices(testDevices);
+      } else {
+        setDevices(msg.data.devices);
+      }
+    },
+    [isTest, testDevices]
+  );
 
   /**
     The received users will be mapped to the table values.
@@ -117,6 +133,18 @@ export default function UserView() {
     The server answers and the response is handled accordingly.
   */
   useEffect(() => {
+    request(
+      {
+        event: 'devices get all',
+        data: {
+          source: 'Devices Form',
+          message: 'Devices Form needs the list of devices',
+          userid: user.roleid != 1 ? user.userid : null, //an admin gets all devices
+        },
+      },
+      handleDevicesReceived
+    );
+
     subscribeEvent('userUpdated', handleUpdateUserEvent);
     if (!isUsersLoaded.current)
       request(
@@ -134,7 +162,7 @@ export default function UserView() {
       // cleanup on unmount: unsubscribe from the event
       unsubscribeEvent('userUpdated');
     };
-  }, [request, handleUpdateUserEvent, handleUsersReceived]);
+  }, [request, handleUpdateUserEvent, handleUsersReceived, user, handleDevicesReceived]);
   // --------------------- Websocket Implementation END------------------
 
   /*
@@ -348,6 +376,7 @@ export default function UserView() {
                       handleClick={(event) => handleClick(event, row.alias)}
                       handleDeleteUser={() => handleDeleteUser(row.userid)}
                       handleUpdateUser={handleUpdateUser}
+                      devices={devices}
                     />
                   ))}
 

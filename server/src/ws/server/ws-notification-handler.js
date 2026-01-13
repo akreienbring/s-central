@@ -32,7 +32,7 @@ function handle(msg, ws) {
       },
     };
 
-    const info = db.del("notifications", ["id"], msg.data.ids);
+    db.del("notifications", ["id"], msg.data.ids);
 
     const sql = `SELECT * FROM notifications ORDER BY ts`;
     deleteAnswer.data.notifications = db.get(sql);

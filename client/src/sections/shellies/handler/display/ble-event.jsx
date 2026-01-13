@@ -3,13 +3,13 @@
   A simple component that displays a BLE event
   Example: motion or door/window events
 */
-import PropTypes from 'prop-types';
 
 import { createUUID } from 'src/utils/general';
 
 import Iconify from 'src/components/iconify';
 
 /**
+ * Displays a BLE event
   @param {object} data The data portion of an event property
     of a 'NotifyEvent' websocket message.
 */
@@ -68,7 +68,3 @@ const BLEEvent = ({ data }) => {
 };
 
 export default BLEEvent;
-
-BLEEvent.propTypes = {
-  data: PropTypes.object.isRequired,
-};

@@ -12,9 +12,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { fDateTime } from 'src/utils/format-time';
 
-import { subscribeEvent, unsubscribeEvent } from 'src/events/pubsub';
-
 import Iconify from 'src/components/iconify';
+
+import { subscribeEvent, unsubscribeEvent } from 'src/events/pubsub';
 
 /**
   When the wbsocket receives data it publishes the custom event 'lastUpdateAt' with the current time.
@@ -46,7 +46,7 @@ const LastUpdate = () => {
       // cleanup on unmount: unsubscribe from the event
       unsubscribeEvent('lastUpdatedAt');
     };
-  }, [handleLastUpdate, lastUpdateAt]);
+  }, [handleLastUpdate]);
 
   /*
     When disconnected, this will reload the current location

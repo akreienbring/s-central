@@ -1,6 +1,9 @@
 /*
   Author: André Kreienbring
   Helpers for building the Timeline Chart in the AppView Component
+  Concept: 
+  - From the received data a chart series is created for every device.
+  - Missing minutes in the 'Minute' chart are filled with null values to create gaps in the line chart.
 */
 import { fUnixTime } from 'src/utils/format-time';
 
@@ -21,7 +24,7 @@ export function getTimelineOptions(selectedChart) {
       break;
     case 2:
       timeline.data = 'Day';
-      timeline.format = 'd.MM';
+      timeline.format = 'dd.MM';
       timeline.catformat = 'yyyy-MM-dd';
       break;
     case 3:
@@ -36,7 +39,7 @@ export function getTimelineOptions(selectedChart) {
       break;
     default:
       timeline.data = 'Minute';
-      timeline.format = 'H:mm';
+      timeline.format = 'HH:mm';
       timeline.catformat = 'yyyy-MM-dd HH:mm';
   }
   return timeline;
@@ -45,7 +48,6 @@ export function getTimelineOptions(selectedChart) {
 /**
   Builds the Timeline chart out of the received websocket consumption
   data.
-  ATTENTION: 'currently stacked charts can NOT be used, because the scaling of the yaxis doesn't work!!!
   @param {array} devices The array with the devices. Needed to identify the chart color.
   @param {array} rows The array with the consumption values
   @param {object} timeline Contains options based on the selected chart (minute, hour, day, month, year)
@@ -58,31 +60,47 @@ export function buildTimeline(devices, rows, timeline) {
   const chartColors = [];
   let maxConsumption = 0;
   // console.log(`Got Rows: ${JSON.stringify(rows)}`);
-  rows.forEach((entry) => {
-    if (entry.consumption > maxConsumption) maxConsumption = entry.consumption;
+  rows.forEach((row, index) => {
+    if (row.consumption > maxConsumption) maxConsumption = row.consumption;
 
-    const category = fUnixTime(entry.ts, timeline.catformat);
+    const category = fUnixTime(row.ts, timeline.catformat);
     if (!chartLabels.includes(category)) chartLabels.push(category);
 
     // Create a series for every device
-    const nIndex = chartDevices.indexOf(entry.device_id);
-    if (nIndex === -1) {
-      const dIndex = devices.findIndex((device) => device.id === entry.device_id);
+    const cdIndex = chartDevices.indexOf(row.device_id);
+    if (cdIndex === -1) {
+      const dIndex = devices.findIndex((device) => device.id === row.device_id);
       if (dIndex !== -1) {
-        chartDevices.push(entry.device_id);
+        chartDevices.push(row.device_id);
         // add the color that corresponds with the device to the color array
         chartColors.push(devices[dIndex].chartColor);
 
         chartSeries.push({
           name: devices[dIndex].cname,
           type: timeline.data === 'Minute' ? 'line' : 'bar',
-          data: [{ x: category, y: entry.consumption }],
+          data: [{ x: category, y: row.consumption }],
         });
       } else {
-        console.error(`Could not finde device with id ${entry.device_id}`);
+        console.error(`Could not find device with id ${row.device_id}`);
       }
     } else {
-      chartSeries[nIndex].data.push({ x: category, y: entry.consumption });
+      if (timeline.data === 'Minute' && rows[index - 1].device_id === row.device_id) {
+        let previousTS = rows[index - 1].ts;
+        while (row.ts - previousTS >= 120) {
+          // Fill missing minutes with null values, if the difference between the current and previous timestamp is >= 2 minutes
+          const missingCategory = fUnixTime(previousTS + 60, timeline.catformat);
+
+          /*
+          console.log(
+            `Previous cat: ${fUnixTime(previousTS, timeline.catformat)} Current: ${fUnixTime(row.ts, timeline.catformat)} Adding: ${missingCategory}`
+          );
+          */
+
+          chartSeries[cdIndex].data.push({ x: missingCategory, y: null });
+          previousTS = previousTS + 60;
+        }
+      }
+      chartSeries[cdIndex].data.push({ x: category, y: row.consumption });
     }
   });
 

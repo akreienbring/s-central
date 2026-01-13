@@ -4,7 +4,6 @@
   that holds the form to create a new user.
 */
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Stack from '@mui/material/Stack';
@@ -74,10 +73,3 @@ export default function CreateUser({
     </>
   );
 }
-
-CreateUser.propTypes = {
-  openCreate: PropTypes.bool.isRequired,
-  onOpenCreate: PropTypes.func.isRequired,
-  onCloseCreate: PropTypes.func.isRequired,
-  handleUsersReceived: PropTypes.func.isRequired,
-};

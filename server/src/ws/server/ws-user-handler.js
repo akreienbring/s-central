@@ -8,8 +8,6 @@ const digest = require("@src/utils/digest.js");
 const db = require("@db/db.js");
 const config = require("config");
 
-const SECRET = config.get("ws-server.secret");
-
 /** 
   Handles messages sent by the frontend that are related to user managment.
   @param {object} msg The message that was sent by the frontend. Properties are:
@@ -378,7 +376,7 @@ function handle(msg, ws) {
     let success = true;
 
     let info = db.del("user_devices", ["user_id"], [userid]);
-    for (i in userdevices) {
+    for (let i in userdevices) {
       info = db.insert(
         "user_devices",
         {

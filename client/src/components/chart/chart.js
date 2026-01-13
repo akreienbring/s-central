@@ -1,35 +1,72 @@
 import { memo } from 'react';
 import ApexChart from 'react-apexcharts';
 
-import { alpha, styled, useTheme } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
+import {
+  red,
+  pink,
+  cyan,
+  blue,
+  teal,
+  lime,
+  green,
+  amber,
+  brown,
+  yellow,
+  indigo,
+  purple,
+  orange,
+  blueGrey,
+  lightBlue,
+  deepPurple,
+  deepOrange,
+  lightGreen,
+} from '@mui/material/colors';
 
 import { bgBlur } from 'src/theme/css';
 
-/*
+/**
   These colors are used for the consumption charts.
   The device color is dependent on the device index in the device array
+  @return {array} An array of colors for easy destinction of multiple devices in a chart
 */
 export const useChartColors = () => {
-  const theme = useTheme();
-  return [
-    theme.palette.success.dark,
-    theme.palette.info.dark,
-    theme.palette.error.dark,
-    theme.palette.warning.dark,
-    theme.palette.primary.dark,
-    theme.palette.success.main,
-    theme.palette.info.main,
-    theme.palette.error.main,
-    theme.palette.primary.main,
-    theme.palette.warning.main,
-    theme.palette.success.light,
-    theme.palette.info.light,
-    theme.palette.error.light,
-    theme.palette.warning.light,
-    theme.palette.primary.light,
+  const muiColors = [
+    red,
+    deepPurple,
+    lightBlue,
+    green,
+    yellow,
+    deepOrange,
+    blueGrey,
+    pink,
+    indigo,
+    cyan,
+    lightGreen,
+    amber,
+    brown,
+    purple,
+    blue,
+    teal,
+    lime,
+    orange,
   ];
+
+  const muiShades = [900, 700, 500, 300];
+
+  const chartColors = [];
+  muiColors.forEach((color) => {
+    muiShades.forEach((shade) => {
+      chartColors.push(color[shade]);
+    });
+  });
+
+  return chartColors;
 };
 
+/**
+ * CURRENTLY UNUSED
+ */
 const Chart = styled(ApexChart)(({ theme }) => ({
   '& .apexcharts-canvas': {
     // Tooltip

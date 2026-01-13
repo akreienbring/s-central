@@ -4,7 +4,6 @@
   When clicked a dialog is opened that holds the form to update an existing blogpost.
 */
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Stack from '@mui/material/Stack';
@@ -62,10 +61,3 @@ export default function UpdateBlogpost({
     </Drawer>
   );
 }
-
-UpdateBlogpost.propTypes = {
-  openUpdate: PropTypes.bool.isRequired,
-  updatepost: PropTypes.object,
-  handleUpdatePost: PropTypes.func,
-  onCloseUpdate: PropTypes.func.isRequired,
-};

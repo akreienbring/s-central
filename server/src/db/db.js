@@ -218,14 +218,14 @@ function insert(table, inserts, ignore) {
 */
 function select(table, fields, searches, criterias, logical, orderBy) {
   let values = "";
-  fields.forEach((col, index) => {
+  fields.forEach((col) => {
     if (values !== "") values += ", ";
     values += col;
   });
   if (values === "") values = "*";
 
   if (searches.length > 0) {
-    scolumns = dbutils.buildSearchCriterias(searches, criterias, logical);
+    const scolumns = dbutils.buildSearchCriterias(searches, criterias, logical);
     const sql = `SELECT ${values} FROM ${table} WHERE ${scolumns} ${
       typeof orderBy !== "undefined" ? ` ORDER BY ${orderBy}` : ""
     }`;

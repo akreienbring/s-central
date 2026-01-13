@@ -18,9 +18,9 @@ import { Box, Button, TextField } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
+
+import { useShelly } from 'src/sccontext';
 
 /**
   Component that allows to view and update the wifi settings of a Shelly device.

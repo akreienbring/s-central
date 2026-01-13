@@ -3,13 +3,12 @@
   A table that all devices or those assigned to a user.
   It allows sorting and selecting devices for batch operations.
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
-import { visuallyHidden } from '@mui/utils';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableBody from '@mui/material/TableBody';
@@ -21,10 +20,10 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { emptyRows, getComparator } from 'src/utils/sort-array';
 
-import { useShelly } from 'src/sccontext';
-
 import ShellyTableRow from 'src/sections/shellies/shelly-table-row';
 import ShellyTableToolbar from 'src/sections/shellies/shelly-table-toolbar';
+
+import { useShelly } from 'src/sccontext';
 
 const headCells = [
   {
@@ -111,11 +110,6 @@ function EnhancedTableHead(props) {
               hideSortIcon
             >
               {t(headCell.label)}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -136,37 +130,35 @@ export default function ShellyTable({ devices }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { send } = useShelly();
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(
+    devices.map((device) => {
+      const sys = device?.wsmessages?.NotifyFullStatus?.params?.sys;
+      return {
+        id: device.id,
+        image: device.image,
+        name: device.cname.substring(0, 14),
+        model: device.name,
+        gen: device.gen,
+        uptime: sys?.uptime,
+        restart: device.rebootPending ? 'reboot pending' : sys?.restart_required,
+        firmware: device.fw_id,
+        stable: device.updateStablePending ? 'stable pending' : device.stable,
+        beta: device.updateBetaPending ? 'beta pending' : device.beta,
+        reloads: device.reloads,
+      };
+    })
+  );
   const [alert, setAlert] = useState({ title: '', text: '', severity: '', visible: false });
   const { t } = useTranslation();
-
-  useEffect(() => {
-    setRows(
-      devices.map((device) => {
-        const sys = device?.wsmessages?.NotifyFullStatus?.params?.sys;
-        return {
-          id: device.id,
-          image: device.image,
-          name: device.cname.substring(0, 14),
-          model: device.name,
-          gen: device.gen,
-          uptime: sys?.uptime,
-          restart: device.rebootPending ? 'reboot pending' : sys?.restart_required,
-          firmware: device.fw_id,
-          stable: device.updateStablePending ? 'stable pending' : device.stable,
-          beta: device.updateBetaPending ? 'beta pending' : device.beta,
-        };
-      })
-    );
-  }, [devices]);
 
   /** 
    Called from within a TableRow. Updates a row in the rows array.
     @param {object} update The updated row object
    */
   const updateRow = (update) => {
-    rows[rows.findIndex((row) => row.id === update.id)] = update;
-    setRows(rows);
+    const newRows = [...rows];
+    newRows[newRows.findIndex((row) => row.id === update.id)] = update;
+    setRows(newRows);
   };
 
   /**

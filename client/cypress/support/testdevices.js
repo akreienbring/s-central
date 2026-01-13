@@ -247,7 +247,6 @@ export const testDevices = [
     switches: [
       {
         deviceIp: '192.168.68.20',
-        deviceId: 'shellyplusrgbwpm-30c92257d20c',
         key: 'rgbw:0',
         id: 0,
         output: false,

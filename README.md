@@ -18,7 +18,9 @@ S-Central supports English, Spanish and German.
 - **Dashboard**<br/>
   Informs you about connected Shellies, current and timelined consumption, running scripts, cloud connection.
 - **Shellies**<br/>
-  Get insights about KVS values, script status, Logs and websocket messages. Control your switches. Get notified when a script error occurs.<br/>
+  Get insights about KVS values, script status, Logs and websocket messages.<br/>
+  Control your switches and copy the switch settings from one device to another.<br/>
+  Get notified when a script error occurs.<br/>
   Reboot, update the Firmware or edit the WIFI settings of many Shellies at once.
 - **User**<br/>
   Enable additional users to log in to the appplication and assign specific Shellies to them.
@@ -35,10 +37,10 @@ Managing / Monitoring many Shellies in a network is a challenge. With S-Central 
 
 ## Supported operating systems (OS)
 
-- Server: Needs nodejs be installed in your local network. Node ist available for Windows, MacOs, Linux and AIX.
+- Server: Needs nodejs to be installed in your local network. Node ist available for Windows, MacOs, Linux and AIX.
 - Client: Runs in the browser, hence is OS independent. Desktop and Smartphones are supported thanks to the responsive design of Material UI!
 
-## How to install the erver with the included Client release
+## How to install the server with the included Client release
 
 - **Prerequisites**<br/>
   Install nodejs. Normally it includes the NPM packet manager. I tested the system with nodejs 20.x.
@@ -77,6 +79,8 @@ When changing the SSID or the password of a device, it may loose it's network co
 3. Configure the computer where the S-Central server is running on.
 4. Configure the computer you're running S-Central client on.
 5. Allways have a fallback strategy
+
+Read [this article](https://community.shelly.cloud/topic/11650-what-to-do-when-you-installed-a-new-wifi-router/) to learn more!<br/>
 
 ## The Log feature for Shelly scripts
 
@@ -165,9 +169,8 @@ File: _/sb/config/default.json_
 | Option               | Value                    | Description                                                                                                       |
 | -------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | **HTTP server**      |
-| host (!)             | xxx.xxx.xxx.xxx          | The IP address of the HTTP server (nodejs)                                                                        |
 | port                 | TCP Port                 | The TCP port of the HTTP server. Defaults to 3031                                                                 |
-| UDP server           |
+| **UDP server**       |
 | host (!)             | xxx.xxx.xxx.xxx          | The IP of the UDP server. Must be configured in the Shelly device                                                 |
 | port                 | UDP Port                 | The UDP port of the UDP server. Defaults to 3031                                                                  |
 | **Websocket server** |
@@ -211,8 +214,7 @@ Run _npm install --force_ in the _/sb_ folder
 
 ## Building the Client or starting the development server
 
-The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses the
-_env.private_ file. The Vite Development server uses _env.development_. These environment files slimline the build by replacing the WSURL and WSSURL placeholders in the build _index.html_.
+Run _npm install --force_ in the folder where the client resides. The client is build using VITE. See _package.json_ for the relevant scripts. The _vite build_ command uses the _env.private_ file. The Vite Development server uses _env.development_. These environment files slimline the build by replacing the WSURL and WSSURL placeholders in the build _index.html_.
 
 ## Troubleshooting
 
@@ -254,7 +256,7 @@ Once forked here are some usefull tips:
 - If you use vscode, there's a 'launch' script included to start and debug the nodejs Server
 - To start the vite development server use the npm sript 'dev'
 - To start and debug the client, there's a 'launch' script included (Firefox and Chrome)
-- For testing with Cypress: Start the nodejs server and use the npm script 'cy'
+- For testing with Cypress: Start the nodejs server and run _npm run cy_ in the client folder
 
 ## Screenshots
 

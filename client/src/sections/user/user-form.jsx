@@ -32,7 +32,6 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
             email: user.email,
             firstname: user.firstname,
             lastname: user.lastname,
-            password: user.password,
             home: user.home,
             roleid: user.roleid,
             userid: user.userid,
@@ -61,13 +60,17 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
     request that was send by 'handleSubmit'
     @param {object} msg The message that was passed with the answer
   */
-  const handleUserValidation = useCallback((msg) => {
-    if (msg.data.success) {
-      setCurrentUser(msg.data.user);
-    } else {
-      setRequestResult({ success: false, message: msg.data.message });
-    }
-  }, []);
+  const handleUserValidation = useCallback(
+    (msg) => {
+      if (msg.data.success) {
+        setCurrentUser(msg.data.user);
+        login(msg.data.user, true);
+      } else {
+        setRequestResult({ success: false, message: msg.data.message });
+      }
+    },
+    [login]
+  );
 
   /**
     ONLY when type = 'profile' or 'security'! 
@@ -82,16 +85,22 @@ const UserForm = ({ type, updateuser, handleUsersReceived, handleUpdateUser }) =
         success: msg.data.success,
         message: msg.data.message,
       });
+
+      const newCurrentUser = { ...currentUser };
       if (user.userid === currentUser.userid) {
         // update the context user
-        if(type === 'security') delete currentUser.password2;
-        login(currentUser);
+        if (type === 'security' || type === 'profile') {
+          delete newCurrentUser.password2;
+          delete newCurrentUser.password;
+          setCurrentUser(newCurrentUser);
+          login(newCurrentUser, false);
+        }
       }
       if (typeof handleUpdateUser !== 'undefined') {
-        handleUpdateUser(currentUser);
-      } else if (location.pathname === '/user') publishEvent('userUpdated', currentUser);
+        handleUpdateUser(newCurrentUser);
+      } else if (location.pathname === '/user') publishEvent('userUpdated', newCurrentUser);
     },
-    [user, currentUser, login, handleUpdateUser, location]
+    [user, currentUser, login, handleUpdateUser, location, type]
   );
 
   /**

@@ -4,7 +4,6 @@
   that holds the form to create a new blogpost.
 */
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import Stack from '@mui/material/Stack';
@@ -19,6 +18,7 @@ import Iconify from 'src/components/iconify';
 import BlogPostForm from './blogpost-form';
 
 /**
+ * Presents a button that opens a drawer to create a new blogpost
   @param {boolean} openCreate To determine if the dialog is shown or not
   @param {function} onOpenCreate Handles the open status
   @param {function} onCloseCreate Handles the closed status
@@ -74,10 +74,3 @@ export default function CreateBlogpost({
     </>
   );
 }
-
-CreateBlogpost.propTypes = {
-  openCreate: PropTypes.bool.isRequired,
-  onOpenCreate: PropTypes.func.isRequired,
-  onCloseCreate: PropTypes.func.isRequired,
-  handleBlogpostsReceived: PropTypes.func.isRequired,
-};

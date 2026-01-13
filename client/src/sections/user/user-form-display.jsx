@@ -1,9 +1,9 @@
 /*
   Author: André Kreienbring  
-  Renders the login, profile, security and create form depending on the passed in type property.
+  Renders the User login, profile, security and create form depending on the passed in type property.
 */
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRef, useState, useEffect } from 'react';
 
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -19,9 +19,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { validateEmail } from 'src/utils/general';
 
-import { useShelly } from 'src/sccontext';
-
 import Iconify from 'src/components/iconify';
+
+import { useShelly } from 'src/sccontext';
 
 /**
   Separates the form display components from the UserForm that communicates with the websocket.
@@ -45,29 +45,21 @@ const UserFormDisplay = ({
   handleForgotten,
   handleCurrentUser,
 }) => {
+  /*
+    user is the currently logged in user.
+    currentUser is the user that is being edited.
+    origUser is used to check if properties are changed. See checkSubmitCriterias
+  */
   const { user } = useShelly();
+  const [origUser, setOrigUser] = useState({ ...currentUser });
   const [isTest, setIsTest] = useState(false);
 
   const [homeSelection, setHomeSelection] = useState(
     type === 'create' ? 'dashboard' : currentUser.home
   );
-  const [roleSelection, setRoleSelection] = useState('');
+  const [roleSelection, setRoleSelection] = useState(currentUser.roleid);
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
-  const isRolesLoaded = useRef(false);
-
-  // the origUser is used to check if properties are changed. See checkSubmitCriterias
-  const origUser = useRef(currentUser);
-
-  /*
-    Needed to ensure the form rerenders, when the roles from the server arrive.
-  */
-  useEffect(() => {
-    if (!isRolesLoaded.current && roles.length > 0) {
-      setRoleSelection(currentUser.roleid);
-      isRolesLoaded.current = true;
-    }
-  }, [roles, requestResult, currentUser]);
 
   /*
     type 'login': When email or password get the focus an 'invalid credentials' warning
@@ -98,6 +90,7 @@ const UserFormDisplay = ({
       // no spaces on alias
       updatedUser[target.name] = target.value.trim();
     } else if (target.name === 'test') {
+      // login test checkbox used by cypress
       setIsTest(target.checked);
     } else {
       updatedUser[target.name] = target.value;
@@ -113,7 +106,7 @@ const UserFormDisplay = ({
   */
   const handleSubmit = (e) => {
     e.preventDefault();
-    origUser.current = currentUser;
+    setOrigUser(currentUser);
     handleCurrentUser(currentUser, isTest);
   };
 
@@ -137,11 +130,11 @@ const UserFormDisplay = ({
     if (type === 'profile' || type === 'settings') {
       // disable if nothing was changed or alias is empty
       isDisabled =
-        (currentUser.alias === origUser.current.alias || currentUser.alias.length === 0) &&
-        currentUser.roleid === origUser.current.roleid &&
-        currentUser.firstname === origUser.current.firstname &&
-        currentUser.lastname === origUser.current.lastname &&
-        currentUser.home === origUser.current.home;
+        (currentUser.alias === origUser.alias || currentUser.alias.length === 0) &&
+        currentUser.roleid === origUser.roleid &&
+        currentUser.firstname === origUser.firstname &&
+        currentUser.lastname === origUser.lastname &&
+        currentUser.home === origUser.home;
     }
     if (type === 'create') {
       // disable if email or alias is empty or email not valid
@@ -271,7 +264,7 @@ const UserFormDisplay = ({
                 disabled={user.userid === currentUser.userid || currentUser.userid === 1}
                 required
                 select
-                value={roleSelection}
+                value={roles.length === 0 ? '' : roleSelection}
                 name="role"
                 label={t('Role')}
                 onChange={handleInputChange}

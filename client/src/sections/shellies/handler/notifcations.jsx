@@ -3,7 +3,7 @@
   Examines 'NotifyFullStatus', 'NotifyStatus' and 'NotifyEvent'
   websocket messages on a device object.
   The message was originally sent by a shelly device to the Shellybroker.
-  This component displays message properties that Shelly devicec promote as HTML
+  This component displays message properties that Shelly device promote as HTML
   Example: System values or cloud status
 
 */
