@@ -26,7 +26,7 @@
     "cypress-real-events": "^1.15.0",
     "date-fns": "^4.1.0",
     "i18next": "^25.7.4",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "mui-color-input": "^7.0.0",
     "mui-tiptap-editor": "^0.11.6",
     "npm": "^11.6.4",
