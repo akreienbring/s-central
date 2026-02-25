@@ -29,7 +29,7 @@
     "lodash": "^4.17.21",
     "mui-color-input": "^7.0.0",
     "mui-tiptap-editor": "^0.11.6",
-    "npm": "^11.6.4",
+    "npm": "^11.10.1",
     "numeral": "^2.0.6",
     "react": "^19.2.3",
     "react-apexcharts": "^1.9.0",
