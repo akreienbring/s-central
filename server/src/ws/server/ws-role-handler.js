@@ -4,20 +4,25 @@
 */
 const db = require("@db/db.js");
 
-function handle(msg, ws) {
-  if (msg.event === "roles get all") {
+/** 
+  Handles messages sent by the frontend that are related to role managment.
+  @param {object} msg The message that was sent by the frontend.
+  @returns {object} The (answer) message that will be send to the client
+*/
+function handle(msg) {
+  if (msg.event === "roles-get-all") {
     // client needs the list of all roles
     const rolesAnswer = {
-      event: "roles get all",
-      data: {
-        message: "OK! Here are all the roles",
-        requestID: msg.data.requestID,
-      },
+      event: msg.event,
+      message: "OK! Here are all the roles",
+      source: "WSRoleHandler",
+      requestID: msg.requestID,
+      data: {},
     };
 
     const sql = `SELECT * FROM roles ORDER BY name`;
     rolesAnswer.data.roles = db.get(sql);
-    ws.send(JSON.stringify(rolesAnswer));
+    return rolesAnswer;
   }
 }
 

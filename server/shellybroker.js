@@ -7,10 +7,12 @@
 
   https://github.com/alexryd/node-shellies-ng
   https://github.com/alexnederlof/shelly-admin
+  https://www.usna.it/shellyscanner/index.html
+
 
   Author: André Kreienbring
   ShellyBroker is a http and websocket server that serves as middle layer 
-  between Shelly devices and other applications, like a Shelly Dashboard
+  between Shelly devices and other applications, like a Shelly Dashboard.
   The http server is used to create webservice endpoints that clients connect to 
   to receive or transmit data from the Shelly devices or to the websocket server.
 
@@ -21,27 +23,42 @@
 require("module-alias/register");
 
 const config = require("config");
+const db = require("@db/db.js");
 const WebSocket = require("faye-websocket");
 const dgram = require("dgram");
 const expressServer = require("@http/server");
 const requestIp = require("request-ip");
 const util = require("util");
+const fs = require("fs");
 
 const wsHandler = require("@ws/server/wshandler.js");
 const wsMessageValidator = require("@ws/server/ws-message-validator.js");
 
 const shellyDevices = require("@devices/shellyDevices.js");
 
+// the NODE_ENV that was set in your package.json scripts
+console.log(`Starting Shellybroker with config ${process.env.NODE_ENV}`);
 const httpPort = config.get("http-server.port");
 const updHost = config.get("udp-server.host");
 const udpPort = config.get("udp-server.port");
-const udpServer = dgram.createSocket("udp4");
+const dbName = config.get("db.dbname");
 
+const udpServer = dgram.createSocket("udp4");
 // express is used to handle the http endpoints and serves the static public folder
 const httpserver = expressServer.listen(httpPort);
 
-// the NODE_ENV that was set in your package.json scripts
-console.log(`Starting Shellybroker with config ${process.env.NODE_ENV}`);
+/*
+ * Delete the test.db if it exists
+ */
+fs.unlink("test.db", (err) => {
+  if (err) {
+    console.log("test.db does not exist");
+  } else {
+    console.log("Deleted the test.db");
+  }
+  db.open(dbName);
+  console.log(`Database ${dbName} was opened`);
+});
 
 /* 
   when a websocket clients connects he sends an 'upgrade' request.
@@ -65,7 +82,7 @@ httpserver.on("upgrade", function (request, socket, body) {
     while (shellyDevices.getIsLoaded() === false) {
       const wait = setTimeout(
         console.warn("Waiting for all devices to be loaded"),
-        1000
+        1000,
       );
       clearTimeout(wait);
     }
@@ -116,7 +133,7 @@ udpServer.on("message", (msg, rinfo) => {
 udpServer.on("listening", () => {
   const address = udpServer.address();
   console.log(
-    `ShellyBroker UDP server started at ${address.address}:${address.port}`
+    `ShellyBroker UDP server started at ${address.address}:${address.port}`,
   );
 });
 

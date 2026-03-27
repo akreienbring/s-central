@@ -1,10 +1,10 @@
 /*
-    Author: André Kreienbring    
-    Connects with Shelly Gen1 devices. Devices are considered to be Gen1 if
-    the http://[ip]/shelly returns a 'type attribute.
-    These devices have various methods to get information from. 
-    The data will be mapped to the structur of Gen2/3 objects. This way
-    the frontend can apply the same functionality. 
+  Author: André Kreienbring    
+  Connects with Shelly Gen1 devices. Devices are considered to be Gen1 if
+  the http://[ip]/shelly returns a 'type attribute.
+  These devices have various methods to get information from. 
+  The data will be mapped to the structur of Gen2/3 objects. This way
+  the frontend can apply the same functionality. 
 */
 const shellyAxios = require("@http/shellyAxios.js");
 const wsclient = require("@ws/client/wsclient");
@@ -29,7 +29,6 @@ async function createDevice(device, data, clientImagePath) {
   device.scripts = [];
   device.kvs = [];
   device.switches = await getSwitches(device);
-  device.wsmessages = {};
   device = await getAvailableUpdates(device);
   return device;
 }
@@ -74,6 +73,7 @@ async function getNotifyFullStatus(device) {
       method: "NotifyFullStatus",
       params: {
         cloud: { connected: status.cloud.connected },
+        mqtt: { connected: status.mqtt.connected },
         sys: {
           ram_size: status.ram_total,
           ram_free: status.ram_free,
@@ -82,27 +82,26 @@ async function getNotifyFullStatus(device) {
           uptime: status.uptime,
           restart_required: false, //Does not exixt for Gen1
           available_updates: {
-            stable: {
-              version:
-                typeof status?.update?.new_version !== "undefined" &&
-                status?.update?.has_update &&
-                device.fw_id !== status.update.new_version
-                  ? status.update.new_version.substring(
+            stable:
+              typeof status?.update?.new_version !== "undefined" &&
+              status?.update?.has_update
+                ? {
+                    version: status.update.new_version.substring(
                       status.update.new_version.lastIndexOf("/") + 2,
-                      status.update.new_version.lastIndexOf("g") - 1
-                    )
-                  : undefined,
-            },
-            beta: {
-              version:
-                typeof status?.update?.beta_version !== "undefined" &&
-                device.fw_id !== status.update.beta_version
-                  ? status.update.beta_version.substring(
-                      status.update.beta_version.indexOf("/") + 2,
-                      status.update.beta_version.lastIndexOf("g") - 1
-                    )
-                  : undefined,
-            },
+                      status.update.new_version.lastIndexOf("g") - 1,
+                    ),
+                  }
+                : undefined,
+
+            beta:
+              typeof status?.update?.beta_version !== "undefined"
+                ? {
+                    version: status.update.beta_version.substring(
+                      status.update.beta_version.lastIndexOf("/") + 2,
+                      status.update.beta_version.lastIndexOf("g") - 1,
+                    ),
+                  }
+                : undefined,
           },
         },
       },
@@ -211,7 +210,7 @@ function toggleSwitch(aSwitch, password) {
   @param {string} [password] The password that is needed if the Authentication on the device is activated   
 */
 function setSwitch(aSwitch, password) {
-  let url = "";
+  let url;
   if (aSwitch.type === "light") {
     url = `http://${aSwitch.deviceIp}/${aSwitch.type}/${aSwitch.id}?brightness=${aSwitch.brightness}&white=${aSwitch.white}`;
   } else {
@@ -257,7 +256,7 @@ async function getAvailableUpdates(device) {
       device.fw_id !== ota.new_version
         ? ota.new_version.substring(
             ota.new_version.lastIndexOf("/") + 2,
-            ota.new_version.lastIndexOf("g") - 1
+            ota.new_version.lastIndexOf("g") - 1,
           )
         : undefined;
     device.beta =
@@ -266,7 +265,7 @@ async function getAvailableUpdates(device) {
       device.fw_id !== ota.beta_version
         ? ota.beta_version.substring(
             ota.beta_version.lastIndexOf("/") + 2,
-            ota.beta_version.lastIndexOf("g") - 1
+            ota.beta_version.lastIndexOf("g") - 1,
           )
         : undefined;
   } else {

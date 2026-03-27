@@ -7,7 +7,7 @@ const config = require("config");
 const WebSocket = require("faye-websocket");
 
 const ws = new WebSocket.Client(
-  `ws://${config.get("ws-server.host")}:${config.get("ws-server.port")}`
+  `ws://${config.get("ws-server.host")}:${config.get("ws-server.port")}`,
 );
 
 const SECRET = config.get("ws-server.secret");
@@ -21,7 +21,7 @@ const SECRET = config.get("ws-server.secret");
 function send(msg) {
   if (typeof msg === "undefined") return;
 
-  if (!msg.src) msg.data.secret = SECRET;
+  if (!msg.src) msg.secret = SECRET;
   ws.send(JSON.stringify(msg));
 }
 

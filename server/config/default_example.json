@@ -19,6 +19,7 @@
     "set-ws": true
   },
   "db": {
+    "dbname": "broker.db",
     "standardpw": "undlos",
     "standardal": "Admin",
     "standardem": "admin@sc.com",

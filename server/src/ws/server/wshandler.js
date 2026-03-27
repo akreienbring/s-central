@@ -17,12 +17,14 @@ const shellyDevices = require("@devices/shellyDevices.js");
 const shellyConnector = require("@devices/shellyConnector.js");
 
 const updateDeviceValues = require("@src/utils/update-device-values.js");
-const db = require("@db/db.js");
+const updateConsumption = require("@src/utils/update-consumption.js");
+const reloadCheck = require("@src/utils/reloadcheck.js");
 const wsUserHandler = require("./ws-user-handler.js");
 const wsRoleHandler = require("./ws-role-handler.js");
 const wsDeviceHandler = require("./ws-device-handler.js");
 const wsNotificationHandler = require("./ws-notification-handler.js");
 const wsBlogpostHandler = require("./ws-blogpost-handler.js");
+const wsTimelineHandler = require("./ws-timeline-handler.js");
 
 /*
   An interval that pings the clients. If a client not responds it will be deleted
@@ -32,9 +34,9 @@ const HEARTBEAT_INTERVAL = config.get("ws-server.ping-interval") * 1000; // ping
 const HEARTBEAT_VALUE = 1;
 const PING_MESSAGE = {
   event: "ping",
-  data: {
-    message: HEARTBEAT_VALUE,
-  },
+  message: HEARTBEAT_VALUE,
+  source: "WSHandler",
+  data: {},
 };
 
 /* 
@@ -43,8 +45,6 @@ const PING_MESSAGE = {
   in this object. The value is the websocket the client uses.
 */
 const dashboardClients = {};
-
-db.open();
 
 /**
   Add a websocket to the internal list.
@@ -62,7 +62,7 @@ function addSocket(ws) {
   console.log(
     `wshandler: added socket ${ws.channelID}. Got ${
       Object.keys(dashboardClients).length
-    } websockets`
+    } websockets`,
   );
 }
 
@@ -83,7 +83,7 @@ function deleteSocket(ws) {
     console.log(
       `wshandler: deleted socket ${ws.channelID}. Got ${
         Object.keys(dashboardClients).length
-      } websockets`
+      } websockets`,
     );
   }
 }
@@ -100,8 +100,8 @@ function deleteSocket(ws) {
 function handleMessage(msg, ws) {
   //------------- Message Handling---------------------------
   if (typeof msg.src === "undefined") {
-    if (typeof msg.data.channelID !== "undefined") {
-      ws.channelID = msg.data.channelID;
+    if (typeof msg.channelID !== "undefined") {
+      ws.channelID = msg.channelID;
       addSocket(ws);
     }
   }
@@ -113,311 +113,154 @@ function handleMessage(msg, ws) {
       enriched with the websocket message from the Shelly.
       The updated device is forwarded to the Dashboard application
     */
-
     let device = shellyDevices.findDeviceById(msg.src);
     if (typeof device !== "undefined") {
-      if (
-        msg.method === "NotifyFullStatus" &&
-        msg.dst === "request" &&
-        typeof msg.params !== "undefined"
-      ) {
-        /* 
-        Update the db with consumption data and get the current
-        state of the switches ONLY if the NotifyFullStatus was
-        requested from the device.
-        */
-        updateDeviceValues.update(device, msg.params);
-
-        const newStable = msg.params.sys.available_updates?.stable?.version;
-        const newBeta = msg.params.sys.available_updates?.beta?.version;
-
+      if (msg.method === "NotifyFullStatus" && msg.dst === "request") {
+        updateConsumption.update(device, msg.params);
         delete device.rebootPending;
+      }
 
-        if (
-          (typeof device.online !== "undefined" && !device.online) ||
-          device.name === "unknown" ||
-          (typeof newStable !== "undefined" && device.stable !== newStable) ||
-          (typeof newBeta !== "undefined" && device.beta !== newBeta) ||
-          (typeof device.updateStablePending !== "undefined" &&
-            device.updateStablePending) ||
-          (typeof device.updateBetaPending !== "undefined" &&
-            device.updateBetaPending)
-        ) {
-          /*
-            Reload an offline device because it's obviously online.
-            If an update is pending, the device will be reloaded
-            to get the current firmware of the device.
-            If stable or beta update has changed, the device was updated outside of this app.
-          */
-          if (
-            (typeof device.online !== "undefined" && !device.online) ||
-            device.name === "unknown"
-          )
-            console.log(
-              `Device ${device.cname} is back online or was unknown. Reloading...`
-            );
-          if (
-            (typeof newStable !== "undefined" && device.stable !== newStable) ||
-            (typeof newBeta !== "undefined" && device.beta !== newBeta)
-          )
-            console.log(
-              `Device ${device.cname} available firmware info changed. Reloading...`
-            );
-          if (
-            typeof device.updateStablePending !== "undefined" &&
-            device.updateStablePending
-          )
-            console.log(
-              `Device ${device.cname} stable update is pending. Reloading...`
-            );
-          if (
-            typeof device.updateBetaPending !== "undefined" &&
-            device.updateBetaPending
-          )
-            console.log(
-              `Device ${device.cname} beta update is pending. Reloading...`
-            );
+      // Do the reload check with all messages because depending on the result a device-update is sent or not
+      reloadCheck.check(device, msg).then((reloadedDevice) => {
+        if (reloadedDevice !== null) {
+          device = reloadedDevice;
+          console.log(`Device ${device.cname} was reloaded`);
 
-          device.online = true;
+          const reloadMessage = {
+            event: "device-update",
+            eventType: "device",
+            source: "WSHandler",
+            message: "Device was reloaded",
+            subscriptionID: msg.src,
+            data: {
+              device,
+            },
+          };
+          broadcast(reloadMessage);
 
-          shellyDevices.getDevice(device.ip, true).then((reloadedDevice) => {
-            // prettyjson.render(reloadedDevice);
-            if (device.updateStablePending || device.updateBetaPending) {
-              reloadedDevice.reloads++;
-              if (
-                reloadedDevice.fw_id === device.old_fw_id &&
-                device.reloads <= 5
-              ) {
-                console.warn(
-                  `Reloaded device ${reloadedDevice.cname} ${device.reloads} time(s). Firmware is still the same (${device.fw_id}).`
-                );
-              } else {
-                if (device.reloads <= 5) {
-                  console.log(
-                    `Firmaware update of ${device.cname} was successfull!`
-                  );
-                } else {
-                  console.warn(
-                    `Firmaware update of ${device.cname} was NOT successfull!`
-                  );
-                }
-                delete device.updateBetaPending;
-                delete device.updateStablePending;
-                delete device.old_fw_id;
-                delete device.reloads;
-              }
-            }
-
-            device = reloadedDevice;
-            console.log(`Device ${device.cname} was reloaded`);
-
-            const reloadMessage = {
-              event: "ShellyUpdate",
-              type: "device",
-              data: {
-                source: "WSHandler",
-                message: "Device was reloaded",
-                device,
-                subscriptionID: msg.src,
-              },
-            };
-            broadcast(reloadMessage);
-          });
-          // don't send any further message to the client if a device was reloaded
+          // don't send any further message to the client, if a device was reloaded
           return;
         }
-      }
 
-      if (
-        ((msg.dst === "ws" && msg.method !== "NotifyFullStatus") ||
-          (msg.dst === "request" && msg.method === "NotifyFullStatus")) &&
-        typeof msg.params !== "undefined"
-      ) {
-        /*
-          Only forward requested NotifyFullStatus or
-          other messages (NotifyStatus, NotifyEvent...) directly send by the device,
-        */
-        device.wsmessages[msg.method] = msg;
+        if (
+          ((msg.dst === "ws" && msg.method !== "NotifyFullStatus") ||
+            (msg.dst === "request" && msg.method === "NotifyFullStatus")) &&
+          typeof msg.params !== "undefined"
+        ) {
+          /*
+            Only forward requested NotifyFullStatus or
+            other messages (NotifyStatus, NotifyEvent...) directly send by the device,
+          */
+          updateDeviceValues.update(device, msg);
+          device[
+            `${msg.method.charAt(0).toLowerCase()}${msg.method.slice(1)}`
+          ] = msg;
 
-        const updateMessage = {
-          event: "ShellyUpdate",
-          type: "ws",
-          data: {
+          const updateMessage = {
+            event: "device-update",
+            eventType: "ws",
             source: "WSHandler",
             message: "new WS message",
-            device: device,
             subscriptionID: msg.src,
-          },
-        };
-        broadcast(updateMessage);
-      }
+            data: {
+              device: device,
+            },
+          };
+          broadcast(updateMessage);
+        }
+      }); // reloadCheck
     } else {
       console.error(`wshandler: Couldn't find device with id ${msg.src}`);
     }
   } else if (typeof msg.event !== "undefined") {
     // message from dashboard client, endpoint or loghandler
-    if (msg.event === "user reconnect") {
+    if (msg.event === "user-reconnect") {
       // Send after a client tried to reconnect.
-      msg.data.message =
-        typeof msg.data.secret !== "undefined"
+      msg.message =
+        typeof msg.secret !== "undefined"
           ? "OK, will reconnect you!"
           : "Couldn't reconnect you";
       ws.send(JSON.stringify(msg));
-    } else if (msg.event === "ShellyUpdate") {
+    } else if (msg.event === "device-update") {
       // message from Loghandler or enpoint is simply forwarded to all clients
       msg.data.subscriptionID = msg.data.device.id;
       broadcast(msg);
-    } else if (msg.event === "pong" && msg.data.message === HEARTBEAT_VALUE) {
+    } else if (msg.event === "pong" && msg.message === HEARTBEAT_VALUE) {
       // the client answered to a ping message
       ws.isAlive = true;
-    } else if (msg.event.startsWith("getTimeline")) {
-      /*
-        If the Dashboard receives a websocket message from a Shelly device 
-        (eg. NotifyStatus) it will ask for timeline data to print a chart.
-        This data is fetched from the database and sent to the client.
-      */
-      const answer = {
-        event: msg.event,
-        data: {
-          source: "WSHandler",
-          message: `OK! ${msg.event}`,
-          requestID: msg.data.requestID,
-        },
-      };
-      if (msg.event === "getTimelineMinute") {
-        answer.data.rows = db.select(
-          "cByMinute",
-          [],
-          [],
-          [],
-          null,
-          "device_id, ts"
-        );
-      } else if (msg.event === "getTimelineHour") {
-        answer.data.rows = db.select("cByHour", [], [], [], null, "ts");
-      } else if (msg.event === "getTimelineDay") {
-        answer.data.rows = db.select("cByDay", [], [], [], null, "ts");
-      } else if (msg.event === "getTimelineMonth") {
-        answer.data.rows = db.select("cByMonth", [], [], [], null, "ts");
-      } else if (msg.event === "getTimelineYear") {
-        answer.data.rows = db.select("cByYear", [], [], [], null, "ts");
-      }
-      if (typeof answer.data.rows !== "undefined") {
-        ws.send(JSON.stringify(answer));
-      }
-    } else if (msg.event === "toggleSwitch") {
+    } else if (msg.event.startsWith("timeline-get")) {
+      const timelineAnswer = wsTimelineHandler.handle(msg);
+      if (timelineAnswer !== null) ws.send(JSON.stringify(timelineAnswer));
+    } else if (msg.event === "toggle-switch") {
       const aSwitch = msg.data.switch;
-      // add a timestamp to prevent sync problems with 'NotifyFullStatus'
-      aSwitch.ts = Math.floor(Date.now()) / 1000;
-
       const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
       device.switches[aSwitch.index] = aSwitch;
       shellyConnector.toggleSwitch(device, aSwitch);
-    } else if (msg.event === "setSwitch") {
+    } else if (msg.event === "set-switch") {
       const aSwitch = msg.data.switch;
-      // add a timestamp to prevent sync problems with 'NotifyFullStatus'
-      aSwitch.ts = Math.floor(Date.now()) / 1000;
       const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
       device.switches[aSwitch.index] = aSwitch;
       shellyConnector.setSwitch(device, aSwitch);
+    } else if (msg.event === "toggle-script") {
+      const script = msg.data.script;
+      const device = shellyDevices.findDeviceByIp(msg.data.deviceIp);
+      device.scripts[msg.data.scriptIndex] = script;
+      shellyConnector.toggleScript(device, script);
     } else if (msg.event.startsWith("user")) {
       wsUserHandler.handle(msg, ws);
+      //const userAnswer = wsUserHandler.handle(msg);
+      //if (userAnswer !== null) ws.send(JSON.stringify(userAnswer));
     } else if (msg.event.startsWith("role")) {
-      wsRoleHandler.handle(msg, ws);
+      const roleAnswer = wsRoleHandler.handle(msg);
+      if (roleAnswer !== null) ws.send(JSON.stringify(roleAnswer));
     } else if (msg.event.startsWith("device")) {
       wsDeviceHandler.handle(msg, ws);
     } else if (msg.event.startsWith("notification")) {
-      if (msg.event === "notification create") {
+      if (msg.event === "notification-create") {
         // handle notifications created by the server
-        let notification = msg.data.notification;
+        const notificationAnswer = wsNotificationHandler.handle(msg);
 
-        if (notification.type === "script-error") {
-          /* 
-            Loghandler has detected a Script error.
-          */
-          const script = shellyDevices.findScript(
-            notification.device_ip,
-            notification.script_id
-          );
+        if (notificationAnswer !== null) {
+          broadcast(notificationAnswer);
 
-          if (typeof script !== "undefined") {
-            // update the script status in the device array
-            script.running = false;
-
-            notification = {
-              type: notification.type,
-              title: `Error: ${notification.device_cname}, Script: ${script.name}`,
-              device_ip: notification.device_ip,
-              device_cname: notification.device_cname,
-              script_id: notification.script_id,
-              script_name: script.name,
-              notification: notification.notification,
-              isUnread: 1,
-              ts: Date.now(),
-            };
-
-            const info = db.insert("notifications", notification, true);
-
-            // use the row id to identify the notification when it's been deleted
-            notification.id = info.lastInsertRowid;
-            msg.data.notification = notification;
-            broadcast(msg);
-
+          /* TODO not necessary because script:2":{"error_msg":null,"errors":[],"running":true}}} contains the id? 
+          if (notification.type === "script-error") {
             const device = shellyDevices.findDeviceByIp(notification.device_ip);
 
             const logErrorMessage = {
-              event: "ShellyUpdate",
-              type: "device",
-              data: {
+              event: "device-update",
+              eventType: "device",
                 source: "WSHandler",
                 message: "Log error notification created",
-                device,
                 subscriptionID: device.id,
+              data: {
+                device,
               },
             };
             broadcast(logErrorMessage);
-          } else {
-            console.error(
-              `Couldn't store a notification. Script with id ${notification.scrip_id} on device ${notification.device_cname} does not exist!`
-            );
+            
           }
-        } else if (notification.type === "device-offline") {
-          // endpoint was called
-          notification = {
-            type: notification.type,
-            title: `Info: ${notification.device_cname} is offline`,
-            device_ip: notification.device_ip,
-            device_cname: notification.device_cname,
-            script_id: null,
-            script_name: null,
-            notification: notification.notification,
-            isUnread: 1,
-            ts: Date.now(),
-          };
-
-          const info = db.insert("notifications", notification, true);
-
-          notification.id = info.lastInsertRowid;
-          msg.data.notification = notification;
-          broadcast(msg);
+            */
         }
       } else {
         // handle notifications requests created by the client
-        wsNotificationHandler.handle(msg, ws);
+        const notificationAnswer = wsNotificationHandler.handle(msg);
+        if (notificationAnswer !== null) broadcast(notificationAnswer);
       }
     } else if (msg.event.startsWith("blog")) {
-      wsBlogpostHandler.handle(msg, ws);
+      const blogAnswer = wsBlogpostHandler.handle(msg);
+      if (blogAnswer !== null) ws.send(JSON.stringify(blogAnswer));
     } else {
       console.log(
         "wshandler: received unhandled message (event unknown): " +
-          prettyjson.render(msg)
+          prettyjson.render(msg),
       );
     }
   } else {
     // Unidentified message will just be logged to the console
     console.log(
       "wshandler: received unhandled message (no event, no src): " +
-        prettyjson.render(msg)
+        prettyjson.render(msg),
     );
   }
 }
@@ -439,7 +282,7 @@ function handleOpen(ws) {
 */
 function handleClose(event, ws) {
   console.log(
-    `wshandler: Connection was closed. Code: ${event.code} Reason: ${event.reason}`
+    `wshandler: Connection was closed. Code: ${event.code} Reason: ${event.reason}`,
   );
   // remove the socket from the internal list
   deleteSocket(ws);

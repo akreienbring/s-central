@@ -24,28 +24,19 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+// selects the given data-testid
 Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-testid=${selector}]`, ...args);
 });
 
-Cypress.Commands.add('containsBySel', (selector, ...args) => {
-  return cy.get(`[data-testid=${selector}]`, ...args);
+// selects the given data-testid with a wildcard
+Cypress.Commands.add('getBySelLike', (selector, ...args) => {
+  return cy.get(`[data-testid*=${selector}]`, ...args);
 });
 
 // testing the header in every page
 Cypress.Commands.add('testHeader', () => {
-  cy.getBySel('open_account_popover_button');
-  cy.getBySel('open_language_popover_button');
-  cy.getBySel('open_notifications_popover_button');
-});
-
-// testing the edit profile dialog from accout and user table row
-Cypress.Commands.add('testProfile', () => {
-  const profile_alias_input = cy.getBySel('profile_alias_input');
-  cy.containsBySel('profile_firstname_input');
-  cy.containsBySel('profile_lastname_input');
-  cy.containsBySel('profile_role_select');
-  const account_save_button = cy.getBySel('account_save_button').should('be.disabled');
-  profile_alias_input.type('x');
-  account_save_button.should('not.be.disabled');
+  cy.getBySel('open_account_popover_button').should('exist');
+  cy.getBySel('open_language_popover_button').should('exist');
+  cy.getBySel('open_notifications_popover_button').should('exist');
 });

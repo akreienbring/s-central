@@ -33,14 +33,14 @@ const clientLimits = {};
 /*
   These events are not forced to send the secret.
   The secret is only send to clients that logged in 
-  successfully with a 'user validate' ws event.
+  successfully with a 'user-validate' ws event.
 */
 const WITHOUT_SECRET = [
-  "user reconnect",
-  "user validate",
+  "user-reconnect",
+  "user-validate",
   "pong",
-  "blogposts get public",
-  "user resetpw",
+  "blogposts-get-public",
+  "user-resetpw",
 ];
 
 /**
@@ -107,7 +107,7 @@ function validateMessage(message, ws) {
     return null;
   }
 
-  if (msg.event === "user validate") {
+  if (msg.event === "user-validate") {
     if (
       typeof msg.data.auth === "undefined" &&
       typeof msg.data.error === "undefined"
@@ -120,20 +120,23 @@ function validateMessage(message, ws) {
       // if auth information is  attached: check the response
       const dbUser = db.getUser(
         `SELECT HA1, alias FROM users WHERE email = ?`,
-        msg.data.user.email
+        msg.data.user.email,
       );
       if (dbUser && digest.validate(dbUser, msg.data.auth)) {
         console.log(`Successfully validated user ${dbUser.alias}`);
         delete msg.data.auth;
-        msg.data.secret = SECRET;
+        msg.secret = SECRET;
+
+        return msg;
       } else {
         const validateAnswer = {
-          event: "user validate",
+          event: "user-validate",
+          source: "WSMessageValidator",
+          message:
+            typeof dbUser === "undefined" ? "_usernotexists_" : "_wrongpw_",
+          requestID: msg.requestID,
           data: {
             success: false,
-            message:
-              typeof dbUser === "undefined" ? "_usernotexists_" : "_wrongpw_",
-            requestID: msg.data.requestID,
           },
         };
         ws.send(JSON.stringify(validateAnswer));
@@ -141,22 +144,22 @@ function validateMessage(message, ws) {
         return null;
       }
     }
-  } else if (msg.event === "user reconnect") {
+  } else if (msg.event === "user-reconnect") {
     if (msg.data.user !== null && db.isExistingUser(msg.data.user)) {
       console.log(`Successfully reconnected user ${msg.data.user.alias}`);
-      msg.data.secret = SECRET;
+      msg.secret = SECRET;
+      return msg;
     } else {
       console.error(
         `A client with IP '${
           ws.clientIP
         }' tried to reconnect with a non existing user ${JSON.stringify(
-          msg.data.user
-        )}`
+          msg.data.user,
+        )}`,
       );
-      // without the secret attached the user will be logged out
     }
   } else if (typeof msg.src !== "undefined") {
-    // check if the device exists
+    // message from a device check if the device exists
     const device = shellyDevices.findDeviceById(msg.src);
     if (typeof device === "undefined") {
       console.error(`Message from a non existing device: ${msg.src}`);
@@ -169,23 +172,22 @@ function validateMessage(message, ws) {
   } else if (
     !WITHOUT_SECRET.includes(msg.event) &&
     !msg.src &&
-    msg.data.secret !== SECRET
+    msg.secret !== SECRET
   ) {
-    // all other messages need to have the secret attached.
+    // these messages come from a dashboard client and need to have the secret attached.
     console.error(
-      `Message from client ${ws.clientIP} with event: '${msg.event}' and Text ${msg.data.message} does not have the correct secret.`
+      `Message from client ${ws.clientIP} with event: '${msg.event}' and Text ${msg.message} does not have the correct secret. Wrong Secret is: ${msg.secret}`,
     );
-    console.error(`Wrong Secret is: ${msg.data.secret}`);
     if (!blockedIPs.includes(ws.clientIP)) blockedIPs.push(ws.clientIP);
     ws.close(4000, "Wrong secret!");
     return null;
   }
 
   /*
-   If the message is valid, remove the secret an return it.
+   At this point the message is valid, remove the secret an return it.
    It will be handled by the ws-handler.
    */
-  // delete msg.data.secret;
+  if (typeof msg?.secret !== "undefined") delete msg.secret;
   return msg;
 }
 

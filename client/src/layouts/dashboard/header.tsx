@@ -1,0 +1,82 @@
+/*
+  Author: André Kreienbring
+  The Header of  the application dashboard layout.
+  Offers LastUpdate info, language selection, notifications and account settings.
+*/
+import { type JSX } from 'react';
+import { bgBlur } from '@src/theme/css';
+import { useLocation } from 'react-router';
+import Iconify from '@src/components/iconify';
+import { useResponsive } from '@src/hooks/use-responsive';
+import LastUpdate from '@src/layouts/dashboard/common/lastupdate';
+
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import { useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+
+import { NAV, HEADER } from './config-layout';
+import AccountPopover from './common/account-popover';
+import LanguagePopover from './common/language-popover';
+import NotificationsPopover from './common/notifications-popover';
+
+// ----------------------------------------------------------------------
+
+export default function Header({ onOpenNav }: { onOpenNav: () => void }): JSX.Element {
+  const theme = useTheme();
+  const location = useLocation();
+
+  const lgUp = useResponsive('up', 'lg');
+
+  const renderContent = (
+    <>
+      {!lgUp && (
+        <IconButton data-testid="nav_open_button" onClick={onOpenNav} sx={{ mr: 1 }}>
+          <Iconify icon="eva:menu-2-fill" />
+        </IconButton>
+      )}
+
+      <Box sx={{ flexGrow: 1 }} />
+
+      <Stack direction="row" alignItems="center" spacing={1}>
+        {(location.pathname === '/dashboard' || location.pathname === '/shellies') && (
+          <LastUpdate />
+        )}
+        <LanguagePopover />
+        <NotificationsPopover />
+        <AccountPopover />
+      </Stack>
+    </>
+  );
+
+  return (
+    <AppBar
+      sx={{
+        boxShadow: 'none',
+        height: HEADER.H_MOBILE,
+        zIndex: theme.zIndex.appBar + 1,
+        transition: theme.transitions.create(['height'], {
+          duration: theme.transitions.duration.shorter,
+        }),
+        ...(lgUp && {
+          width: `calc(100% - ${NAV.WIDTH + 1}px)`,
+          height: HEADER.H_DESKTOP,
+        }),
+        ...bgBlur({
+          color: theme.palette.background.default,
+        }),
+      }}
+    >
+      <Toolbar
+        sx={{
+          height: 1,
+          px: { lg: 5 },
+        }}
+      >
+        {renderContent}
+      </Toolbar>
+    </AppBar>
+  );
+}

@@ -20,61 +20,54 @@ const config = require("config");
   @param {object} ws The websocket that can be used to answer the client frontend
 */
 function handle(msg, ws) {
-  if (msg.event === "user validate") {
+  if (msg.event === "user-validate") {
     /*
-      Client send a login request AFTER already completing the
+      Client send a validat request AFTER already completing the
       digest challenge response cyle. That means that his credentials
-      are successfully validated by Message Validation at this point.
+      are successfully validated by MessageValidator at this point.
      */
     const validateAnswer = {
-      event: "user validate",
+      event: msg.event,
+      requestID: msg.requestID,
+      source: "WSUserHandler",
       data: {
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
     const userToValidate = msg.data.user;
-    const sql = `SELECT hash, salt, users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id WHERE users.email = ?`;
+
+    const sql = `SELECT hash, salt, users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id WHERE users.email = ?`;
 
     const row = db.getUser(sql, userToValidate.email);
 
     if (typeof row !== "undefined") {
-      if (
-        /*
-        Skip the password check, if the users digest authentication is valid.
-        This way the password is NEVER send over the network
-        This is only left here as a reminder.
-      */
-        typeof msg.data.secret === "undefined" // && !endecrypt.validate(userToValidate.password, row.hash, row.salt)
-      ) {
-        console.error("Digest Authentication has not worked!");
-      } else {
-        validateAnswer.data.user = {
-          userid: row.userid,
-          uuid: row.uuid,
-          email: row.email,
-          alias: row.alias,
-          firstname: row.firstname,
-          lastname: row.lastname,
-          home: row.home,
-          role: row.rolename,
-          roleid: row.roleid,
-        };
-        validateAnswer.data.secret = msg.data.secret;
-      }
+      validateAnswer.data.user = {
+        userid: row.userid,
+        uuid: row.uuid,
+        email: row.email,
+        alias: row.alias,
+        firstname: row.firstname,
+        lastname: row.lastname,
+        home: row.home,
+        role: row.role,
+        roleid: row.roleid,
+        istest: userToValidate.istest, //used for cypress testing to indicate that a test is running
+      };
+      validateAnswer.secret = msg.secret;
     } else {
-      validateAnswer.data.message = "_usernotexists_";
+      validateAnswer.message = "_usernotexists_";
     }
     ws.send(JSON.stringify(validateAnswer));
-  } else if (msg.event === "user resetpw") {
+  } else if (msg.event === "user-resetpw") {
     // client wants to reset the pw.
     const resetAnswer = {
-      event: "user resetpw",
+      event: msg.event,
+      message: "_resetpw_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_resetpw_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -88,7 +81,7 @@ function handle(msg, ws) {
       const HA1 = endecrypt.encryptUserHA1(
         msg.data.email,
         digest.REALM,
-        password
+        password,
       );
       endecrypt.encrypt(password).then((secret) => {
         console.log(`Resetting pw for ${msg.data.email}`);
@@ -102,19 +95,19 @@ function handle(msg, ws) {
               HA1,
             },
             ["email"],
-            [msg.data.email]
+            [msg.data.email],
           );
 
           if (info?.changes !== 1) {
             // something went wrong
-            resetAnswer.data.message = "_notresetpw_";
+            resetAnswer.message = "_notresetpw_";
             resetAnswer.data.success = false;
           }
         } catch (err) {
           console.error(err.message);
-          resetAnswer.data.message = db.createMessageFromConflict(
+          resetAnswer.message = db.createMessageFromConflict(
             err.message,
-            "_notresetpw_"
+            "_notresetpw_",
           );
           resetAnswer.data.success = false;
         }
@@ -122,31 +115,32 @@ function handle(msg, ws) {
         ws.send(JSON.stringify(resetAnswer));
       });
     } else {
-      resetAnswer.data.message = "_usernotexists_";
+      resetAnswer.message = "_usernotexists_";
       resetAnswer.data.success = false;
     }
 
     ws.send(JSON.stringify(resetAnswer));
-  } else if (msg.event === "users get all") {
+  } else if (msg.event === "users-get-all") {
     const usersAnswer = {
-      event: "users get all",
-      data: {
-        message: "OK! Here are all the users",
-        requestID: msg.data.requestID,
-      },
+      event: msg.event,
+      message: "OK! Here are all the users",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
+      data: {},
     };
 
-    const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+    const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
     usersAnswer.data.users = db.getUser(sql);
     ws.send(JSON.stringify(usersAnswer));
-  } else if (msg.event === "user profile update") {
+  } else if (msg.event === "user-profile-update") {
     // client wants to update a user. Email and password are not affected
     const updateAnswer = {
-      event: "user profile update",
+      event: msg.event,
+      message: "_userupdated_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_userupdated_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -161,29 +155,30 @@ function handle(msg, ws) {
           roleid: userToUpdate.roleid,
         },
         ["id"],
-        [userToUpdate.userid]
+        [userToUpdate.userid],
       );
       if (info.changes !== 1) {
         // something went wrong
-        updateAnswer.data.message = "_usernotupdated_";
+        updateAnswer.message = "_usernotupdated_";
         updateAnswer.data.success = false;
       }
     } catch (err) {
       console.error(err.message);
-      updateAnswer.data.message = db.createMessageFromConflict(
+      updateAnswer.message = db.createMessageFromConflict(
         err.message,
-        "_usernotupdated_"
+        "_usernotupdated_",
       );
       updateAnswer.data.success = false;
     }
     ws.send(JSON.stringify(updateAnswer));
-  } else if (msg.event === "user settings update") {
+  } else if (msg.event === "user-settings-update") {
     const settingsAnswer = {
-      event: "user settings update",
+      event: msg.event,
+      message: "_userupdated_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_userupdated_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -196,30 +191,31 @@ function handle(msg, ws) {
           home: userToUpdate.home,
         },
         ["id"],
-        [userToUpdate.userid]
+        [userToUpdate.userid],
       );
       if (info.changes !== 1) {
         // something went wrong
-        settingsAnswer.data.message = "_usernotupdated_";
+        settingsAnswer.message = "_usernotupdated_";
         settingsAnswer.data.success = false;
       }
     } catch (err) {
       console.error(err.message);
-      settingsAnswer.data.message = db.createMessageFromConflict(
+      settingsAnswer.message = db.createMessageFromConflict(
         err.message,
-        "_usernotupdated_"
+        "_usernotupdated_",
       );
       settingsAnswer.data.success = false;
     }
     ws.send(JSON.stringify(settingsAnswer));
-  } else if (msg.event === "user security update") {
+  } else if (msg.event === "user-security-update") {
     // client wants to update a users credentials.
     const securityAnswer = {
-      event: "user security update",
+      event: msg.event,
+      message: "_userupdated_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_userupdated_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -227,7 +223,7 @@ function handle(msg, ws) {
     const HA1 = endecrypt.encryptUserHA1(
       userToUpdate.email,
       digest.REALM,
-      userToUpdate.password
+      userToUpdate.password,
     );
     endecrypt.encrypt(userToUpdate.password).then((secret) => {
       try {
@@ -240,31 +236,32 @@ function handle(msg, ws) {
             HA1,
           },
           ["id"],
-          [userToUpdate.userid]
+          [userToUpdate.userid],
         );
         if (info.changes !== 1) {
           // something went wrong
-          securityAnswer.data.message = "_usernotupdated_";
+          securityAnswer.message = "_usernotupdated_";
           securityAnswer.data.success = false;
         }
       } catch (err) {
         console.error(err.message);
-        securityAnswer.data.message = db.createMessageFromConflict(
+        securityAnswer.message = db.createMessageFromConflict(
           err.message,
-          "_usernotupdated_"
+          "_usernotupdated_",
         );
         securityAnswer.data.success = false;
       }
       ws.send(JSON.stringify(securityAnswer));
     });
-  } else if (msg.event === "user create") {
+  } else if (msg.event === "user-create") {
     // client wants to create a user
     const createAnswer = {
-      event: "user create",
+      event: msg.event,
+      message: "_usercreated_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_usercreated_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -273,11 +270,11 @@ function handle(msg, ws) {
     const HA1 = endecrypt.encryptUserHA1(
       userToCreate.email,
       digest.REALM,
-      password
+      password,
     );
     endecrypt.encrypt(password).then((secret) => {
       console.log(
-        "wsserver: Inserting new user with standard password into the database"
+        "wsserver: Inserting new user with standard password into the database",
       );
 
       let info;
@@ -296,36 +293,37 @@ function handle(msg, ws) {
             HA1,
             roleid: userToCreate.roleid,
           },
-          false
+          false,
         );
 
         if (info?.changes !== 1) {
           // something went wrong
-          createAnswer.data.message = "_usernotcreated_";
+          createAnswer.message = "_usernotcreated_";
           createAnswer.data.success = false;
         } else {
-          const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+          const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
           createAnswer.data.users = db.getUser(sql);
         }
       } catch (err) {
         console.error(err.message);
-        createAnswer.data.message = db.createMessageFromConflict(
+        createAnswer.message = db.createMessageFromConflict(
           err.message,
-          "_usernotcreated_"
+          "_usernotcreated_",
         );
         createAnswer.data.success = false;
       }
 
       ws.send(JSON.stringify(createAnswer));
     });
-  } else if (msg.event === "user delete") {
+  } else if (msg.event === "user-delete") {
     // client wants to update a user
     const deleteAnswer = {
-      event: "user delete",
+      event: msg.event,
+      message: "_userdeleted_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_userdeleted_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
 
@@ -334,22 +332,29 @@ function handle(msg, ws) {
 
     if (info.changes !== msg.data.ids.length) {
       // something went wrong
-      deleteAnswer.data.message = "_usernotdeleted_";
+      deleteAnswer.message = "_usernotdeleted_";
       deleteAnswer.data.success = false;
     } else {
-      const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS rolename, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
+      //delete all device assignments of the user
+      const assingment_searches = new Array(msg.data.ids.length).fill(
+        "user_id",
+      );
+      db.del("user_devices", assingment_searches, msg.data.ids, "OR");
+
+      const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
       deleteAnswer.data.users = db.getUser(sql);
     }
     ws.send(JSON.stringify(deleteAnswer));
-  } else if (msg.event === "user devices get all") {
+  } else if (msg.event === "user-devices-get-all") {
     // clients needs the devices of a user
 
     const deviceAnswer = {
-      event: "user devices get all",
+      event: msg.event,
+      message: "Ok, here are all the user devices",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "Ok, here are all the user devices",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
     const sql = `SELECT device_id FROM user_devices WHERE user_id = ?`;
@@ -361,35 +366,53 @@ function handle(msg, ws) {
     });
 
     ws.send(JSON.stringify(deviceAnswer));
-  } else if (msg.event === "user devices update") {
+  } else if (msg.event === "user-devices-update") {
     // client wants to update the devices of a user
     const deviceUpdateAnswer = {
       event: msg.event,
+      message: "_devicesupdated_",
+      source: "WSUserHandler",
+      requestID: msg.requestID,
       data: {
-        message: "_devicesupdated_",
         success: true,
-        requestID: msg.data.requestID,
       },
     };
-    const userdevices = msg.data.userdevices;
+    const userdevices = msg.data.ids;
     const userid = msg.data.userid;
     let success = true;
 
-    let info = db.del("user_devices", ["user_id"], [userid]);
-    for (let i in userdevices) {
-      info = db.insert(
-        "user_devices",
-        {
-          user_id: userid,
-          device_id: userdevices[i],
-        },
-        false
-      );
-      if (info?.changes !== 1) {
-        success = false;
+    if (typeof userdevices !== "undefined" && typeof userid !== "undefined") {
+      //delete all previous assignments and add the new ones
+      db.del("user_devices", ["user_id"], [userid]);
+      for (let i in userdevices) {
+        const info = db.insert(
+          "user_devices",
+          {
+            user_id: userid,
+            device_id: userdevices[i],
+          },
+          false,
+        );
+        if (info?.changes !== 1) {
+          success = false;
+        }
       }
+    } else {
+      console.error("Either userid or userdevices were not provided");
+      deviceUpdateAnswer.message = "_devicesnotupdated";
+      deviceUpdateAnswer.data.success = false;
+      ws.send(JSON.stringify(deviceUpdateAnswer));
+
+      return;
     }
-    if (!success) deviceUpdateAnswer.data.message = "_devicesnotupdated";
+
+    if (!success) {
+      console.error(`Could not add ${userdevices.length} to user ${userid}`);
+      deviceUpdateAnswer.message = "_devicesnotupdated";
+    } else {
+      console.log(`User ${userid} now manages ${userdevices.length} devices`);
+    }
+
     deviceUpdateAnswer.data.success = success;
     ws.send(JSON.stringify(deviceUpdateAnswer));
   }

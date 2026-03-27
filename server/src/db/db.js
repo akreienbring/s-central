@@ -17,9 +17,9 @@ let db;
   The database is initialized (Tables are created if they don't exist)
   Standard roles and users are created (if they don't exist)
 */
-function open() {
-  db = new sqlite3("broker.db", {}, (err) => {
-    // db = new sqlite3("broker.db", { verbose: console.log }, (err) => {
+function open(dbName) {
+  db = new sqlite3(dbName, {}, (err) => {
+    //db = new sqlite3(dbName, { verbose: console.log }, (err) => {
     if (err) {
       return console.error(err.message);
     }
@@ -36,7 +36,7 @@ function open() {
   const HA1 = endecrypt.encryptUserHA1(email, digest.REALM, password);
   endecrypt.encrypt(password).then((secret) => {
     console.log(
-      "wsserver: Inserting standard admin and roles into the database"
+      "wsserver: Inserting standard admin and roles into the database",
     );
     insert("roles", { id: 1, name: "Admin" }, true);
     insert("roles", { id: 2, name: "Blogger" }, true);
@@ -54,7 +54,7 @@ function open() {
         HA1,
         roleid: 1,
       },
-      true
+      true,
     );
   });
 }
@@ -76,7 +76,7 @@ function close() {
   @param {string} The SQL statment to execute
 */
 function execute(sql) {
-  db.exec(sql);
+  return db.exec(sql);
 }
 
 /**
@@ -143,7 +143,7 @@ A generic delete function that build and executes an DELETE statement.
 @param {string} table the table to delete an entry from.
 @param {array} searches Fields that will be used for the WHERE clause
 @param {array} criterias Will be used for the values of the WHERE clause.
-@param {string} logical If more then one search fild is given. Must be: 'AND' (default) or 'OR'
+@param {string} logical If more then one search field is given. Must be: 'AND' (default) or 'OR'
 @return {object} An info object with two properties:
   changes: is the number of changed rows
   lastInsertRowid: Can be ignored in the case of a delete
@@ -293,7 +293,7 @@ function updateConsumption(device_id, device_cname, currentPower, ts) {
       currentPower,
       currentPower,
       device_id,
-      hour
+      hour,
     );
 
     sql = `INSERT INTO cByDay (device_id, device_cname, ts, day, consumption) VALUES
@@ -306,7 +306,7 @@ function updateConsumption(device_id, device_cname, currentPower, ts) {
       currentPower,
       currentPower,
       device_id,
-      day
+      day,
     );
 
     sql = `INSERT INTO cByMonth (device_id, device_cname, ts, month, consumption) VALUES
@@ -319,7 +319,7 @@ function updateConsumption(device_id, device_cname, currentPower, ts) {
       currentPower,
       currentPower,
       device_id,
-      month
+      month,
     );
 
     sql = `INSERT INTO cByYear (device_id, device_cname, ts, year, consumption) VALUES
@@ -332,7 +332,7 @@ function updateConsumption(device_id, device_cname, currentPower, ts) {
       currentPower,
       currentPower,
       device_id,
-      year
+      year,
     );
   }
 }

@@ -22,7 +22,7 @@ const kvsdisplays = require("@root/config/kvsdisplays.json");
 */
 async function createDevice(device, data, clientImagePath) {
   console.log(
-    `Creating device of type ${data.app} with name ${device.cname} from received data`
+    `Creating device of type ${data.app} with name ${device.cname} from received data`,
   );
   device.online = true;
   device.name = data.app;
@@ -30,13 +30,14 @@ async function createDevice(device, data, clientImagePath) {
   device.fw_id = data.fw_id;
   device.id = data.id;
   device.image = `${clientImagePath}${device.name}.png`;
-  device.wsmessages = {};
   device.switches = [];
+  device.scripts = [];
+  device.kvs = [];
   return await getScripts(device)
     .then((device) =>
       getKVS(device).then((device) =>
-        getSwitches(device).then((device) => getAvailableUpdates(device))
-      )
+        getSwitches(device).then((device) => getAvailableUpdates(device)),
+      ),
     )
     .catch((err) => {
       console.error(err.message);
@@ -71,7 +72,7 @@ async function getScripts(device) {
   if (res?.status === 200 && typeof res.data.result.scripts !== "undefined") {
     device.scripts = res.data.result.scripts;
     console.log(
-      `Successfully got ${device.scripts.length} scripts of ${device.cname}`
+      `Successfully got ${device.scripts.length} scripts of ${device.cname}`,
     );
   } else {
     if (typeof res !== "undefined") {
@@ -102,22 +103,29 @@ async function getKVS(device) {
 
   if (res?.status === 200 && typeof res.data.result.items !== "undefined") {
     const kvsentries = res.data.result.items;
-    for (let entry of kvsentries) {
-      const kvsdisplay = kvsdisplays[entry.key];
-      arrKVS.push({
-        key: entry.key,
-        value: entry.value,
-        ...(typeof kvsdisplay?.display !== "undefined" && {
-          display: kvsdisplay.display,
-        }),
-        ...(typeof kvsdisplay?.style !== "undefined" && {
-          style: kvsdisplay.style,
-        }),
-      });
+    if (!(kvsentries instanceof Array)) {
+      //In older firmware this is an object
+      console.error(
+        `Please update Device ${device.cname} at least to firmware 1.3.3`,
+      );
+    } else {
+      for (let entry of kvsentries) {
+        const kvsdisplay = kvsdisplays[entry.key];
+        arrKVS.push({
+          key: entry.key,
+          value: entry.value,
+          ...(typeof kvsdisplay?.display !== "undefined" && {
+            display: kvsdisplay.display,
+          }),
+          ...(typeof kvsdisplay?.style !== "undefined" && {
+            style: kvsdisplay.style,
+          }),
+        });
+      }
+      console.log(
+        `Successfully got ${arrKVS.length} KVS entries of ${device.cname}`,
+      );
     }
-    console.log(
-      `Successfully got ${arrKVS.length} KVS entries of ${device.cname}`
-    );
   } else {
     if (typeof res !== "undefined") {
       console.error(`Error:  ${res?.status} ${res.message}`);
@@ -165,7 +173,7 @@ async function getSwitches(device) {
       }
     });
     console.log(
-      `Successfully got ${device.switches.length} switches of ${device.cname}`
+      `Successfully got ${device.switches.length} switches of ${device.cname}`,
     );
   } else {
     if (typeof res !== "undefined") {

@@ -64,7 +64,7 @@ function handleLogMessage(device, msg) {
     for (let logmessage of logmessages) {
       logmessage = logmessage.substring(
         logmessage.indexOf("|") - 1,
-        logmessage.length
+        logmessage.length,
       );
 
       // Check if script is stopped because of an error
@@ -83,7 +83,7 @@ function handleLogMessage(device, msg) {
 
       logmessage = logmessage.substring(2, logmessage.length);
 
-      /* a
+      /* 
         Assume that errors start with '|2' and do not contain the script name
         That was the case in firmware versions < 1.7.0
         In this case we collect the error messages in a buffer until the script stops
@@ -106,11 +106,11 @@ function handleLogMessage(device, msg) {
       This way we prevent circle requirements, because wshandler requires the shellyConnector!
       */
       const wsmessage = {
-        event: "ShellyUpdate",
-        type: "log",
+        event: "device-update",
+        eventType: "log",
+        source: "Loghandler",
+        message: `Script ${script.name} has a new log message`,
         data: {
-          source: "Loghandler",
-          message: `Script ${script.name} has a new log message`,
           device,
         },
       };
@@ -135,7 +135,7 @@ function checkDeviceError(device, script, logmessage) {
   ) {
     const sScriptNotification = logmessage.substring(
       logmessage.indexOf("{"),
-      logmessage.indexOf("}") + 1
+      logmessage.indexOf("}") + 1,
     );
 
     // Assume that this is a notification that the script was stopped
@@ -165,30 +165,47 @@ function checkDeviceError(device, script, logmessage) {
             errorBuffer[device.id] = [];
           }
 
-          console.error(
-            `Error of ${device.cname} in script with id  ${script.id}: ${error_msg}`
-          );
+          if (error_msg.length > 0) {
+            console.error(
+              `Error of ${device.cname} in script with id  ${script.id}: ${error_msg}`,
+            );
 
-          /*
+            /*
             Create a notification of the Script error in the database
           */
-          const wsmessage = {
-            event: "notification create",
-            data: {
-              name: "Loghandler",
+            let wsmessage = {
+              event: "notification-create",
+              source: "Loghandler",
               message: `Error of ${device.cname} in script with id  ${script.id}`,
-              notification: {
-                type: "script-error",
-                device_ip: device.ip,
-                device_cname: device.cname,
-                script_id: script.id,
-                notification: error_msg,
+              data: {
+                notification: {
+                  type: "script-error",
+                  device_ip: device.ip,
+                  device_cname: device.cname,
+                  script_id: script.id,
+                  notification: error_msg,
+                },
               },
-            },
-          };
-          wsclient.send(wsmessage);
-        }
-      }
+            };
+            wsclient.send(wsmessage);
+
+            // notify the frontend that the script is not running anymore
+            script.running = false;
+            wsmessage = {
+              event: "device-update",
+              eventType: "script",
+              source: "Loghandler",
+              message: `Script status changed to ${
+                script.running ? "RUNNING" : "NOT RUNNING"
+              }`,
+              data: {
+                device,
+              },
+            };
+            wsclient.send(wsmessage);
+          } //error_msg length > 0
+        } // errorBuffer length > 0 or error_msg defined
+      } // sript stopped running
     } catch {
       // Do nothing. Script is still running;
     }

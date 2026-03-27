@@ -2,9 +2,18 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+  /*
+    Author: André Kreienbring
+    For Developers using vscode (on the client).
+    - Copy the server code to your client development folder, e.g /server
+    - Configure everything accordingly see: https://github.com/akreienbring/s-central
+    - Use the debug functionality to start and debug client and server
+  */
   "version": "0.2.0",
   "configurations": [
     {
+      // to use this configuration copy your /server/config/default.json to /server/config/dev.json
       "name": "Shellybroker DEV Mode",
       "request": "launch",
       "cwd": "${workspaceRoot}",
@@ -14,11 +23,15 @@
       "type": "node"
     },
     {
-      "type": "node",
+      // to use this configuration copy your /server/config/default.json to /server/config/test.json
+      // use the npm script 'npm run cy' to test the application with cypress
+      "name": "Shellybroker TEST Mode",
       "request": "launch",
-      "name": "Launch Shellybroker",
+      "cwd": "${workspaceRoot}",
+      "runtimeArgs": ["run-script", "test"],
+      "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\shellybroker.js"
+      "type": "node"
     }
   ]
 }

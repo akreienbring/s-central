@@ -21,7 +21,7 @@ S-Central supports English, Spanish and German.
   Get insights about KVS values, script status, Logs and websocket messages.<br/>
   Control your switches and copy the switch settings from one device to another.<br/>
   Get notified when a script error occurs.<br/>
-  Reboot, update the Firmware or edit the WIFI settings of many Shellies at once.
+  Reboot, update the Firmware\* or edit the WIFI settings of many Shellies at once.
 - **User**<br/>
   Enable additional users to log in to the appplication and assign specific Shellies to them.
 - **Blog**<br/>
@@ -30,6 +30,8 @@ S-Central supports English, Spanish and German.
   An API to call essential functions, e.g. from within your scripts.
 - **General**<br/>
   Supports Gen1 und Gen2+ device authentication.
+
+* For the Firmware feature, the device must be connected to the Shelly cloud
 
 ## Why use it?
 
@@ -237,13 +239,18 @@ The following devices have been tested with S-Central (with all firmwares from 1
 | Plus1PMMini    | SHBDUO-1   | PlusI4  |
 | Plus1PM        | PlusRGBWPM | SHPLG-S |
 | 1PMMini (Gen3) | RGBW2      |         |
+| Plus2PM        |            |         |
 
 ## How to particpate and join the project
 
 This project needs your help! There are so many Shelly devices and up to now only one developer :-) There is a simple and a developer stylish way to support.
 
 **The simple way**<br/>
-Add images to the project. Images are missing because I don't own all of the available devices. The best way (as far as I know) to get your hands on a high quality image of a device is to log in at [Shelly Control](https://control.shelly.cloud) and download the image of a device that is not yet included in the _sb/public/assets/images/devices_ folder. Mind the name of the file as it must fit the modelname.
+Add images to the project. Images are missing because I don't own all of the available devices. The best way (as far as I know) to get your hands on a high quality image of a device is to
+
+- log in at [Shelly Control](https://control.shelly.cloud)
+- right click the image of your device and select "open in new tab"
+- right click the larger image and select "save Image as" in the _sb/public/assets/images/devices_ folder. Mind the name of the file as it must fit the modelname.
 
 **The Developer way**<br/>
 Fork the whole Github project and start making pullrequests! Your welcome! As with the images I'm sure other devices (I don't own) have special switches, RPC commands, JSON formats etc... Let's enhance this software to support more devices for the sake of all Shelly users!

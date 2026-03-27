@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    /* Bundler */
+    "module": "es2022",
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "paths": {
+      "@src/*": ["./src/*"]
+    },
+    /* Build */
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    /* Linting */
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

@@ -121,13 +121,13 @@ function setDevice(body, ip) {
   if (typeof device != "undefined") {
     device.online = body.online;
     let message = {
-      event: "ShellyUpdate",
-      type: "device",
+      event: "device-update",
+      eventType: "device",
+      source: "Device Endpoint",
+      message: `Device status changed to ${
+        device.online ? "ONLINE" : "OFFLINE"
+      }`,
       data: {
-        name: "Device Endpoint",
-        message: `Device status changed to ${
-          device.online ? "ONLINE" : "OFFLINE"
-        }`,
         device,
       },
     };
@@ -135,10 +135,10 @@ function setDevice(body, ip) {
 
     if (!device.online) {
       message = {
-        event: "notification create",
+        event: "notification-create",
+        source: "Device Endpoint",
+        message: `${device.cname} is offline`,
         data: {
-          name: "Device Endpoint",
-          message: `${device.cname} is offline`,
           notification: {
             type: "device-offline",
             device_ip: device.ip,
@@ -172,13 +172,13 @@ function setScript(body, ip, id) {
   if (typeof script != "undefined") {
     script.running = body.running;
     const message = {
-      event: "ShellyUpdate",
-      type: "script",
+      event: "device-update",
+      eventType: "script",
+      source: "Script Endpoint",
+      message: `Script status changed to ${
+        script.running ? "RUNNING" : "NOT RUNNING"
+      }`,
       data: {
-        name: "Script Endpoint",
-        message: `Script status changed to ${
-          script.running ? "RUNNING" : "NOT RUNNING"
-        }`,
         device,
       },
     };
@@ -208,11 +208,11 @@ function setKVS(body, id) {
     kvsentry.value = body.value;
     if (typeof kvsentry != "undefined") {
       const message = {
-        event: "ShellyUpdate",
-        type: "kvs",
+        event: "device-update",
+        eventType: "kvs",
+        source: "KVS Endpoint",
+        message: `KVS entry ${kvsentry.key} changed to ${kvsentry.value}`,
         data: {
-          source: "KVS Endpoint",
-          message: `KVS entry ${kvsentry.key} changed to ${kvsentry.value}`,
           device,
         },
       };

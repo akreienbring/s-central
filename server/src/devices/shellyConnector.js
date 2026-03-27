@@ -90,6 +90,19 @@ function setSwitch(device, aSwitch) {
 }
 
 /**
+ * Starts or stops a script. The new status was set in the client.
+ * @param {object} device The device the script belongs to
+ * @param {object} script The script that must be stopped or started
+ */
+function toggleScript(device, script) {
+  shellyWSClient.sendCommand(
+    device,
+    script.running ? "Script.Start" : "Script.Stop",
+    { id: script.id },
+  );
+}
+
+/**
   Enriches an existing device with data retrieved from the Shelly device
   @async
   @param {object} device the device to enricht with shelly device data
@@ -110,7 +123,7 @@ function setSwitch(device, aSwitch) {
         return await shellyGen1Conn.createDevice(
           device,
           res.data,
-          clientImagePath
+          clientImagePath,
         );
       return createUnknownDevice(device, true, "unknown");
     }
@@ -133,7 +146,7 @@ function setSwitch(device, aSwitch) {
 */
 function createUnknownDevice(device, online, name) {
   console.log(
-    `Creating device with unkwown type with name ${name} and IP ${device.ip}`
+    `Creating device with unkwown type with name ${name} and IP ${device.ip}`,
   );
   device.online = online;
   device.name = name;
@@ -144,7 +157,6 @@ function createUnknownDevice(device, online, name) {
   device.scripts = [];
   device.kvs = [];
   device.switches = [];
-  device.wsmessages = {};
   return device;
 }
 
@@ -163,7 +175,7 @@ function rebootDevice(device) {
         } else {
           console.error(
             `Failed to send reboot command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
@@ -179,7 +191,7 @@ function rebootDevice(device) {
         } else {
           console.error(
             `Failed to send reboot command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
@@ -201,13 +213,13 @@ function updateToStable(device) {
       http://192.168.68.33/ota?url=http://archive.shelly-tools.de/version/v1.12.1/SHPLG-S.zip
     */
     console.log(
-      `Calling stable ota url: http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/${device.name}.zip`
+      `Calling stable ota url: http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/${device.name}.zip`,
     );
 
     shellyAxios
       .get(
         `http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/${device.name}.zip`,
-        device.password
+        device.password,
       )
       .then((res) => {
         if (res?.status === 200) {
@@ -215,14 +227,14 @@ function updateToStable(device) {
         } else {
           console.error(
             `Failed to send Stable update command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
       .catch((error) => {
         console.error(
           `Error updating the device to a stable version ${device.cname}:`,
-          error
+          error,
         );
       });
   } else if (device.gen > 1) {
@@ -234,14 +246,14 @@ function updateToStable(device) {
         } else {
           console.error(
             `Failed to send Stable update command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
       .catch((error) => {
         console.error(
           `Error updating the device to a stable version ${device.cname}:`,
-          error
+          error,
         );
       });
   }
@@ -255,12 +267,12 @@ function updateToStable(device) {
 function updateToBeta(device) {
   if (device.gen === 1) {
     console.log(
-      `Calling beta ota url: http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/rc/${device.name}.zip`
+      `Calling beta ota url: http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/rc/${device.name}.zip`,
     );
     shellyAxios
       .get(
         `http://${device.ip}/ota?url=http://firmware.shelly.cloud/gen1/rc/${device.name}.zip`,
-        device.password
+        device.password,
       )
       .then((res) => {
         if (res?.status === 200) {
@@ -268,14 +280,14 @@ function updateToBeta(device) {
         } else {
           console.error(
             `Failed to send Beta Update command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
       .catch((error) => {
         console.error(
           `Error while sending Beta Update command to device ${device.cname}:`,
-          error
+          error,
         );
       });
   } else if (device.gen > 1) {
@@ -287,14 +299,14 @@ function updateToBeta(device) {
         } else {
           console.error(
             `Failed to send Beta update command to device ${device.cname}:`,
-            res
+            res,
           );
         }
       })
       .catch((error) => {
         console.error(
           `Error while sending Beta Update command to device ${device.cname}:`,
-          error
+          error,
         );
       });
   }
@@ -314,13 +326,13 @@ async function getWifiSettings(device) {
       .catch((error) => {
         console.error(
           `Error getting wifi settings for device ${device.cname}:`,
-          error
+          error,
         );
       });
 
     if (res?.status === 200) {
       const settings = res.data;
-      // map settings to Gen > 1 forma to prevent changing the client code
+      // map settings to Gen > 1 form to prevent changing the client code
       return {
         ssid: settings.ssid,
         enable: settings.enabled,
@@ -339,7 +351,7 @@ async function getWifiSettings(device) {
       .catch((error) => {
         console.error(
           `Error getting wifi settings for device ${device.cname}:`,
-          error
+          error,
         );
       });
 
@@ -380,12 +392,12 @@ async function setWifiSettings(device, wifiSettings, n) {
       )
     */ .get(
         `http://${device.ip}/settings/sta?ssid=${wifiSettings.ssid}&key=${wifiSettings.password}&enabled=${wifiSettings.enable}`,
-        device.password
+        device.password,
       )
       .catch((error) => {
         console.error(
           `Error setting wifi settings for device ${device.cname}:`,
-          error
+          error,
         );
       });
 
@@ -408,14 +420,14 @@ async function setWifiSettings(device, wifiSettings, n) {
       .catch((error) => {
         console.error(
           `Error setting wifi settings for device ${device.cname}:`,
-          error
+          error,
         );
       });
 
     if (typeof res.data.error !== "undefined") {
       console.error(
         `Error setting wifi settings for device ${device.cname}:`,
-        res.data.error
+        res.data.error,
       );
       return n;
     }
@@ -427,6 +439,7 @@ module.exports = {
   getDevice,
   toggleSwitch,
   setSwitch,
+  toggleScript,
   configureShellies,
   sendNotifyFullStatus,
   rebootDevice,

@@ -1,0 +1,201 @@
+[
+  {
+    "ip": "192.168.68.20",
+    "cname": "Test",
+    "password": "test",
+    "online": true,
+    "name": "PlusRGBWPM",
+    "gen": 2,
+    "fw_id": "20260120-145243/1.7.4-gf9878b6",
+    "id": "shellyplusrgbwpm-30c92257d20c",
+    "image": "/assets/images/devices/PlusRGBWPM.png",
+    "switches": [
+      {
+        "deviceIp": "192.168.68.20",
+        "key": "rgbw:0",
+        "id": 0,
+        "output": false,
+        "brightness": 20,
+        "white": 0,
+        "rgb": [255, 100, 0]
+      }
+    ],
+    "scripts": [
+      {
+        "id": 1,
+        "name": "Example",
+        "enable": true,
+        "running": true,
+        "logmessages": [
+          {
+            "ts": 1763563688,
+            "msg": "Example (#1): Please participate and help the project become better!\u0000'"
+          }
+        ]
+      },
+      { "id": 2, "name": "Watchdog", "enable": true, "running": true }
+    ],
+    "kvs": [
+      {
+        "key": "ClimateControl",
+        "value": "1",
+        "display": "Klimakontrolle",
+        "style": "color"
+      }
+    ],
+    "notifyStatus": {
+      "src": "shellyplusrgbwpm-30c92257d20c",
+      "dst": "ws",
+      "method": "NotifyStatus",
+      "params": { "ts": 1772531504.71, "ws": { "connected": true } }
+    },
+    "beta": "1.7.5-beta1",
+    "notifyEvent": {
+      "src": "shellyplusrgbwpm-30c92257d20c",
+      "dst": "ws",
+      "method": "NotifyEvent",
+      "params": {
+        "ts": 1772531507.28,
+        "events": [
+          {
+            "component": "sys",
+            "event": "scheduled_restart",
+            "time_ms": 996,
+            "ts": 1772531507.28
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ip": "192.168.68.30",
+    "cname": "Test2",
+    "online": true,
+    "name": "Plus2PM",
+    "gen": 2,
+    "fw_id": "20260120-145245/1.7.4-gf9878b6",
+    "id": "shellyplus2pm-cc7b5c8936a4",
+    "image": "/assets/images/devices/Plus2PM.png",
+    "switches": [
+      {
+        "deviceIp": "192.168.68.30",
+        "key": "switch:0",
+        "id": 0,
+        "output": false
+      },
+      {
+        "deviceIp": "192.168.68.30",
+        "key": "switch:1",
+        "id": 1,
+        "output": false
+      }
+    ],
+    "scripts": [],
+    "kvs": [],
+    "beta": "1.7.5-beta1",
+    "notifyStatus": {
+      "src": "shellyplus2pm-cc7b5c8936a4",
+      "dst": "ws",
+      "method": "NotifyStatus",
+      "params": {
+        "ts": 1772531940,
+        "switch:1": {
+          "aenergy": {
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531940,
+            "total": 33.025
+          },
+          "ret_aenergy": {
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531940,
+            "total": 0
+          }
+        }
+      }
+    },
+    "notifyFullStatus": {
+      "src": "shellyplus2pm-cc7b5c8936a4",
+      "dst": "request",
+      "method": "NotifyFullStatus",
+      "params": {
+        "ble": {},
+        "cloud": { "connected": true },
+        "input:0": { "id": 0, "state": null },
+        "input:1": { "id": 1, "state": null },
+        "mqtt": { "connected": false },
+        "switch:0": {
+          "id": 0,
+          "source": "init",
+          "output": false,
+          "apower": 0,
+          "voltage": 239.3,
+          "freq": 50,
+          "current": 0,
+          "pf": 0,
+          "aenergy": {
+            "total": 14.119,
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531880
+          },
+          "ret_aenergy": {
+            "total": 0,
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531880
+          },
+          "temperature": { "tC": 46.6, "tF": 116 }
+        },
+        "switch:1": {
+          "id": 1,
+          "source": "init",
+          "output": false,
+          "apower": 0,
+          "voltage": 239.4,
+          "freq": 50,
+          "current": 0,
+          "pf": 0,
+          "aenergy": {
+            "total": 33.025,
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531880
+          },
+          "ret_aenergy": {
+            "total": 0,
+            "by_minute": [0, 0, 0],
+            "minute_ts": 1772531880
+          },
+          "temperature": { "tC": 46.6, "tF": 116 }
+        },
+        "sys": {
+          "mac": "CC7B5C8936A4",
+          "restart_required": false,
+          "time": "10:58",
+          "unixtime": 1772531921,
+          "last_sync_ts": 1772531689,
+          "uptime": 238,
+          "ram_size": 264148,
+          "ram_free": 104936,
+          "ram_min_free": 93500,
+          "fs_size": 393216,
+          "fs_free": 118784,
+          "cfg_rev": 57,
+          "kvs_rev": 0,
+          "schedule_rev": 0,
+          "webhook_rev": 0,
+          "btrelay_rev": 0,
+          "available_updates": { "beta": { "version": "1.7.5-beta1" } },
+          "reset_reason": 3,
+          "utc_offset": 3600
+        },
+        "wifi": {
+          "sta_ip": "192.168.68.30",
+          "status": "got ip",
+          "ssid": "Tropired2709",
+          "bssid": "32:16:9d:2f:f7:ca",
+          "rssi": -53
+        },
+        "ws": { "connected": true },
+        "ts": 1772531919.946
+      }
+    }
+  }
+]

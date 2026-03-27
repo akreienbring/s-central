@@ -1,0 +1,23 @@
+/*
+  Author: André Kreienbring
+  Example script for S-Central
+  The Error script does nothing but produces an error.
+  It is intended to test the notification function in case that an error pops up.
+*/
+
+function init() {
+  console.log('RAM: ' + Shelly.getComponentStatus("sys").ram_free + '/' + Shelly.getComponentStatus("sys").ram_size);
+  console.log('FS: ' + Shelly.getComponentStatus("sys").fs_free + '/' + Shelly.getComponentStatus("sys").fs_size);
+  console.log('Will produce an error in 5 seconds')
+ 
+  Timer.set(
+    5000,
+    false,
+    function(){
+      const x = 1;
+      x = 2
+    }
+  ); 
+}
+
+init();

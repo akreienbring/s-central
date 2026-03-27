@@ -2,11 +2,11 @@
   "author": "André Kreienbring",
   "name": "@s-central/server",
   "license": "AGPL-3.0",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Server for S-Central",
   "private": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "set NODE_ENV=test&& node --watch shellybroker.js",
     "start": "pm2 flush && pm2 start ecosystem.config.js",
     "dev": "set NODE_ENV=dev&& node --watch shellybroker.js",
     "stop": "pm2 stop shellybroker",
@@ -17,21 +17,21 @@
   },
   "keywords": [],
   "dependencies": {
-    "axios": "^1.13.2",
-    "better-sqlite3": "^12.6.0",
-    "config": "^4.1.1",
-    "cors": "^2.8.5",
+    "axios": "^1.13.6",
+    "better-sqlite3": "^12.8.0",
+    "config": "^4.4.1",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "faye-websocket": "^0.11.4",
-    "module-alias": "^2.2.3",
+    "module-alias": "^2.3.4",
     "pm2": "^6.0.14",
     "prettyjson": "^1.2.5",
     "request-ip": "^3.3.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "eslint": "^9.39.2",
-    "globals": "^17.0.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0"
   },
   "_moduleAliases": {
     "@root": ".",

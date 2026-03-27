@@ -117,13 +117,17 @@ async function getDevices() {
 }
 
 /**
-  Serves the entpoint 'GetDevice' and 'GetScripts'
-  @async
-  @param {string} ip The IP of a device
-  @param {boolean} reload. If true the data from the device is refetched.
-  @returns {Promise<object>} the device created from the response data or
-    an 'unknown' device if the device could not be connected or it is not supported 
-*/
+ * Gets a device from the list of configured devices.
+ * If a device is aleady loaded it is returned from memory.
+ * If reload is true the data from the device is refetched.
+ * The device object is enriched with the data received from the device.
+ * Called by the entpoint 'GetDevice', 'GetScripts', wsHandler(reloadcheck).
+ * @async
+ * @param {string} ip The IP of a device
+ * @param {boolean} reload. If true the data from the device is refetched.
+ * @returns {Promise<object>} the device created from the response data or
+ * an 'unknown' device if the device could not be connected or it is not supported
+ */
 async function getDevice(ip, reload) {
   console.log("Getting device with ip " + ip);
   const device = findDeviceByIp(ip);

@@ -1,10 +1,14 @@
 /HowTo.md
+/workspace.code-workspace
+
 server/broker.db
+server/knip.config.js
 server/node_modules/
 server/.vscode/*
 !server/.vscode/launch.json
 server/config/default.json
 server/config/dev.json
+server/config/test.json
 server/config/devices.json
 server/config/kvsdisplays.json
 

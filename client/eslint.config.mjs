@@ -1,6 +1,7 @@
 import globals from 'globals';
 import eslintJs from '@eslint/js';
 import jsdoc from 'eslint-plugin-jsdoc';
+import eslintTs from 'typescript-eslint';
 import { defineConfig } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
 import importPlugin from 'eslint-plugin-import';
@@ -20,7 +21,7 @@ const commonRules = () => ({
   ...reactHooksPlugin.configs.recommended.rules,
   'func-names': 'warn',
   'no-bitwise': 'error',
-  'no-unused-vars': 'warn',
+  'no-unused-vars': 'off',
   'object-shorthand': 'warn',
   'no-useless-rename': 'warn',
   'default-case-last': 'error',
@@ -47,6 +48,12 @@ const commonRules = () => ({
   // jsdoc
   'jsdoc/require-description': 'error',
   'jsdoc/check-values': 'warn',
+  // typescript
+  '@typescript-eslint/no-shadow': 'error',
+  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/no-empty-object-type': 'off',
+  '@typescript-eslint/consistent-type-imports': 'warn',
+  '@typescript-eslint/no-unused-vars': ['warn', { args: 'none' }],
 });
 
 /**
@@ -85,58 +92,45 @@ const unusedImportsRules = () => ({
  * sort or imports/exports
  * from 'eslint-plugin-perfectionist'.
  */
-const sortImportsRules = () => {
-  const customGroups = {
-    mui: ['custom-mui'],
-    auth: ['custom-auth'],
-    hooks: ['custom-hooks'],
-    utils: ['custom-utils'],
-    types: ['custom-types'],
-    routes: ['custom-routes'],
-    sections: ['custom-sections'],
-    components: ['custom-components'],
-  };
-
-  return {
-    'perfectionist/sort-named-imports': ['warn', { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-named-exports': ['warn', { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-imports': [
-      2,
-      {
-        order: 'asc',
-        ignoreCase: true,
-        type: 'line-length',
-        environment: 'node',
-        maxLineLength: undefined,
-        newlinesBetween: 1,
-        internalPattern: ['^src/.+'],
-        groups: [
-          'style',
-          'side-effect',
-          'type',
-          ['builtin', 'external'],
-          'mui',
-          'routes',
-          'hooks',
-          'utils',
-          'components',
-          'sections',
-          'internal',
-          ['parent', 'sibling', 'index'],
-          'unknown',
-        ],
-        customGroups: [
-          { groupName: 'mui', elementNamePattern: ['^@mui/.+'] },
-          { groupName: 'hooks', elementNamePattern: ['^src/hooks/.+'] },
-          { groupName: 'utils', elementNamePattern: ['^src/utils/.+'] },
-          { groupName: 'routes', elementNamePattern: ['^src/routes/.+'] },
-          { groupName: 'sections', elementNamePattern: ['^src/sections/.+'] },
-          { groupName: 'components', elementNamePattern: ['^src/components/.+'] },
-        ],
-      },
-    ],
-  };
-};
+const sortImportsRules = () => ({
+  'perfectionist/sort-named-imports': ['warn', { type: 'line-length', order: 'asc' }],
+  'perfectionist/sort-named-exports': ['warn', { type: 'line-length', order: 'asc' }],
+  'perfectionist/sort-imports': [
+    2,
+    {
+      order: 'asc',
+      ignoreCase: true,
+      type: 'line-length',
+      environment: 'node',
+      maxLineLength: undefined,
+      newlinesBetween: 1,
+      internalPattern: ['^src/.+'],
+      groups: [
+        'style',
+        'side-effect',
+        'type',
+        ['builtin', 'external'],
+        'mui',
+        'routes',
+        'hooks',
+        'utils',
+        'components',
+        'sections',
+        'internal',
+        ['parent', 'sibling', 'index'],
+        'unknown',
+      ],
+      customGroups: [
+        { groupName: 'mui', elementNamePattern: ['^@mui/.+'] },
+        { groupName: 'hooks', elementNamePattern: ['^src/hooks/.+'] },
+        { groupName: 'utils', elementNamePattern: ['^src/utils/.+'] },
+        { groupName: 'routes', elementNamePattern: ['^src/routes/.+'] },
+        { groupName: 'sections', elementNamePattern: ['^src/sections/.+'] },
+        { groupName: 'components', elementNamePattern: ['^src/components/.+'] },
+      ],
+    },
+  ],
+});
 
 /**
  * Custom ESLint configuration.
@@ -145,6 +139,7 @@ export const customConfig = {
   plugins: {
     'react-hooks': reactHooksPlugin,
     'unused-imports': unusedImportsPlugin,
+    eslintTs,
     perfectionist: perfectionistPlugin,
     import: importPlugin,
     jsdoc,
@@ -172,7 +167,8 @@ export default defineConfig([
       reportUnusedInlineConfigs: 'off',
     },
     settings: {
-      react: { version: 'detect' },
+      react: { version: '19' },
+      //react: { version: 'detect' },
       //'import/extensions': ['.js', '.jsx'],
       settings: {
         'import/resolver': {
@@ -184,6 +180,7 @@ export default defineConfig([
     },
   },
   eslintJs.configs.recommended,
+  eslintTs.configs.recommended,
   reactPlugin.configs.flat.recommended,
   customConfig,
 ]);

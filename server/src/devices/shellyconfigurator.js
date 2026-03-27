@@ -17,10 +17,10 @@ function configureShellies(devices) {
 
   if (setWS || setUDP) {
     const udpConfig = `${config.get("udp-server.host")}:${config.get(
-      "udp-server.port"
+      "udp-server.port",
     )}`;
     const wsConfig = `ws://${config.get("ws-server.host")}:${config.get(
-      "ws-server.port"
+      "ws-server.port",
     )}`;
     console.log("Updating WS and UDP Settings on all devices");
     for (const device of devices) {
@@ -32,11 +32,11 @@ function configureShellies(devices) {
           .then((res) => {
             if (res?.status === 200) {
               console.log(
-                `Successfully configured UDP debug on ${device.cname} to server ${udpConfig}  `
+                `Successfully configured UDP debug on ${device.cname} to server ${udpConfig}  `,
               );
             } else {
               console.log(
-                `Got status ${res?.status}. Couldn't configure UDP debug on ${device.cname}`
+                `Got status ${res?.status}. Couldn't configure UDP debug on ${device.cname}`,
               );
             }
           })
@@ -55,12 +55,12 @@ function configureShellies(devices) {
           .then((res) => {
             if (res?.status === 200 && typeof res.data.result !== "undefined") {
               console.log(
-                `Successfully configured the outbound Websocket on ${device.cname} to server ${wsConfig}. Rebooting the Shelly`
+                `Successfully configured the outbound Websocket on ${device.cname} to server ${wsConfig}. Rebooting the Shelly`,
               );
               shellyAxios.postRPCMethod(device, "Shelly.Reboot");
             } else {
               console.error(
-                `Couldn't configure the outbound Websocket on ${device.cname}`
+                `Couldn't configure the outbound Websocket on ${device.cname}`,
               );
             }
           })
