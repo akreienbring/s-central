@@ -1,0 +1,1 @@
+var e=(e,t)=>{typeof document<`u`&&document.addEventListener(e,t)},t=(e,t)=>{typeof document<`u`&&document.removeEventListener(e,t)},n=(e,t)=>{let n=new CustomEvent(e,{detail:t,bubbles:!1,cancelable:!0});typeof document<`u`&&document.dispatchEvent(n)};export{e as n,t as r,n as t};
