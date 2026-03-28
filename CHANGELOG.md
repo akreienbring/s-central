@@ -1,5 +1,11 @@
 ### Release v2.4.0
 
+##### 28.03.2026
+
+**Server (2.4.1)**
+
+- fixed: Messages from Loghandler and endpoints not handled by client
+
 ##### 27.03.2026
 
 **Client (2.4.0)**

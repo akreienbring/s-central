@@ -183,7 +183,7 @@ function handleMessage(msg, ws) {
       ws.send(JSON.stringify(msg));
     } else if (msg.event === "device-update") {
       // message from Loghandler or enpoint is simply forwarded to all clients
-      msg.data.subscriptionID = msg.data.device.id;
+      msg.subscriptionID = msg.data.device.id;
       broadcast(msg);
     } else if (msg.event === "pong" && msg.message === HEARTBEAT_VALUE) {
       // the client answered to a ping message
