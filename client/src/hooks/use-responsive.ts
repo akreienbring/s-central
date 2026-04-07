@@ -4,6 +4,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // ----------------------------------------------------------------------
 
+/**
+ * A hook that uses a media query to implement a responsive design
+ * @param {string} query
+ * @param {Breakpoint} start
+ * @param {Breakpoint} end
+ * @returns
+ */
 export function useResponsive(query: string, start: Breakpoint, end?: Breakpoint) {
   const theme = useTheme();
 

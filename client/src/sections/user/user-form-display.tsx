@@ -49,14 +49,15 @@ interface UserFormDisplayProps {
 
 /**
   Separates the form display components from the UserForm that communicates with the websocket.
-  @param {UserFormType} type Must be 'login', 'profile', 'security' , 'create' or 'settings'
-  @param {object} requestResult Information about a request result from the websocket server.
-  @param {array} roles A list of roles requested from the websocket server.
-  @param {object} currentUser Either the currently logged in user OR a user from the UserView / UserTableRow list.
-  @param {function} setRequestResult is called when a displayed request result is changed (hidden)
-  @param {function} setCurrentUser called everytime an input is changed to reflect the updated user.
-  @param {function} handleForgotten called when a password must be reset.
-  @param {function} handleCurrentUser called when the user was changed.
+  @param {UserFormDisplayProps} props
+  @param {UserFormType} props.type Must be 'login', 'profile', 'security' , 'create' or 'settings'
+  @param {object} props.requestResult Information about a request result from the websocket server.
+  @param {Array} props.roles A list of roles requested from the websocket server.
+  @param {object} props.currentUser Either the currently logged in user OR a user from the UserView / UserTableRow list.
+  @param {Function} props.setRequestResult is called when a displayed request result is changed (hidden)
+  @param {Function} props.setCurrentUser called everytime an input is changed to reflect the updated user.
+  @param {Function} props.handleForgotten called when a password must be reset.
+  @param {Function} props.handleCurrentUser called when the user was changed.
   @returns {JSX.Element}
 */
 const UserFormDisplay = ({
@@ -84,7 +85,7 @@ const UserFormDisplay = ({
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
 
-  /*
+  /**
     type 'login': When email or password get the focus an 'invalid credentials' warning
     will be hidden.
     type 'profile' and 'create': Empty an evtl. existing success or fail message. 

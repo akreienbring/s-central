@@ -6,6 +6,10 @@
 import { Helmet } from 'react-helmet-async';
 import { LandingView } from '@src/sections/landing/view';
 
+/**
+ * The landing page with public blogposts
+ * @returns
+ */
 export default function LandingPage() {
   return (
     <>

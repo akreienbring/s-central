@@ -19,7 +19,7 @@ const clientImagePath = "/assets/images/devices/";
   After loading the devices, shellyDevices triggers this function once
   to send WebSocket and UDP configuration to all devices.
   This reboots the Gen2+ devices!
- * @param {array} devices 
+ * @param {Array} devices 
  */
 function configureShellies(devices) {
   shellyConfigurator.configureShellies(devices);
@@ -28,7 +28,7 @@ function configureShellies(devices) {
 /**
   Sends a 'NotifyFullStatus' to the websocket server for each device.
   The status is then forwarded to all connected clients. 
- * @param {array} devices 
+ * @param {Array} devices 
  */
 function sendNotifyFullStatus(devices) {
   for (const device of devices) {
@@ -54,7 +54,7 @@ function toggleSwitch(device, aSwitch) {
       shellyWSClient.sendCommand(device, "RGBW.Toggle", { id: aSwitch.id });
     }
   } else if (device.gen === 1) {
-    shellyGen1Conn.toggleSwitch(aSwitch, device.password);
+    shellyGen1Conn.toggleSwitch(device, aSwitch);
   }
 }
 
@@ -67,16 +67,16 @@ function toggleSwitch(device, aSwitch) {
 function setSwitch(device, aSwitch) {
   if (device.gen > 1) {
     if (aSwitch.key.startsWith("switch")) {
-      // TODO: currently untested! Don't have such a device
-      shellyAxios
-        .postRPCMethod(device, "Switch.Set", { id: aSwitch.id })
-        .catch((err) => {
-          console.error(err.message);
-        });
+      const params = {
+        id: aSwitch.id,
+        on: aSwitch.output,
+      };
+
+      shellyWSClient.sendCommand(device, "Switch.Set", params);
     } else if (aSwitch.key.startsWith("rgbw")) {
       const params = {
         id: aSwitch.id,
-        turn: aSwitch.output ? "on" : "off", // without this, 'Set' does not work
+        on: aSwitch.output,
         brightness: aSwitch.brightness,
         white: aSwitch.white,
         rgb: aSwitch.rgb,
@@ -85,7 +85,7 @@ function setSwitch(device, aSwitch) {
       shellyWSClient.sendCommand(device, "RGBW.Set", params);
     }
   } else if (device.gen === 1) {
-    shellyGen1Conn.setSwitch(aSwitch, device.password);
+    shellyGen1Conn.setSwitch(device, aSwitch);
   }
 }
 

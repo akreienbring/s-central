@@ -11,6 +11,10 @@ import { type EmblaOptionsType } from 'embla-carousel';
 
 import Box from '@mui/material/Box';
 
+/**
+ * Display the carousel of devices in the login page
+ * @returns {JSX.Element}
+ */
 export default function DeviceCarousel(): JSX.Element {
   const OPTIONS: EmblaOptionsType = { loop: true };
   const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [Autoplay({ delay: 3000 })]);

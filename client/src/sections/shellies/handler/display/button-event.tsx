@@ -3,7 +3,7 @@
   A simple component that display an (non-BLE) event.
   Example: button press event
 */
-import type { Event } from '@src/types/device';
+import type { EventStatus } from '@src/types/device';
 
 import { type JSX } from 'react';
 import Iconify from '@src/components/iconify';
@@ -16,14 +16,15 @@ import Highlighter from '../highlighter';
 interface ButtonEventProps {
   elementId: string;
   scrollableElementId: string;
-  event: Event;
+  event: EventStatus;
 }
 
 /**
- * Displays the kind of button event
-   @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
- @param {object} event The event of a 'NotifyEvent' websocket message.
+  Displays the kind of button event as icon
+  @param {ButtonEventProps} props
+  @param {string} props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {EventStatus} props.event The event of a 'NotifyEvent' websocket message.
 */
 const ButtonEvent = ({ elementId, scrollableElementId, event }: ButtonEventProps): JSX.Element => {
   let degree: number;

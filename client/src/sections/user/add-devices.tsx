@@ -33,15 +33,16 @@ interface AddDevicesProps {
 }
 /**
   Component that allows to update an existing user
-  @param {string} title Title (The user that devices will be added to)
-  @param {boolean} openDevices To determine if the dialog is shown or not
-  @param {function} handleCloseDevices Handles the closed status in the UserTableRow
-  @param {Device[]} devices The array of all available devices
-  @param {string[]} userDevices The array of devices that are already assigned to the user
-  @param {function} handleUserDeviceChange Called when a device is checked/unchecked
-  @param {function} handleDevicesSubmit Called when the devices must be submitted to the backend
-  @param {object} requestResult The result of the last request (success, message)
-  @param {boolean} isChanged To determine if changes were made
+  @param {AddDevicesProps} props
+  @param {string} props.title Title (The user that devices will be added to)
+  @param {boolean} props.openDevices To determine if the dialog is shown or not
+  @param {Function} props.handleCloseDevices Handles the closed status in the UserTableRow
+  @param {Device[]} props.devices The array of all available devices
+  @param {string[]} props.userDevices The array of devices that are already assigned to the user
+  @param {Function} props.handleUserDeviceChange Called when a device is checked/unchecked
+  @param {Function} props.handleDevicesSubmit Called when the devices must be submitted to the backend
+  @param {object} props.requestResult The result of the last request (success, message)
+  @param {boolean} props.isChanged To determine if changes were made
   @returns {JSX.Element}
 */
 export default function AddDevices({

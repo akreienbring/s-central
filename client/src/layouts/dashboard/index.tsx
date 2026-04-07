@@ -7,7 +7,13 @@ import Main from './main';
 import Header from './header';
 
 // ----------------------------------------------------------------------
-
+/**
+ * The layout of the S-Central application with the nav bar, the header and
+ * the different pages
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ * @returns
+ */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [openNav, setOpenNav] = useState(false);
 

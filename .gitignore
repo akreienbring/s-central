@@ -2,7 +2,7 @@
 /workspace.code-workspace
 
 server/broker.db
-server/knip.config.js
+server/test.db
 server/node_modules/
 server/.vscode/*
 !server/.vscode/launch.json

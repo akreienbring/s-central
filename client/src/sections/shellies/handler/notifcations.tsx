@@ -42,10 +42,11 @@ interface NotificationsProps {
 /**
   Display the WS messages as Icons and values. 
   To implement highlighting and scolling deviceId and index are used to identify HTML Elements
-  @param {string} deviceName The name of the device that sent the message
-  @param {WsMessage} wsMessage A websocket message from the wsmessages array of the device.
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {NotificationsProps} props
+  @param {string} props.deviceName The name of the device that sent the message
+  @param {WsMessage} props.wsMessage A websocket message from the wsmessages array of the device.
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
   @returns {JSX.Element[]} An array of JSX elements that represent the properties of the message.
 */
 const Notifications = ({

@@ -13,7 +13,7 @@ import TableCell from '@mui/material/TableCell';
 import TableSortLabel from '@mui/material/TableSortLabel';
 
 interface UserTableHeadProps {
-  order: 'asc' | 'desc';
+  order: SortOrder;
   orderBy: string;
   rowCount: number;
   numSelected: number;
@@ -23,13 +23,13 @@ interface UserTableHeadProps {
 
 /**
  * User Table Head that is used in the UserView component
- * @param {string} order The order of the table (asc or desc)
- * @param {string} orderBy The column to order by (e.g. 'name', 'email'...)
- * @param {number} rowCount The number of rows in the table
- * @param {Array} headLabel The labels for the table head (each with id and label)
- * @param {number} numSelected The number of selected rows
- * @param {function} handleSort The function to call when a sort is requested
- * @param {function} onSelectAllClick The function to call when the select all checkbox is clicked
+ * @param {UserTableHeadProps} props
+ * @param {string} props.order The order of the sorted table (asc or desc)
+ * @param {string} props.orderBy The column to order by (e.g. 'name', 'email'...)
+ * @param {number} props.rowCount The number of rows in the table
+ * @param {number} props.numSelected The number of selected rows
+ * @param {Function} props.handleTableSort The function to call when a sort is requested
+ * @param {Function} props.handleSelectAllClick The function to call when the select all checkbox is clicked
  * @returns {JSX.Element}
  */
 export default function UserTableHead({
@@ -42,7 +42,12 @@ export default function UserTableHead({
 }: UserTableHeadProps): JSX.Element {
   const { t } = useTranslation();
 
-  const onSort = (property: string) => () => {
+  /**
+   * Requiered by the TableSortLabel component.
+   * Called when the sort function of a table head is clicked.
+   * @param {string} property The property used to sort the table
+   */
+  const handleSort = (property: string) => () => {
     handleTableSort(property);
   };
 
@@ -78,7 +83,7 @@ export default function UserTableHead({
               hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={onSort(headCell.id)}
+              onClick={handleSort(headCell.id)}
             >
               {t(headCell.label)}
             </TableSortLabel>

@@ -3,12 +3,14 @@
   The Header of  the application dashboard layout.
   Offers LastUpdate info, language selection, notifications and account settings.
 */
-import { type JSX } from 'react';
 import { bgBlur } from '@src/theme/css';
 import { useLocation } from 'react-router';
 import Iconify from '@src/components/iconify';
 import { useResponsive } from '@src/hooks/use-responsive';
+import FadingAlert from '@src/components/userinfo/fadingalert';
 import LastUpdate from '@src/layouts/dashboard/common/lastupdate';
+import { type JSX, useState, useEffect, useCallback } from 'react';
+import { subscribeEvent, unsubscribeEvent } from '@src/events/pubsub';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -23,12 +25,35 @@ import LanguagePopover from './common/language-popover';
 import NotificationsPopover from './common/notifications-popover';
 
 // ----------------------------------------------------------------------
-
+/**
+ * The header display above all other views of the application
+ * @param {object} props
+ * @param {Function} props.onOpenNav Opens the navigation bar on the left
+ * @returns {JSX.Element}
+ */
 export default function Header({ onOpenNav }: { onOpenNav: () => void }): JSX.Element {
+  const [alert, setAlert] = useState<UserInfo>({
+    title: '',
+    text: '',
+    severity: 'info',
+    visible: false,
+  });
   const theme = useTheme();
   const location = useLocation();
-
   const lgUp = useResponsive('up', 'lg');
+
+  const handleSetUserInfo = useCallback((event: CustomEvent) => {
+    if (event !== null) setAlert(event.detail);
+  }, []);
+
+  useEffect(() => {
+    subscribeEvent('userInfo', handleSetUserInfo as EventListener);
+
+    return () => {
+      // cleanup on unmount: unsubscribe from the event
+      unsubscribeEvent('userInfo', handleSetUserInfo as EventListener);
+    };
+  }, [handleSetUserInfo]);
 
   const renderContent = (
     <>
@@ -38,15 +63,26 @@ export default function Header({ onOpenNav }: { onOpenNav: () => void }): JSX.El
         </IconButton>
       )}
 
-      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+        <FadingAlert alert={alert} setAlert={setAlert} />
+      </Box>
 
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        sx={{
+          maxHeight: 40,
+          minHeight: 40,
+          alignItems: 'center',
+        }}
+      >
         {(location.pathname === '/dashboard' || location.pathname === '/shellies') && (
           <LastUpdate />
         )}
-        <LanguagePopover />
-        <NotificationsPopover />
-        <AccountPopover />
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 1 }}>
+          <LanguagePopover />
+          <NotificationsPopover />
+          <AccountPopover />
+        </Stack>
       </Stack>
     </>
   );

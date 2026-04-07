@@ -11,4 +11,8 @@ import { useContext, createContext } from 'react';
 
 export const ShellyContext = createContext({} as SContext);
 
+/**
+ * The hook that makes context data and functions available to all components
+ * @returns
+ */
 export const useShelly = () => useContext(ShellyContext);

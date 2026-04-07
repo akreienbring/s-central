@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { pxToRem, setFont } from '@src/theme/utils';
 
 import { createTheme as getTheme } from '@mui/material/styles';

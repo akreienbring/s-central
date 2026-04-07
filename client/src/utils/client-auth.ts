@@ -48,7 +48,7 @@ export function getWSCredentials(error: AuthError, password?: string, email?: st
   Create the auth params that will be added to the message that is send "onOpen".
   @param {object} authParams The initial paramter object with the extracted values
   @param {string} password The password the user must provide to access the device
-  @param (string) email The mail address of an existing user.
+  @param {string} email The mail address of an existing user.
   @return {object} The input authParams object with added credential values.
 */
 function complementAuthParams(authParams: AuthParams, password: string, email: string): AuthParams {

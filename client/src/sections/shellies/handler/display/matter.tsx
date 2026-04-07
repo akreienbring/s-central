@@ -20,9 +20,10 @@ interface MatterProps {
 
 /**
   The values will be displayed in kb
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {object} sys The sys property of a 'NotifyFullStatus' websocket message.
+  @param {MatterProps} props
+  @param {string} props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {Params} props.params The params property of a 'NotifyFullStatus' websocket message.
   @returns {JSX.Element}
 */
 const Matter = ({ elementId, scrollableElementId, params }: MatterProps) => {

@@ -210,10 +210,12 @@ function handle(msg, ws) {
     const updateAnswer = {
       event: msg.event,
       source: "WSDeviceHandler",
-      message: "_wifiupdated_",
+      message: "OK, will update the Wifi settings",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -242,15 +244,13 @@ function handle(msg, ws) {
     // if the last promise is resolved, send the result to the client
     promise.then((result) => {
       if (result === msg.data.ids.length) {
-        updateAnswer.message = "_wifiupdated_";
-        updateAnswer.data.success = true;
-        updateAnswer.data.total = msg.data.ids.length;
-        updateAnswer.data.successful = result;
+        updateAnswer.data.requestResult.success = true;
+        updateAnswer.data.requestResult.total = msg.data.ids.length;
+        updateAnswer.data.requestResult.successful = result;
       } else {
-        updateAnswer.message = "_wifinotupdated_";
-        updateAnswer.data.success = false;
-        updateAnswer.data.total = msg.data.ids.length;
-        updateAnswer.data.successful = result;
+        updateAnswer.data.requestResult.success = false;
+        updateAnswer.data.requestResult.total = msg.data.ids.length;
+        updateAnswer.data.requestResult.successful = result;
       }
       ws.send(JSON.stringify(updateAnswer));
     });

@@ -12,6 +12,16 @@ interface IconifyProps {
   className?: string;
 }
 
+/**
+ * Display an Iconify icon
+ * @param {IconifyProps} props
+ * @param {string} props.icon The name of the icon
+ * @param {number} [props.width] The width of the icon. Defaults to 25
+ * @param {string} [props.color] The color of the icon
+ * @param {string} [props.className] A css classname to apply
+ * @param {object} [props.sx] A MUI styling to apply
+ * @returns
+ */
 const Iconify = ({ icon, width = 25, sx, ...other }: IconifyProps) => (
   <Box
     component={Icon}

@@ -33,15 +33,16 @@ interface UpdateUserProps {
 
 /**
   Component that allows to update an existing user
-  @param {string} title The title that is presented at the top
-  @param {boolean} openUpdate To determine if the dialog is shown or not
-  @param {UserFormType} type: Type of the planned update. Either 'profile', 'security' or 'settings'
-  @param {User} updateuser The user that can be updated. Only set when a user
+  @param {UpdateUserProps} props
+  @param {string} props.title The title that is presented at the top
+  @param {boolean} props.openUpdate To determine if the dialog is shown or not
+  @param {UserFormType} props.type: Type of the planned update. Either 'profile', 'security' or 'settings'
+  @param {User} props.updateuser The user that can be updated. Only set when a user
     from UserView / UserTableRow is updated
-  @param {function} onCloseUpdate Handles the closed status. Either in the 
+  @param {Function} props.onCloseUpdate Handles the closed status. Either in the 
     UserView / UserTableRow. Or in the
     AccountPopover component
-  @param {function} handleUpdateUser Called when UserView / UserTableRow must rerender the user in the list
+  @param {Function} props.handleUpdateUser Called when UserView / UserTableRow must rerender the user in the list
   @returns {JSX.Element}
 */
 export default function UpdateUser({

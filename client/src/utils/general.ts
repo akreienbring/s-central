@@ -5,8 +5,8 @@
 
 /**
  * The function that is used to trigger highlighting of text on or off
- * @param {Element} searchEl: The element in that the given text will be searched
- * @param {string} searcht The text that is searched in the element and highlighted
+ * @param {Element} searchEl The element in that the given text will be searched
+ * @param {string} search The text that is searched in the element and highlighted
  * @param {boolean} on If true the text is highlighted else highlighting is turned off
  */
 export const highlightText = (searchEl: Element, search: string, on: boolean) => {

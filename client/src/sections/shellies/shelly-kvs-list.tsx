@@ -20,19 +20,22 @@ interface ShellyKVSListProps {
 }
 
 /**
-  If not undefined the diplay value of an entry is shown on the ShellyCard.
-  This value is configured on the Shellybroker and used to convert tecnical
+  If not undefined the diplay value of an KVS entry is shown on the ShellyCard.
+  This value is configured on the Shellybroker and used to convert technical
   values into readable ones.
   The values are presented depending on their type (boolean, text, etc.)
-  @param {string} deviceIp The IP adress of the device.
-  @param {array} kvs The KVS entries of a device.
+  @param {ShellyKVSListProps} props
+  @param {string} props.deviceIp The IP adress of the device.
+  @param {Array} props.kvs The KVS entries of a device.
   @returns {JSX.Element[]} A list of KVS entries with their key and value.
 */
 function ShellyKVSList({ deviceIp, kvs }: ShellyKVSListProps): JSX.Element[] {
   return kvs.map((kvsentry: KVSEntry) => {
     const key = typeof kvsentry.display !== 'undefined' ? kvsentry.display : kvsentry.key;
 
-    // convert the value given on its style attribute
+    /**
+     * Convert the value given on its style attribute
+     */
     const convertValue = () => {
       const style = typeof kvsentry.style !== 'undefined' ? kvsentry.style : kvsentry.value;
       switch (style) {

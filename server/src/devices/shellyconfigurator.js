@@ -8,8 +8,8 @@ const shellyAxios = require("@http/shellyAxios.js");
 /**
     After loading the devices, shellyConnector triggers this function once
     to send WebSocket and UDP configuration to all GEN2+ devices.
-    @param {array} devices The array with all devices
-    @param {function} postRPCMethod The function that is used to send the POST requests to a device.
+    @param {Array} devices The array with all devices
+    @param {Function} postRPCMethod The function that is used to send the POST requests to a device.
 */
 function configureShellies(devices) {
   const setWS = config.get("shelly.set-ws");

@@ -3,7 +3,10 @@ import { useShelly } from '@src/hooks/use-shelly';
 import { ShelliesView } from '@src/sections/shellies/view';
 
 // ----------------------------------------------------------------------
-
+/**
+ * The Shellies page
+ * @returns
+ */
 export default function ShelliesPage() {
   const { user } = useShelly();
 

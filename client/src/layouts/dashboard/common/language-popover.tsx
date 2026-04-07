@@ -51,10 +51,17 @@ export default function LanguagePopover(): JSX.Element {
     handleClose();
   };
 
-  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(event.currentTarget);
+  /**
+   * Opens the language popover
+   * @param {Event} e The click event
+   */
+  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(e.currentTarget);
   };
 
+  /**
+   * Closes the language popover
+   */
   const handleClose = () => {
     setOpen(null);
   };

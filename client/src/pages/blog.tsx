@@ -4,6 +4,10 @@ import { BlogView } from '@src/sections/blog/view';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The Blog page
+ * @returns
+ */
 export default function BlogPage() {
   const { user } = useShelly();
 

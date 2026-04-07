@@ -34,10 +34,11 @@ interface CreateBlogpostProps {
 
 /**
  * Presents a button that opens a drawer to create a new blogpost
-  @param {boolean} openCreate To determine if the dialog is shown or not
-  @param {function} onOpenCreate Handles the open status
-  @param {function} onCloseCreate Handles the closed status
-  @param {function} handleBlogpostsReceived Will be passed to the UserForm to update
+  @param {CreateBlogpostProps} props
+  @param {boolean} props.openCreate To determine if the dialog is shown or not
+  @param {Function} props.onOpenCreate Handles the open status
+  @param {Function} props.onCloseCreate Handles the closed status
+  @param {Function} props.handleBlogpostsReceived Will be passed to the UserForm to update
     the list of all users
 */
 export default function CreateBlogpost({

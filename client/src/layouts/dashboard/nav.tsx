@@ -27,6 +27,14 @@ interface NavProps {
   onCloseNav: () => void;
 }
 
+/**
+ * The navigatin bar on the left side. Depending on the responsive format
+ * it can be open and closed
+ * @param {NavProps} props
+ * @param {boolean} props.openNav True if the nav bar is open
+ * @param {Function} props.onCloseNav Opens / closes the nav bar
+ * @returns
+ */
 export default function Nav({ openNav, onCloseNav }: NavProps) {
   const pathname = usePathname();
   const { user } = useShelly();
@@ -51,6 +59,7 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
         display: 'flex',
         borderRadius: 1.5,
         alignItems: 'center',
+        // eslint-disable-next-line jsdoc/require-jsdoc
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
@@ -150,6 +159,7 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
             height: 1,
             position: 'fixed',
             width: NAV.WIDTH,
+            // eslint-disable-next-line jsdoc/require-jsdoc
             borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
           }}
         >
@@ -176,6 +186,12 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
 
 // ----------------------------------------------------------------------
 
+/**
+ * Presenst a single navigation item / button in the nav bar
+ * @param {object} props
+ * @param {NavItem} props.item The navigation item to display
+ * @returns
+ */
 function NavItem({ item }: { item: NavItem }) {
   const pathname = usePathname();
   const { t } = useTranslation();
@@ -197,8 +213,10 @@ function NavItem({ item }: { item: NavItem }) {
         ...(active && {
           color: 'primary.main',
           fontWeight: 'fontWeightSemiBold',
+          // eslint-disable-next-line jsdoc/require-jsdoc
           bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
           '&:hover': {
+            // eslint-disable-next-line jsdoc/require-jsdoc
             bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
           },
         }),

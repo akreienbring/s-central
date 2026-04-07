@@ -4,7 +4,7 @@
   Every device is presented in his own ShellyCard component or, in case
   of the table tab, a table of the devices is shown.
 */
-import type { Device, DeviceLastUpdateBuffer } from '@src/types/device';
+import type { Device, DeviceSwitch, DeviceLastUpdateBuffer } from '@src/types/device';
 
 import { useRef, type JSX } from 'react';
 import { differenceInSeconds } from 'date-fns';
@@ -15,27 +15,39 @@ import ShellyTable from '@src/sections/shellies/shelly-table';
 
 import Grid from '@mui/material/Grid';
 
-interface TabPanelProps {
+interface ShellyTabsProps {
   index: number;
   devices: Device[];
   display: 'minimized' | 'maximized';
   getTestDevice: (devicId: string) => Device | undefined;
+  handleToggleSelection: (deviceId: string) => void;
+  selectedDevices: string[];
 }
 /**
  * The Tabs of the Shelly view
-  @param {integer} index The value of the selected Tab
-  @param {array} devices The array with the devices that will be shown on the TabPanel (Filtered / Sorted)
-  @param {string} display The display value for the sk tab. Can be 'minimized' or 'maximized'
-  @param {function} getTestDevice Used if a test is running to get the testdevice from ShellyView
+  @param {ShellyTabsProps} props
+  @param {number} props.index The value of the selected Tab
+  @param {Array} props.devices The array with the devices that will be shown on the ShellyTabs (Filtered / Sorted)
+  @param {string} props.display The display value for the sk tab. Can be 'minimized' or 'maximized'
+  @param {Function} props.getTestDevice Used if a test is running to get the testdevice from ShellyView
+  @param {Function} props.handleToggleSelection Used to add or remove a device from the selection for scene creation
+  @param {Array} props.selectedDevices The array with the selected device ids for scene creation
   @returns {JSX.Element} The content of the selected Tab
 */
-const TabPanel = ({ index, devices, display, getTestDevice }: TabPanelProps): JSX.Element => {
+const ShellyTabs = ({
+  index,
+  devices,
+  display,
+  getTestDevice,
+  handleToggleSelection,
+  selectedDevices,
+}: ShellyTabsProps): JSX.Element => {
   const { isTest } = useShelly();
 
   const tabs = ['sk', 'ctrl', 'log', 'ws', 'table'];
   const tab = tabs[index];
   const devicesLastUpdate = useRef<DeviceLastUpdateBuffer>({});
-  console.log(`TabPanel rendered for tab ${tab} and received ${devices.length} devices`);
+  console.log(`ShellyTabs rendered for tab ${tab} and received ${devices.length} devices`);
 
   /**
    * Get the last update of a device from the devicesLastUpdate cache. This is used to determine if an update of the device is needed or if the cached device can be used.
@@ -117,7 +129,15 @@ const TabPanel = ({ index, devices, display, getTestDevice }: TabPanelProps): JS
         /*
           Check for existing switch controls
         */
-        const aSwitch = device?.switches[0];
+        let showCtrl = false;
+        if (device?.switches?.length > 0) {
+          device.switches.forEach((aSwitch: DeviceSwitch) => {
+            showCtrl =
+              typeof aSwitch?.brightness !== 'undefined' ||
+              typeof aSwitch?.white !== 'undefined' ||
+              typeof aSwitch?.rgb !== 'undefined';
+          });
+        }
 
         /*
         don't show ws and logs if the device gen is 0
@@ -129,11 +149,7 @@ const TabPanel = ({ index, devices, display, getTestDevice }: TabPanelProps): JS
           tab === 'sk' ||
           (tab === 'ws' && device.gen > 0) ||
           (tab === 'log' && device.gen > 1) ||
-          (tab === 'ctrl' &&
-            device.gen > 0 &&
-            (typeof aSwitch?.brightness !== 'undefined' ||
-              typeof aSwitch?.white !== 'undefined' ||
-              typeof aSwitch?.rgb !== 'undefined'));
+          (tab === 'ctrl' && device.gen > 0 && showCtrl);
 
         if (showDevice)
           return (
@@ -146,7 +162,9 @@ const TabPanel = ({ index, devices, display, getTestDevice }: TabPanelProps): JS
                 isUpdateNeeded={isUpdateNeeded}
                 setDeviceLastUpdate={setDeviceLastUpdate}
                 getDeviceLastUpdate={getDeviceLastUpdate}
+                handleToggleSelection={handleToggleSelection}
                 display={display}
+                selected={selectedDevices.includes(device.id)}
               />
             </Grid>
           );
@@ -156,4 +174,4 @@ const TabPanel = ({ index, devices, display, getTestDevice }: TabPanelProps): JS
   );
 };
 
-export default TabPanel;
+export default ShellyTabs;

@@ -31,10 +31,11 @@ interface UpdateBlogpostProps {
 }
 /**
   A Drawer that displays the Blogpost form to update a post.
-  @param {boolean} openUpdate To determine if the update dialog is shown or not
-  @param {object} updatepost The blogpost that will be updated.
-  @param {function} onCloseUpdate Handles the closed status
-  @param {function} handleUpdatePost Called when BlogView must rerender the post
+  @param  {UpdateBlogpostProps} props
+  @param {boolean} props.openUpdate To determine if the update dialog is shown or not
+  @param {Blogpost} props.updatepost The blogpost that will be updated.
+  @param {Function} props.onCloseUpdate Handles the closed status
+  @param {Function} props.handleUpdatePost Called when BlogView must rerender the post
 */
 export default function UpdateBlogpost({
   openUpdate,

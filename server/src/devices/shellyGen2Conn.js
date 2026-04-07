@@ -158,7 +158,7 @@ async function getSwitches(device) {
       if (entry.startsWith("switch") || entry.startsWith("rgbw")) {
         const aSwitch = res.data.result[entry];
         device.switches.push({
-          deviceIp: device.ip,
+          deviceId: device.id,
           key: entry,
           id: aSwitch.id,
           output: aSwitch.output,

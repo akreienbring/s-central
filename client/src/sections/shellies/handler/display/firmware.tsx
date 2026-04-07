@@ -19,9 +19,10 @@ interface FirmwareProps {
 
 /**
  * Diesplay of the available stable Firmware
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {string} version The available stable Firmware version of a Shelly device
+  @param {FirmwareProps} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {string} props.version The available stable Firmware version of a Shelly device
   @returns {JSX.Element} The available stable Firmware version of a Shelly device with an icon.
 */
 const Firmware = ({ elementId, scrollableElementId, version }: FirmwareProps): JSX.Element => (

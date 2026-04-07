@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { varAlpha } from '@src/theme/utils';
 
 import SvgIcon from '@mui/material/SvgIcon';

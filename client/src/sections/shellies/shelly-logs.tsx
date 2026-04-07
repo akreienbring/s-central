@@ -15,10 +15,11 @@ import Typography from '@mui/material/Typography';
 
 /**
   Display the logs of a device per script
-  @param {array} scripts The scripts of a device containing the logmessages for each script.
+  @param {object} props
+  @param {Array} props.scripts The scripts of a device containing the logmessages for each script.
   @returns {JSX.Element[]} A list of log messages for each script.
 */
-const LogList = ({ scripts }: { scripts: DeviceScript[] }): JSX.Element[] => {
+const ShellyLogs = ({ scripts }: { scripts: DeviceScript[] }): JSX.Element[] => {
   if (typeof scripts === 'undefined') return [];
 
   return scripts.map((script) => {
@@ -47,4 +48,4 @@ const LogList = ({ scripts }: { scripts: DeviceScript[] }): JSX.Element[] => {
     return null;
   }) as JSX.Element[];
 };
-export default LogList;
+export default ShellyLogs;

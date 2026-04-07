@@ -3,7 +3,7 @@
   A simple component that displays a BLE event
   Example: motion or door/window events
 */
-import type { Event } from '@src/types/device';
+import type { EventStatus } from '@src/types/device';
 
 import { type JSX } from 'react';
 import Iconify from '@src/components/iconify';
@@ -14,15 +14,15 @@ import Highlighter from '../highlighter';
 interface BLEEventProps {
   elementId: string;
   scrollableElementId: string;
-  event: Event;
+  event: EventStatus;
 }
 
 /**
  * Displays a BLE event
-   @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {object} data The data portion of an event property
-    of a 'NotifyEvent' websocket message.
+  @param {BLEEventProps} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {Event} props.event The data portion of an event propertyof a 'NotifyEvent' websocket message.
 */
 const BLEEvent = ({ elementId, scrollableElementId, event }: BLEEventProps): JSX.Element => {
   const data = event.data;

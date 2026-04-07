@@ -18,9 +18,10 @@ interface WhiteProps {
 }
 /**
   The values will be displayed in kb
- @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {object} white The white property of a 'NotifyFullStatus' websocket message.
+  @param {WhiteProps} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {object} props.white The white property of a 'NotifyFullStatus' websocket message.
   @returns {JSX.Element} The white value of a 'NotifyFullStatus' websocket message with an icon.
 */
 const White = ({ elementId, scrollableElementId, white }: WhiteProps): JSX.Element => (

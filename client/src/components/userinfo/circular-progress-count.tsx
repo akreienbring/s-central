@@ -8,8 +8,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 /**
  * The Component shows a circular progress bar with a count and a max value
- * @param {number} count The  actual value of  count
- * @param {number} max The value of max to display
+ * @param {object} props
+ * @param {number} props.count The  actual value of  count
+ * @param {number} props.max The value of max to display
  */
 const CircularProgressLabel = ({ count, max }: { count: number; max: number }) => (
   <Box position="relative" display="inline-flex">

@@ -15,9 +15,9 @@ import type { Subscription } from '@src/types/context';
 import type { TimelineData } from '@src/types/timeline';
 
 import { useTranslation } from 'react-i18next';
+import { fWh } from '@src/utils/format-number';
 import { useShelly } from '@src/hooks/use-shelly';
 import { useChartColors } from '@src/components/chart/chart';
-import { fWh, fShortenNumber } from '@src/utils/format-number';
 import { createUUID, mapNumberToMax } from '@src/utils/general';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { getDeviceConsumption } from '@src/utils/device-consumption';
@@ -35,6 +35,12 @@ import { buildTimeline, getTimelineOptions } from './build-timeline';
 
 // ----------------------------------------------------------------------
 
+/**
+  AppView is the 'Overview/Dashboard' component of the Application.
+  It shows several values, calculated from current websocket notifications 
+  of the shelly devices.
+  @returns {JSX.Element | null} The rendered Dashboard View of the application
+ */
 export default function AppView() {
   const [totalPower, setTotalPower] = useState(0);
   const [scripts, setScripts] = useState({ running: 0, count: 0 });
@@ -105,7 +111,7 @@ export default function AppView() {
     Called after an update from the websocket server for one device was received.
     Calculates various values for the dashboard.
     If the device currently consumes power, the timeline is also requested again.
-    @param {array} wsDevices The (updated) devices received from the websocket server.
+    @param {Array} wsDevices The (updated) devices received from the websocket server.
   */
   const handleDevicesUpdate = useCallback(
     (wsDevices: Device[]) => {
@@ -133,7 +139,7 @@ export default function AppView() {
         source: 'App View',
         message: 'App View needs the timeline of the devices',
         data: {},
-      } as CliRequestMsg;
+      };
       request(requestMsg, handleTimelineUpdate);
     },
     [request, handleTimelineUpdate]
@@ -290,7 +296,7 @@ export default function AppView() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AppWidgetSummary
             data-testid="dashboard_cloud_component"
-            title={fShortenNumber(cloudCount)}
+            title={cloudCount.toString()}
             subtitle={t('Connected')}
             icon={<img alt="icon" src="/assets/icons/overview/cloud.svg" />}
           />

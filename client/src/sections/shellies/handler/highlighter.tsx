@@ -18,10 +18,11 @@ interface HighlighterProps {
 /**
  * Higlights text when the child compenent is clicked
  * Searches the given text in the HTMLElement identified by the given id and highlights it.
- * @param {React.ReactNode} children The child components contained in this component
- * @param {string} elementId The id of an html element in which the text is searched and highlighted
- * @param {string} text The text to search and highlight
- * @param {string} [scrollableElementId] The id of an HTML Element that can bu used to scroll the highlighted text into view
+ * @param {HighlighterProps} props
+ * @param {React.ReactNode} props.children The child components contained in this component
+ * @param {string} props.elementId The id of an html element in which the text is searched and highlighted
+ * @param {string} props.text The text to search and highlight
+ * @param {string} [props.scrollableElementId] The id of an HTML Element that can bu used to scroll the highlighted text into view
  * @returns {JSX.Element}
  */
 const Highlighter = ({

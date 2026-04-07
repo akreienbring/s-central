@@ -10,6 +10,13 @@ interface ScrollbarProps {
   sx?: object;
 }
 
+/**
+ * Provides components with a scrollbar
+ * @param {ScrollbarProps} props
+ * @param {React.ReactNode} props.children
+ * @param {object} [props.sx] for styling the scrollbar
+ * @returns
+ */
 const Scrollbar = ({ children, sx, ...other }: ScrollbarProps) => {
   const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
 

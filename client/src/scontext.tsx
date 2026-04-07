@@ -104,7 +104,7 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
     @param {string} subscription.subscriptionID An unique ID that identifies the subscription
     @param {callback} subscription.callback A function that is called when a msg with an event arrives
     @param {boolean} subscription.all  A boolean value that indicates if the component needs all or only specific (device) events
-    @param {array} events An array of websocket events (e.g. 'device-update')
+    @param {Array} events An array of websocket events (e.g. 'device-update')
   */
   const subscribe = (subscription: Subscription, events: string[]): void => {
     events.forEach((event: string) => {
@@ -146,7 +146,7 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
     without expecting an answer.
     This messages will ONLY be stored in the requests object,
     if the websocket is closed. Each message triggers a reconnection attempt.
-    @param {Object} msg The message that will be send to the websocket server
+    @param {CliRequestMsg} msg The message that will be send to the websocket server
  */
   const send = useCallback(
     (msg: CliRequestMsg): void => {
@@ -176,8 +176,8 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
     The requestID is unique an used to identify the request when the data arrives.
     Requests will ALWAYS be stored in the request object.
     Each request that can not be send triggers a reconnection attempt.
-    @param {Object} msg The message with the request that is send to the websocket server
-    @param {callback} callback The function to call when the data arrives.
+    @param {CliRequestMsg | CliValidateMsg} msg The message with the request that is send to the websocket server
+    @param {Function} callback The function to call when the data arrives.
   */
   const request = useCallback(
     (
@@ -257,8 +257,10 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
       ws.current = new WebSocket(wsurl);
     }
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
     ws.current.onerror = (e) => console.error(e);
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
     ws.current.onopen = () => {
       isReconnecting.current = false;
       publishEvent('lastUpdatedAt', Date.now());
@@ -303,6 +305,7 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
       });
     };
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
     ws.current.onmessage = (event) => {
       publishEvent('lastUpdatedAt', Date.now());
       const msg = JSON.parse(event.data);
@@ -432,6 +435,7 @@ export const SCProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
     ws.current.onclose = (e) => {
       if (!isReconnecting.current) {
         publishEvent('lastUpdatedAt', 'connecting');

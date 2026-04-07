@@ -36,9 +36,10 @@ interface PostCardProps {
 /**
  * A Component to display one single blogpost object with
  * available functions like e.g. a menue.
- * @param {object} blogpost The blogpost to display in the card
- * @param {number} index The index of the post in the blogpost array (determines size and design)
- * @param {function} handleDeletePost Called when the post must be deleted
+ * @param {PostCardProps} props
+ * @param {Blogpost} props.blogpost The blogpost to display in the card
+ * @param {number} props.index The index of the post in the blogpost array (determines size and design)
+ * @param {Function} props.handleDeletePost Called when the post must be deleted
  */
 export default function PostCard({
   blogpost,
@@ -71,19 +72,31 @@ export default function PostCard({
     setCurrentBlogpost(updatedPost);
   };
 
-  // Open / Close the action menue
+  /**
+   * Open the action menue for the blogpost.
+   * Also hides the ShowReallyDelete menue entry
+   * @param {Event} e The mouse event
+   */
   const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpenMenue(e.currentTarget);
     setShowReallyDelete(false);
   };
+  /**
+   * Close the action menue for the blogpost.
+   */
   const handleCloseMenu = () => {
     setOpenMenue(null);
   };
 
-  // Open / Close the BlogpostUpdate Dialog
+  /**
+   * Close the BlogpostUpdate Dialog
+   */
   const handleCloseUpdate = () => {
     setOpenUpdate(false);
   };
+  /**
+   * Open the BlogpostUpdate Dialog
+   */
   const handleOpenUpdate = () => {
     setOpenUpdate(true);
     setOpenMenue(null);
@@ -106,7 +119,9 @@ export default function PostCard({
           width: 32,
           height: 32,
           position: 'absolute',
+          // eslint-disable-next-line jsdoc/require-jsdoc
           left: (theme) => theme.spacing(3),
+          // eslint-disable-next-line jsdoc/require-jsdoc
           bottom: (theme) => theme.spacing(-2),
           ...((latestPostLarge || latestPost) && {
             zIndex: 9,
@@ -172,7 +187,7 @@ export default function PostCard({
           >
             {currentBlogpost.title}
           </Typography>
-          <Tooltip title={openContent ? t('showmin') : t('_showall_')}>
+          <Tooltip title={openContent ? t('_showmin_') : t('_showall_')}>
             <IconButton onClick={() => setOpenContent(!openContent)} sx={{ pt: 0.5 }}>
               <Iconify
                 icon="mdi:text-box"
@@ -268,6 +283,7 @@ export default function PostCard({
                 width: '100%',
                 height: '100%',
                 position: 'absolute',
+                // eslint-disable-next-line jsdoc/require-jsdoc
                 bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
               },
             }),

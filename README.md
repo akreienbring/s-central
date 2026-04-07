@@ -20,6 +20,7 @@ S-Central supports English, Spanish and German.
 - **Shellies**<br/>
   Get insights about KVS values, script status, Logs and websocket messages.<br/>
   Control your switches and copy the switch settings from one device to another.<br/>
+  Create scenes to save and restore the switch settings for some or all devices. <br/>
   Get notified when a script error occurs.<br/>
   Reboot, update the Firmware\* or edit the WIFI settings of many Shellies at once.
 - **User**<br/>
@@ -45,7 +46,7 @@ Managing / Monitoring many Shellies in a network is a challenge. With S-Central 
 ## How to install the server with the included Client release
 
 - **Prerequisites**<br/>
-  Install nodejs. Normally it includes the NPM packet manager. I tested the system with nodejs 20.x.
+  Install nodejs. Normally it includes the NPM packet manager. The version must be nodejs 20.19.0 and above.
 - **Server (Client included)** <br/>
   Download the server release and unzip it in a directory of your choice. E.g. _/sb_ (Shelly Broker). Normally you run the server on a dedicated always-on-system. Like a NAS, a Rasberry or any other OS that can run nodejs. Navigate to that directory and type _npm install --force_. It might take a while untill all modules are downloaded. In the meantime you could...
 

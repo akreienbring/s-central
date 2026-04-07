@@ -15,15 +15,13 @@
   that contains data regarding the switches.
   The current state of the switches of the device is updated on the device.
   @param {object} device The device that send the websocket message.
-  @param {object} msg The message that was received from a device*/
+  @param {object} msg The message that was received from a device
+*/
 function update(device, msg) {
   const params = msg.params;
   const method = msg.method;
 
-  if (
-    (method === "NotifyFullStatus" && device.gen === 1) ||
-    (method === "NotifyStatus" && device.gen >= 2)
-  ) {
+  if ((method === "NotifyFullStatus" && device.gen === 1) || device.gen >= 2) {
     if (device.scripts.length > 0) {
       /*
         check the status of the scripts of the device.

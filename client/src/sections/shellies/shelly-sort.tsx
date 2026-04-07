@@ -26,7 +26,8 @@ const SORT_OPTIONS = [
 /**
  * Component that presents several options for sorting
  * the list of devices
- * @param {function} handleSort Called when the list must be sorted
+ * @param {object} props
+ * @param {Function} props.handleSort Called when the list must be sorted
  * @return {JSX.Element} A button that opens a dialog with several sort options
  */
 export default function ShellySort({
@@ -38,12 +39,16 @@ export default function ShellySort({
   const [selected, setSelected] = useState(0);
   const { t } = useTranslation();
 
-  /*
-    Openening / Closing the sort dialog
+  /**
+    Openening the sort dialog for devices
+    @param {object} e The mouse event
   */
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
   };
+  /**
+    Closing the sort dialog for devices
+  */
   const handleClose = () => {
     setOpen(null);
   };
@@ -52,7 +57,6 @@ export default function ShellySort({
    * Called when a sort option was selected
    * @param {object} e The event
    * @param {number} index The index of the selected sort option
-   * @param {function} handleSort Used to handle the selected sort option
    */
   const onMenuItemClick = (e: React.MouseEvent<HTMLLIElement>, index: number) => {
     setOpen(null);

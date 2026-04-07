@@ -46,8 +46,26 @@ const commonRules = () => ({
   'react/jsx-no-useless-fragment': ['warn', { allowExpressions: true }],
   'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
   // jsdoc
+  'jsdoc/require-jsdoc': [
+    'warn',
+    {
+      publicOnly: false,
+      require: {
+        ArrowFunctionExpression: true,
+        FunctionDeclaration: true,
+      },
+    },
+  ],
+  'jsdoc/require-param': [
+    'warn',
+    {
+      checkDestructuredRoots: false,
+    },
+  ],
   'jsdoc/require-description': 'error',
   'jsdoc/check-values': 'warn',
+  'jsdoc/check-types': 'warn',
+  'jsdoc/check-param-names': 'warn',
   // typescript
   '@typescript-eslint/no-shadow': 'error',
   '@typescript-eslint/no-explicit-any': 'warn',

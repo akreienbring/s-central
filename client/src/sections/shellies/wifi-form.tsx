@@ -32,12 +32,13 @@ interface WifiFormProps {
 }
 /**
   Component that allows to view and update the wifi settings of a Shelly device.
-  @param {string} type Must be either 'single' or 'selected'. 
-  @param {string} title The title that is presented at the top
-  @param {boolean} openWifi To determine if the dialog is shown or not
-  @param {object} device The device data used when type is 'single'
-  @param {function} onCloseWifi Handles the closed status. Called when the dialog is closed
-  @param {array} selected The ids of selected devices used when type is 'selected'
+  @param {WifiFormProps} props
+  @param {string} props.type Must be either 'single' or 'selected'. 
+  @param {string}  props.title The title that is presented at the top
+  @param {boolean}  props.openWifi To determine if the dialog is shown or not
+  @param {DeviceTableRow}  props.row The device data used when type is 'single'
+  @param {Function}  props.onCloseWifi Handles the closed status. Called when the dialog is closed
+  @param {Array}  props.selected The ids of selected devices used when type is 'selected'
   @returns {JSX.Element} A dialog to view and update wifi settings of a single or multiple devices
 */
 export default function WifiForm({
@@ -76,14 +77,20 @@ export default function WifiForm({
     The result is presented to the user.
     @param {object} msg The received ws message with the result of the wifi update request
    */
-  const handleWifiUpdateResult = useCallback((msg: SrvAnswerMsg) => {
-    setRequestResult({
-      success: msg.data.success,
-      successful: msg.data.successful,
-      total: msg.data.total,
-      message: msg.message,
-    } as RequestResult);
-  }, []);
+  const handleWifiUpdateResult = useCallback(
+    (msg: SrvAnswerMsg) => {
+      const result = msg.data.requestResult;
+      if (result) {
+        setRequestResult({
+          success: result.success,
+          successful: result.successful,
+          total: result.total,
+          message: result.success ? t('_wifiupdated_') : t('_wifinotupdated_'),
+        } as RequestResult);
+      }
+    },
+    [t]
+  );
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*

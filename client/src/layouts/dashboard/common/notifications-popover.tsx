@@ -31,6 +31,11 @@ import ListItemButton from '@mui/material/ListItemButton';
 
 // ----------------------------------------------------------------------
 
+/**
+ * Display notification events that were sent by the server.
+ * Such as script errors and offline devices
+ * @returns {JSX.Element}
+ */
 export default function NotificationsPopover(): JSX.Element {
   const [notifications, setNotifications] = useState<SCNotification[]>([]);
   const totalUnRead = notifications.filter((item) => item.isUnread === true).length;
@@ -41,12 +46,15 @@ export default function NotificationsPopover(): JSX.Element {
   const { t } = useTranslation();
 
   /**
-   * Used to open the Popover
-   * @param {*} event
+   * Used to open the notification Popover
+   * @param {Event} e The click event
    */
-  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(event.currentTarget);
+  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setOpen(e.currentTarget);
   };
+  /**
+   * Closes the notification popover
+   */
   const handleClose = () => {
     setOpen(null);
   };
@@ -333,9 +341,10 @@ interface NotificationItemProps {
 
 /**
  * This components presents a single notification.
- * @param {SCNotification} notification The notification to show
- * @param {function} handleItemClick Sets the notification to 'read'
- * @param {function} handleItemDelete Deletes the notification
+ * @param {NotificationItemProps} props
+ * @param {SCNotification} props.notification The notification to show
+ * @param {Function} props.handleItemClick Sets the notification to 'read'
+ * @param {Function} props.handleItemDelete Deletes the notification
  */
 function NotificationItem({
   notification,

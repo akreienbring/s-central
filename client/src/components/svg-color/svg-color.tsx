@@ -11,6 +11,15 @@ interface SvgColorProps {
   sx?: object;
 }
 
+/**
+ * Display a SVG-Color Element
+ * @param {SvgColorProps} props
+ * @param {string} props.color
+ * @param {number} [props.width]
+ * @param {number} [props.height]
+ * @param {object} [props.sx] for styling the component
+ * @returns
+ */
 const SvgColor = ({ src, sx, ...other }: SvgColorProps): JSX.Element => (
   <Box
     component="span"

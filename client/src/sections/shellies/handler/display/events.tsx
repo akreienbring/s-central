@@ -7,7 +7,7 @@
 */
 import '@src/custom.css';
 
-import type { Event } from '@src/types/device';
+import type { EventStatus } from '@src/types/device';
 
 import { type JSX } from 'react';
 import Iconify from '@src/components/iconify';
@@ -20,14 +20,15 @@ import Highlighter from '../highlighter';
 interface NotifyEventsProps {
   elementId: string;
   scrollableElementId: string;
-  events: Event[];
+  events: EventStatus[];
 }
 
 /**
- * Displays the NotifyEvent events
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {array} events The events sent by on NotifyEvent websocket message
+ * Displays the NotifyEvent events as icons
+  @param {NotifyEventsProps} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {EventStatus[]} props.events The events sent by on NotifyEvent websocket message
   @returns {JSX.Element} HTML elements representing the events
 */
 const NotifyEvents = ({

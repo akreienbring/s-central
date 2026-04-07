@@ -21,7 +21,7 @@ import Iconify from '@src/components/iconify';
 import { createUUID } from '@src/utils/general';
 import { useShelly } from '@src/hooks/use-shelly';
 import Shelly from '@src/sections/shellies/shelly';
-import LogList from '@src/sections/shellies/loglist';
+import ShellyLogs from '@src/sections/shellies/shelly-logs';
 import { memo, useState, useEffect, useCallback } from 'react';
 import ShellyKVSList from '@src/sections/shellies/shelly-kvs-list';
 import ShellyControls from '@src/sections/shellies/shelly-controls';
@@ -67,23 +67,28 @@ interface ShellyCardProps {
   isUpdateNeeded: (deviceId: string) => Device | null;
   setDeviceLastUpdate: (deviceId: string, timestamp: number, device: Device) => void;
   getDeviceLastUpdate: (deviceId: string) => { ts: number; device: Device } | null;
+  handleToggleSelection: (deviceId: string) => void;
+  selected: boolean;
   display: 'minimized' | 'maximized';
 }
 /**
   ShellyCard shows an image of a Shelly device. Device, script, KVS, WS and Log information is presented on a Card
   and Boxes for the device.
   The type of the selected tab panel is indicated by the type prop.
-  @param {string} deviceId The shelly deviceId that will be rendered on the different tab panels
-  @param {integer} deviceGen The generation of the shelly device
-  @param {string} tab The current tab panel to show. Can be:
+  @param {ShellyCardProps} props
+  @param {string} props.deviceId The shelly deviceId that will be rendered on the different tab panels
+  @param {integer} props.deviceGen The generation of the shelly device
+  @param {string} props.tab The current tab panel to show. Can be:
    'sk': script/kvs 
    'ws': websocket messages from a shelly device
    'log': log messages
    'ctrl': controls of a shelly device
-  @param {function} isUpdateNeeded Used to determine if an update of the device is needed
-  @param {function} setDeviceLastUpdate Used to set the last update time and the device in the TabPanel cache
-  @param {function} getDeviceLastUpdate Used to get the last update time and the device in the TabPanel cache
-  @param {string} display The display value for the sk tab. Can be 'minimized' or 'maximized'
+  @param {Function} props.isUpdateNeeded Used to determine if an update of the device is needed
+  @param {Function} props.setDeviceLastUpdate Used to set the last update time and the device in the ShellyTabs cache
+  @param {Function} props.getDeviceLastUpdate Used to get the last update time and the device in the ShellyTabs cache
+  @param {Function} props.handleToggleSelection Used to add or remove a device from the selection for scene creation
+  @param {boolean} props.selected Indicates if the card is selected for scene creation
+  @param {string} props.display The display value for the sk tab. Can be 'minimized' or 'maximized'
   @returns {JSX.Element} The ShellyCard component
  */
 const ShellyCard = ({
@@ -93,6 +98,8 @@ const ShellyCard = ({
   isUpdateNeeded,
   setDeviceLastUpdate,
   getDeviceLastUpdate,
+  handleToggleSelection,
+  selected,
   display,
 }: ShellyCardProps) => {
   const [expanded, setExpanded] = useState(false);
@@ -102,13 +109,11 @@ const ShellyCard = ({
   const [kvs, setKVS] = useState<KVSEntry[]>([]);
   const { request, subscribe, unsubscribe, send, isTest } = useShelly();
 
-  // console.log(`Rendering ShellyCard for device ${deviceId} of type ${type}`);
-
   /**
    * Will be called when a device was received via websocket from shellybroker.
    * When loaded a ShellyCard requests the device information from the server.
-   * Every time, when a device was received, it updates also the device in the TabPanel cache.
-   * @param {object} msg The message with a 'device-get' event.
+   * Every time, when a device was received, it updates also the device in the ShellyTabs cache.
+   * @param {SrvAnswerMsg} msg The message with a 'device-get' event.
    */
   const handleDeviceReceived = useCallback(
     (msg: SrvAnswerMsg) => {
@@ -135,7 +140,7 @@ const ShellyCard = ({
 
   /**
    * Checks if an update of the device is needed. If yes, requests the device from the server.
-   * If not, sets the old device from the TabPanel cache.
+   * If not, sets the old device from the ShellyTabs cache.
    * The purpose is to avoid too many requests to the server when switching tabs.
    */
   const checkIfUpdate = useCallback(() => {
@@ -171,16 +176,16 @@ const ShellyCard = ({
     Based on the subscription this will be called when an updated device was received via websocket from shellybroker.
     (device-update event)
     Depending on the type of the update, some state will be set.
-    Every time, when a device was updated, it updates also the device in the TabPanel cache.
-    @param {object} msg The message with a 'device-update' event.
+    Every time, when a device was updated, it updates also the device in the ShellyTabs cache.
+    @param {SrvEventMsg} msg The message with a 'device-update' event.
    */
   const handleDeviceUpdate = useCallback(
     (msg: SrvEventMsg) => {
-      const updateType = msg.eventType;
+      const eventType = msg.eventType;
       const wsDevice = msg.data.device;
       if (typeof wsDevice !== 'undefined') {
         // by reacting only on changes, unnecessary re-renders are avoided
-        switch (updateType) {
+        switch (eventType) {
           case 'script':
             /*
             If a script is updated then it it either running or not
@@ -218,13 +223,15 @@ const ShellyCard = ({
               typeof wsDevice?.notifyFullStatus?.params !== 'undefined' ||
               typeof wsDevice?.notifyStatus?.params !== 'undefined'
             ) {
-              const wsMessages = {
+              const wsMessages: DeviceNotifyMessages = {
                 notifyFullStatus: wsDevice.notifyFullStatus,
                 notifyStatus: wsDevice.notifyStatus,
                 notifyEvent: wsDevice.notifyEvent,
-              } as DeviceNotifyMessages;
+              };
 
-              if (tab === 'ws') setWSmessages(() => wsMessages);
+              if (tab === 'ws') {
+                setWSmessages(() => wsMessages);
+              }
 
               const oldDevice = getDeviceLastUpdate(wsDevice.id)?.device;
 
@@ -260,7 +267,7 @@ const ShellyCard = ({
             }
         }
 
-        // in each case update the device in the buffer of tabpanel with the current timestamp
+        // in each case update the device in the buffer of ShellyTabs with the current timestamp
         setDeviceLastUpdate(wsDevice.id, Date.now(), wsDevice);
       } //wsDevice not undefined
     },
@@ -296,6 +303,9 @@ const ShellyCard = ({
   }, []);
   // --------------------- Websocket Implementation END------------------
 
+  /**
+   * Expands the KVS List
+   */
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -309,15 +319,15 @@ const ShellyCard = ({
   const handleSwitchToggle = (aSwitch: DeviceSwitch) => {
     // add a unix timestamp to prevent sync problems with 'NotifyFullStatus'
     aSwitch.ts = Math.floor(Date.now()) / 1000;
-
-    send({
+    const reqestMsg: CliRequestMsg = {
       event: `toggle-switch`,
       source: 'Shelly Card',
       message: `${device!.cname} wants to toggle a switch`,
       data: {
         switch: aSwitch,
       },
-    } as CliRequestMsg);
+    };
+    send(reqestMsg);
   };
 
   /**
@@ -330,14 +340,15 @@ const ShellyCard = ({
     // add a unix timestamp to prevent sync problems with 'NotifyFullStatus'
     aSwitch.ts = Math.floor(Date.now()) / 1000;
 
-    send({
+    const reqestMsg: CliRequestMsg = {
       event: `set-switch`,
       source: 'Shelly Card',
       message: `${device!.cname} wants to set a switch`,
       data: {
         switch: aSwitch,
       },
-    } as CliRequestMsg);
+    };
+    send(reqestMsg);
   };
 
   /**
@@ -359,29 +370,46 @@ const ShellyCard = ({
       After the script was toggeld, the server will send
       a NotifyStatus that is used to update the script on the client side.
     */
-    send({
+    const reqestMsg: CliRequestMsg = {
       event: `toggle-script`,
       source: 'Shelly Card',
       message: `${device!.cname} wants to toggle a script`,
       data: {
         script,
-        deviceIp: device!.ip,
-        scriptIndex: index,
+        deviceId: device!.id,
       },
-    } as CliRequestMsg);
+    };
+    send(reqestMsg);
   };
 
   if (typeof device === 'undefined' || device === null) return null;
 
   return (
-    <Card data-testid={`shelly_card_${device.cname}`} raised>
+    <Card
+      data-testid={`shelly_card_${device.cname}`}
+      raised
+      sx={{
+        mb: 0,
+        ...(selected &&
+          (tab === 'sk' || tab === 'ctrl') && {
+            border: 1,
+            borderColor: 'primary.main',
+          }),
+      }}
+    >
       <Stack direction={tab === 'ctrl' ? 'column' : 'row'}>
         <Stack>
-          <Shelly device={device} handleSwitchToggle={handleSwitchToggle} display={display} />
+          <Shelly
+            device={device}
+            handleSwitchToggle={handleSwitchToggle}
+            handleToggleSelection={handleToggleSelection}
+            tab={tab}
+            display={display}
+          />
 
           {tab === 'sk' && display === 'maximized' && (
             <>
-              <CardContent sx={{ minWidth: 200, pt: 0 }}>
+              <CardContent sx={{ minWidth: 200, pt: 0, pb: 0 }}>
                 <Stack justifyContent="left" alignItems="flex-start">
                   <ShellyScriptList
                     deviceIP={device.ip}
@@ -451,22 +479,23 @@ const ShellyCard = ({
             }}
           >
             <Stack>
-              <LogList scripts={scripts} />
+              <ShellyLogs scripts={scripts} />
             </Stack>
           </CardContent>
         )}
 
         {tab === 'ctrl' && (
-          <CardContent
+          <Stack
             sx={{
-              minWidth: 230,
-              maxWidth: 230,
+              minWidth: 215,
+              maxWidth: 215,
               pl: 2,
               pr: 2,
+              pb: -4,
             }}
           >
             <ShellyControls device={device} handleSwitchSet={handleSwitchSet} />
-          </CardContent>
+          </Stack>
         )}
       </Stack>
     </Card>

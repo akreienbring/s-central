@@ -45,21 +45,14 @@ interface UserTableRowProps {
 
 /**
   Presents a single row in the user table
-  @param {number} userid The unique identifier of the user
-  @param {object} appUser The logged in user
-  @param {boolean} selected To determine if the user entry is selected or not
-  @param {string} alias The alias of the user
-  @param {string} avatarUrl The URL of the avatar image
-  @param {string} firstname The first name of the user
-  @param {string} lastname The last name of the user
-  @param {number} roleid The unique identifier of the role
-  @param {string} role The name of the role
-  @param {string} email The email address of the user
-  @param {string} home The home location of the user
-  @param {function} handleClick Called when clicking the checkbox of an user entry
-  @param {function} handleDeleteUser Called when a user must be deleted
-  @param {function} handleUpdateUser Called when a user was updated
-  @param {array} devices The array of all available devices
+  @param {UserTableRowProps} props
+  @param {User} props.appUser The logged in user
+  @param {User} props.row with the values of the current row
+  @param {boolean} props.selected true if the row is selected
+  @param {Function} props.handleClick Called when clicking the checkbox of an user entry
+  @param {Function} props.handleDeleteUser Called when a user must be deleted
+  @param {Function} props.handleUpdateUser Called when a user was updated
+  @param {Array} props.devices The array of all available devices
   @returns {JSX.Element}
 */
 export default function UserTableRow({
@@ -134,15 +127,19 @@ export default function UserTableRow({
     @param {object} msg The message that was passed with the answer from the server
   */
   const handleDevicesUpdate = (msg: SrvAnswerMsg) => {
-    setRequestResult({
-      success: msg.data.success,
-      message: msg.message,
-    } as RequestResult);
-    if (msg.data.success) {
-      const newUserDevices = [...userDevices];
-      setUserDevices(newUserDevices);
-      setOrigUserDevices(newUserDevices);
-      setIsChanged(false);
+    const result = msg.data.requestResult;
+    if (result) {
+      setRequestResult({
+        success: result.success,
+        message: result.success ? t('_devicesupdated_') : t('_devicesnotupdated_'),
+      } as RequestResult);
+
+      if (result.success) {
+        const newUserDevices = [...userDevices];
+        setUserDevices(newUserDevices);
+        setOrigUserDevices(newUserDevices);
+        setIsChanged(false);
+      }
     }
   };
 
@@ -171,46 +168,53 @@ export default function UserTableRow({
   };
 
   /**
-    Open / Close the UserUpdate Dialog
-    with the type of update that is going to be made
-    @param {string} type is either 'profile' or 'security'
+    Open the UserUpdate Dialog
   */
   const handleOpenUpdate = () => {
     handleCloseMenu();
     setOpenUpdate(true);
   };
+  /**
+    Close the UserUpdate Dialog
+  */
   const handleCloseUpdate = () => {
     setOpenUpdate(false);
   };
 
   /**
-    Open / Close the Menue
-    @param {object} event is the click event
+    Open the Menue of the user tabel row
+    @param {object} e is the click event
   */
-  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenMenue(event.currentTarget);
+  const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setOpenMenue(e.currentTarget);
     setShowReallyDelete(false);
   };
+  /**
+    Close the Menue of the user tabel row
+  */
   const handleCloseMenu = () => {
     setOpenMenue(null);
   };
 
   /**
     Add Delete to the Mnue
-    @param {object} event is the click event
   */
   const handleShowReally = () => {
     setShowReallyDelete(true);
   };
 
   /**
-    Open / Close the Devices Dialog
-    with the type of update that is going to be made
+    Open the Add-Devices Dialog 
+    after closing the menue
   */
   const handleOpenDevices = () => {
     handleCloseMenu();
     setOpenDevices(true);
   };
+  /**
+    Close the Add--Devices Dialog.
+    Also resets the request result message
+  */
   const handleCloseDevices = () => {
     setOpenDevices(false);
     setRequestResult({ success: true, message: '' });

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import type { ThemeOptions } from './types';
 
 import type { Theme } from '@mui/material/styles';

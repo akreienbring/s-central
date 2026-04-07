@@ -14,6 +14,8 @@
 
 describe('Just visit e2e test', () => {
   it('should work', () => {
+    const waitTime = 3000;
+
     cy.clearLocalStorage('user');
     cy.clearAllSessionStorage();
     cy.visit('/');
@@ -40,8 +42,8 @@ describe('Just visit e2e test', () => {
       //***Shellies Tab***
       cy.contains('Shellies');
       //check for the name of the test devices, script names and KVS button
-      cy.contains('Test');
-      cy.contains('Test2');
+      cy.getBySel('shelly_card_Test').should('exist');
+      cy.getBySel('shelly_card_Test2').should('exist');
       cy.contains('Example');
       cy.getBySel('shelly_openkvs_button_Test').click();
       cy.contains('Klimakontrolle');
@@ -52,12 +54,12 @@ describe('Just visit e2e test', () => {
       cy.getBySel('filter_gen_checkbox_0').should('exist');
       cy.getBySel('filter_model_checkbox_0').click({ force: true });
       cy.getBySel('filter_submit_button').click();
-      cy.contains('Test');
-      cy.contains('Test2').should('not.exist');
+      cy.getBySel('shelly_card_Test').should('exist');
+      cy.getBySel('shelly_card_Test2').should('not.exist');
       cy.getBySel('filter_open_button').click();
       cy.getBySel('filter_clear_button').click();
       cy.getBySel('filter_submit_button').click();
-      cy.contains('Test2');
+      cy.getBySel('shelly_card_Test2').should('exist');
       //check the sort function
       // define and check the order by this array
       const order = ['Test', 'Test2'];
@@ -71,25 +73,34 @@ describe('Just visit e2e test', () => {
       cy.getBySelLike('shelly_card').each(($el, index) => {
         cy.wrap($el).contains(neworder[index]);
       });
+      // create a scenes for user Admin
+      cy.getBySel('scene_autocomplete_component').should('exist');
+      cy.getBySel('action_area_Test').should('exist');
+      cy.getBySel('action_area_Test').click();
+      cy.getBySel('scene_autocomplete_component').click();
+      cy.getBySel('scene_autocomplete_component').type('testscene');
+      cy.getBySel('scene_option').should('exist');
+      cy.getBySel('scene_option').click();
+      cy.wait(waitTime);
       //***Controls Tab***
       cy.getBySel('shellies_control_tab').click();
-      cy.contains('Test');
+      cy.getBySel('shelly_card_Test').should('exist');
       cy.getBySel('shelly_brightness_slider').should('exist');
       cy.getBySel('shelly_white_slider').should('exist');
       cy.getBySel('shelly_multicolor_input').should('exist');
       cy.getBySel('shelly_setcopysource_button').should('exist');
       //***Logs Tab***
       cy.getBySel('shellies_logs_tab').click();
-      cy.contains('Test');
+      cy.getBySel('shelly_card_Test').should('exist');
       cy.contains('Example');
       cy.contains('Please participate and help the project become better!');
       //***WS Tab***
       cy.getBySel('shellies_ws_tab').click();
-      cy.contains('Test');
+      cy.getBySel('shelly_card_Test').should('exist');
       cy.contains('NotifyStatus');
       cy.contains('NotifyEvent');
       cy.contains('NotifyFullStatus');
-      //***List Tab***');
+      //***List/Batch Tab***');
       cy.getBySel('shellies_list_tab').click();
       cy.contains('Test');
       cy.contains('Batch');
@@ -139,7 +150,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('account_save_button').should('not.be.disabled');
       //save the user profile...
       cy.getBySel('account_save_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
       //and check for the entered values
       cy.contains('André');
       cy.contains('Kreienbring');
@@ -158,7 +169,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('account_save_button').should('not.be.disabled');
       //create a test user
       cy.getBySel('account_save_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
       cy.getBySel('createuser_close_button').click();
       cy.contains('testuser');
       //add only the device named "Test" to the created user
@@ -169,7 +180,7 @@ describe('Just visit e2e test', () => {
       // https://github.com/mui/material-ui/issues/20364#issuecomment-681066039
       cy.getBySel('adddevices_checkbox_0').click({ force: true });
       cy.getBySel('adddevices_save_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
       cy.getBySel('adddevices_close_button').click();
 
       //*****Blog page*****
@@ -187,7 +198,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('text-editor-input').type('Test Content');
       cy.getBySel('blogpost_submit_button').should('not.be.disabled');
       cy.getBySel('blogpost_submit_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
       cy.getBySel('blogpost_close_button').click();
       cy.contains('Test Title');
       cy.contains('Test Content');
@@ -215,7 +226,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('profile_firstname_input').clear();
       cy.getBySel('profile_lastname_input').clear();
       cy.getBySel('account_save_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
 
       //close and open again
       cy.getBySel('updateuser_close_button').click();
@@ -230,7 +241,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('security_password2_input').type('12345678');
       cy.getBySel('account_save_button').should('not.be.disabled');
       cy.getBySel('account_save_button').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
 
       //close and open again
       cy.getBySel('updateuser_close_button').click();
@@ -287,11 +298,14 @@ describe('Just visit e2e test', () => {
       cy.getBySel('nav_open_button').click();
       cy.getBySel('nav_item_user').should('not.exist'); //because test user has the user role
 
+      //*****Shellies Page*****
       cy.getBySel('nav_item_shellies').click();
-
-      cy.contains('Test');
+      cy.getBySel('shelly_card_Test').should('exist');
       //because only the device with the name test was assigned:
-      cy.contains('Test2').should('not.exist');
+      cy.getBySel('shelly_card_Test2').should('not.exist');
+      //check for the created scene
+      cy.getBySel('scene_autocomplete_component').click();
+      cy.contains('testscene').should('not.exist');
 
       //*****logout*****
       cy.getBySel('open_account_popover_button').click();
@@ -323,6 +337,17 @@ describe('Just visit e2e test', () => {
       cy.getBySel('user_reallydelete_button').click();
       cy.contains('testuser').should('not.exist');
 
+      //*****Navigation to Shellies Page*****
+      cy.getBySel('nav_open_button').click();
+      cy.getBySel('nav_item_shellies').click();
+      //delete the created scene
+      cy.getBySel('scene_autocomplete_component').click();
+      cy.getBySel('scene_option').should('exist');
+      cy.getBySel('scene_option').click();
+      cy.getBySel('scene_delete_button').should('exist');
+      cy.getBySel('scene_delete_button').click();
+      cy.wait(waitTime);
+
       //*****logout*****
       cy.getBySel('open_account_popover_button').click();
       cy.getBySel('accountpopover_logout_button').click();
@@ -331,7 +356,7 @@ describe('Just visit e2e test', () => {
       //reset the admin password
       cy.getBySel('user_resetpw_link').should('exist');
       cy.getBySel('user_resetpw_link').click();
-      cy.wait(2000);
+      cy.wait(waitTime);
       cy.getBySel('security_email_input').type('admin@sc.com');
       cy.getBySel('user_resetpw_link').click();
     }); // wait for window().then

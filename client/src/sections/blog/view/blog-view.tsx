@@ -17,6 +17,10 @@ import CreateBlogpost from '../create-blogpost';
 
 // ----------------------------------------------------------------------
 
+/**
+ * Displays all Blopposts. Public or non-public
+ * @returns {JSX.Element}
+ */
 export default function BlogView(): JSX.Element {
   const [blogposts, setBlogposts] = useState<Blogpost[]>([]);
   const { request, user } = useShelly();
@@ -72,10 +76,15 @@ export default function BlogView(): JSX.Element {
     }
   }, [handleBlogpostsReceived, request]);
 
-  // Open / Close the BlogpostCreate Dialog
+  /** 
+    Open the BlogpostCreate Dialog
+  */
   const handleOpenCreate = () => {
     setOpenCreate(true);
   };
+  /** 
+    Close the BlogpostCreate Dialog
+  */
   const handleCloseCreate = () => {
     setOpenCreate(false);
   };

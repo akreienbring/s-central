@@ -6,6 +6,7 @@ import type { Params, ParamsScript } from '@src/types/device';
 
 import { type JSX } from 'react';
 import { createUUID } from '@src/utils/general';
+import { fByte } from '@src/utils/format-number';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -22,9 +23,10 @@ interface ScriptsProps {
   The params property of a 'NotifyFullStatus' websocket message may contain
   various script properties. 
   These are checked for the script status and displayed including their memory state
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {Params} params The params property of a 'NotifyFullStatus' websocket message
+  @param {ScriptsProps} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {Params} props.params The params property of a 'NotifyFullStatus' websocket message
   @returns {JSX.Element[]} The script properties of a 'NotifyFullStatus' websocket message with their status and memory state.
 */
 const Scripts = ({ elementId, scrollableElementId, params }: ScriptsProps): JSX.Element[] => {
@@ -58,7 +60,7 @@ const Scripts = ({ elementId, scrollableElementId, params }: ScriptsProps): JSX.
             </Typography>
           </Highlighter>
           <Typography variant="caption" key={createUUID()}>
-            {Math.round(Number(script?.mem_free) / 1024)} kb free
+            {fByte(Number(script?.mem_free))} free
           </Typography>
         </Stack>
       );

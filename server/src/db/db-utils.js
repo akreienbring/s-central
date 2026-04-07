@@ -5,8 +5,8 @@
 
 /**
 Builds a SQL search with placeholders for the given criterias.
-@param {array} searches Fields that will be used for the WHERE clause
-@param {array} criterias Will only be used for a plausibility check.
+@param {Array} searches Fields that will be used for the WHERE clause
+@param {Array} criterias Will only be used for a plausibility check.
 @param {string} logical If more then one search fild is given. Must be: 'AND' (default) or 'OR'
 @return {string} The created search string.
 */

@@ -19,6 +19,11 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
+/**
+ * The LandingView presents public blogposts if they exist
+ * If not the user is forwarded to the LoginView
+ * @returns {JSX.Element}
+ */
 export default function LandingView(): JSX.Element {
   const [blogposts, setBlogposts] = useState<Blogpost[]>([]);
   const { request } = useShelly();
@@ -79,6 +84,9 @@ export default function LandingView(): JSX.Element {
     }
   }, [handleBlogpostsReceived, request]);
 
+  /**
+   * Forward the user to the LoginView if the Login button is clicked
+   */
   const handleLogin = () => {
     navigate(`/login`);
   };

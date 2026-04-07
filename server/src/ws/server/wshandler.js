@@ -25,6 +25,7 @@ const wsDeviceHandler = require("./ws-device-handler.js");
 const wsNotificationHandler = require("./ws-notification-handler.js");
 const wsBlogpostHandler = require("./ws-blogpost-handler.js");
 const wsTimelineHandler = require("./ws-timeline-handler.js");
+const wsSceneHandler = require("./ws-scene-handler.js");
 
 /*
   An interval that pings the clients. If a client not responds it will be deleted
@@ -193,59 +194,33 @@ function handleMessage(msg, ws) {
       if (timelineAnswer !== null) ws.send(JSON.stringify(timelineAnswer));
     } else if (msg.event === "toggle-switch") {
       const aSwitch = msg.data.switch;
-      const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
-      device.switches[aSwitch.index] = aSwitch;
+      const device = shellyDevices.findDeviceById(aSwitch.deviceId);
+      device.switches[aSwitch.id] = aSwitch;
       shellyConnector.toggleSwitch(device, aSwitch);
     } else if (msg.event === "set-switch") {
       const aSwitch = msg.data.switch;
-      const device = shellyDevices.findDeviceByIp(aSwitch.deviceIp);
-      device.switches[aSwitch.index] = aSwitch;
+      const device = shellyDevices.findDeviceById(aSwitch.deviceId);
+      device.switches[aSwitch.id] = aSwitch;
       shellyConnector.setSwitch(device, aSwitch);
     } else if (msg.event === "toggle-script") {
       const script = msg.data.script;
-      const device = shellyDevices.findDeviceByIp(msg.data.deviceIp);
-      device.scripts[msg.data.scriptIndex] = script;
+      const device = shellyDevices.findDeviceById(msg.data.deviceId);
+      device.scripts[msg.data.script.id] = script;
       shellyConnector.toggleScript(device, script);
     } else if (msg.event.startsWith("user")) {
       wsUserHandler.handle(msg, ws);
-      //const userAnswer = wsUserHandler.handle(msg);
-      //if (userAnswer !== null) ws.send(JSON.stringify(userAnswer));
     } else if (msg.event.startsWith("role")) {
       const roleAnswer = wsRoleHandler.handle(msg);
       if (roleAnswer !== null) ws.send(JSON.stringify(roleAnswer));
+    } else if (msg.event.startsWith("scene")) {
+      wsSceneHandler.handle(msg, ws);
     } else if (msg.event.startsWith("device")) {
       wsDeviceHandler.handle(msg, ws);
     } else if (msg.event.startsWith("notification")) {
-      if (msg.event === "notification-create") {
-        // handle notifications created by the server
-        const notificationAnswer = wsNotificationHandler.handle(msg);
-
-        if (notificationAnswer !== null) {
-          broadcast(notificationAnswer);
-
-          /* TODO not necessary because script:2":{"error_msg":null,"errors":[],"running":true}}} contains the id? 
-          if (notification.type === "script-error") {
-            const device = shellyDevices.findDeviceByIp(notification.device_ip);
-
-            const logErrorMessage = {
-              event: "device-update",
-              eventType: "device",
-                source: "WSHandler",
-                message: "Log error notification created",
-                subscriptionID: device.id,
-              data: {
-                device,
-              },
-            };
-            broadcast(logErrorMessage);
-            
-          }
-            */
-        }
-      } else {
-        // handle notifications requests created by the client
-        const notificationAnswer = wsNotificationHandler.handle(msg);
-        if (notificationAnswer !== null) broadcast(notificationAnswer);
+      // handle notifications created by the server
+      const notificationAnswer = wsNotificationHandler.handle(msg);
+      if (notificationAnswer !== null) {
+        broadcast(notificationAnswer);
       }
     } else if (msg.event.startsWith("blog")) {
       const blogAnswer = wsBlogpostHandler.handle(msg);

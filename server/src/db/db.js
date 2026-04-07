@@ -28,7 +28,7 @@ function open(dbName) {
   });
 
   // deleteTables(["blogposts", "users", "roles"]); // FOR TESTING
-  // deleteTables(["notifications"]);
+  // deleteTables(["scenes"]);
   init.initDB(db);
 
   const password = config.get("db.standardpw");
@@ -68,6 +68,20 @@ function close() {
       return console.error(err.message);
     }
     console.log("Closed the database connection.");
+  });
+}
+
+/**
+ * Used for testing if tables must be deleted
+ * @param {Array} tables
+ */
+// eslint-disable-next-line no-unused-vars
+function deleteTables(tables) {
+  let sql;
+  tables.forEach((table) => {
+    sql = `DROP TABLE IF EXISTS ${table}`;
+    console.log(`wssserver: dropping table: ${table}`);
+    db.exec(sql);
   });
 }
 
@@ -126,23 +140,10 @@ function getUser(sql, email) {
 }
 
 /**
-  Get data from the database.
-  Example: "SELECT device_id FROM user_devices WHERE user_id = ?" would result in a call
-  "db.get(sql, [userid]);"
-  @param {string} sql The select statement to execute.
-  @param {array} criterias Will be used for the values of the WHERE clause.
-  @return {array} The data fetched from the db
-*/
-function get(sql, criterias) {
-  if (typeof criterias === "undefined") return db.prepare(sql).all();
-  return db.prepare(sql).all(criterias);
-}
-
-/**
 A generic delete function that build and executes an DELETE statement.
 @param {string} table the table to delete an entry from.
-@param {array} searches Fields that will be used for the WHERE clause
-@param {array} criterias Will be used for the values of the WHERE clause.
+@param {Array} searches Fields that will be used for the WHERE clause
+@param {Array} criterias Will be used for the values of the WHERE clause.
 @param {string} logical If more then one search field is given. Must be: 'AND' (default) or 'OR'
 @return {object} An info object with two properties:
   changes: is the number of changed rows
@@ -159,8 +160,8 @@ function del(table, searches, criterias, logical) {
   A generic update function that build and executes an UPDATE statement.
   @param {string} table the table that must be updated.
   @param {object} fields The fields (col / value pairs) that will be updated in the table.
-  @param {array} searches Fields that will be used for the WHERE clause
-  @param {array} criterias Will be used for the values of the WHERE clause.
+  @param {Array} searches Fields that will be used for the WHERE clause
+  @param {Array} criterias Will be used for the values of the WHERE clause.
   @param {string} logical Mandatory if more then one search fild is given. Must be: 'AND' or 'OR'
   @return {object} An info object with two properties:
     changes: is the number of changed rows
@@ -176,26 +177,13 @@ function update(table, fields, searches, criterias, logical) {
 }
 
 /**
- * Used for testing if tables must be deleted
- * @param {array} tables
- */
-function deleteTables(tables) {
-  let sql;
-  tables.forEach((table) => {
-    sql = `DROP TABLE IF EXISTS ${table}`;
-    console.log(`wssserver: dropping table: ${table}`);
-    db.exec(sql);
-  });
-}
-
-/**
   A generic insert that builds and excutes an 'INSERT OR IGNORE' statement.
   @param {string} table the table where the data will be inserted
   @param {object} inserts An object with (multiple) column/value pairs.
   @param {boolean} ignore If true errors will be ignored
   @return {object} An info object with two properties:
     changes: is the number of changed rows
-    lastInsertRowid: Can be ignored in the case of an update
+    lastInsertRowid: The number of rows inserted.
 */
 function insert(table, inserts, ignore) {
   const tableValues = dbutils.buildTableValues(inserts);
@@ -206,12 +194,25 @@ function insert(table, inserts, ignore) {
 }
 
 /**
+  Get data from the database.
+  Example: "SELECT device_id FROM user_devices WHERE user_id = ?" would result in a call
+  "db.get(sql, [userid]);"
+  @param {string} sql The select statement to execute.
+  @param {Array} criterias Will be used for the values of the WHERE clause.
+  @return {array} The data fetched from the db
+*/
+function get(sql, criterias) {
+  if (typeof criterias === "undefined") return db.prepare(sql).all();
+  return db.prepare(sql).all(criterias);
+}
+
+/**
   A generic select that builds and excutes an 'SELECT' statement.
   @param {string} table the table where the data will be selected from.
-  @param {array} fields The fields that will be selected from the table.
+  @param {Array} fields The fields that will be selected from the table.
     Can be an empty array for all fields.
-  @param {array} searches Fields that will be used for the WHERE clause
-  @param {array} criterias Will be used for the values of the WHERE clause.
+  @param {Array} searches Fields that will be used for the WHERE clause
+  @param {Array} criterias Will be used for the values of the WHERE clause.
   @param {string} logical if more then one search field is given. Must be: 'AND' or 'OR'
   @param {string} orderBy An 'ORDER BY' clause that will be used for the "SELECT".
   @return {array} The resulting rows

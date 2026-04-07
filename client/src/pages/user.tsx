@@ -4,6 +4,10 @@ import { UserView } from '@src/sections/user/view';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The User page
+ * @returns
+ */
 export default function UserPage() {
   const { user } = useShelly();
 

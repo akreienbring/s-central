@@ -32,10 +32,11 @@ interface CreateUserProps {
 
 /**
   Component the presents a dialog to create a new user
-  @param {boolean} openCreate To determine if the dialog is shown or not
-  @param {function} onOpenCreate Handles the open status
-  @param {function} onCloseCreate Handles the closed status
-  @param {function} handleUsersReceived Will be passed to the UserForm to update the list of all users
+  @param {CreateUserProps} props
+  @param {boolean} props.openCreate To determine if the dialog is shown or not
+  @param {Function} props.onOpenCreate Handles the open status
+  @param {Function} props.onCloseCreate Handles the closed status
+  @param {Function} props.handleUsersReceived Will be passed to the UserForm to update the list of all users
   @returns {JSX.Element}
 */
 export default function CreateUser({

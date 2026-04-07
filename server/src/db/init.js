@@ -13,6 +13,7 @@ function initDB(db) {
   createUserTables(db);
   createNotificationTable(db);
   createBlogpostTable(db);
+  createSceneTable(db);
 }
 
 /**
@@ -170,6 +171,22 @@ function createNotificationTable(db) {
       isUnread NOT NULL,
       ts NOT NULL
     )`;
+
+  db.exec(sql);
+}
+
+/**
+  Creates the table for scenes.
+  If they don't exist! Can therefor be called many times.
+  @param {object} db The (already open) database
+*/
+function createSceneTable(db) {
+  const sql = `CREATE TABLE IF NOT EXISTS scenes (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL, 
+    name NOT NULL,
+    json NOT NULL
+  )`;
 
   db.exec(sql);
 }

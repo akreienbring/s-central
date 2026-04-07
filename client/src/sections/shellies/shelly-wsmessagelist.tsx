@@ -26,10 +26,10 @@ interface WSMessageListProps {
   - NotifyStatus
   - NotifyEvent
   This components presents extracted values (with icons) from the raw JSON message that was received.
-
-  @param {string} deviceId  The Id of the device used for highligthing text
-  @param {string} deviceName  The name of the device used to calculate the consumption
-  @param {object} wsMessages  The last websocket messages that were send from the shelly device
+  @param {WSMessageListProps} props
+  @param {string} props.deviceId  The Id of the device used for highligthing text
+  @param {string} props.deviceName  The name of the device used to calculate the consumption
+  @param {DeviceNotifyMessages} props.wsMessages  The last websocket messages that were send from the shelly device
     The key in the the object is the 'method' of the ws message. (NotifyFullStatus, NotifyStatus, NotifyEvent)
   @returns {JSX.Element[]} A list of wsmessages with extracted values and icons.
 */

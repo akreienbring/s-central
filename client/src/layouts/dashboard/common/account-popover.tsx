@@ -35,7 +35,7 @@ import ListItemText from '@mui/material/ListItemText';
  * Renders the Account Popover component. From here the user can
  * access his profile, security settings, general settings,
  * navigate to his homepage or log out.
- * @returns {JSX.Element}
+ * @returns
  */
 export default function AccountPopover() {
   const [open, setOpen] = useState({ open: false, target: null } as {
@@ -52,7 +52,7 @@ export default function AccountPopover() {
   const navigate = useNavigate();
 
   /**
-    Open / Close the UserUpdate Dialog
+    Open the UserUpdate Dialog
     with the type of update that is going to be made
     @param {string} type The type is either 'profile', 'security' or 'settings'
   */
@@ -60,6 +60,9 @@ export default function AccountPopover() {
     handleClose();
     setOpenUpdate({ open: true, type });
   };
+  /**
+   * Close the UserUpdate Dialog
+   */
   const handleCloseUpdate = () => {
     setOpenUpdate({ open: false, type: 'profile' });
     setOpen({ open: true, target: open.target });
@@ -115,6 +118,7 @@ export default function AccountPopover() {
           width: 40,
           height: 40,
           ...(open && {
+            // eslint-disable-next-line jsdoc/require-jsdoc
             background: (theme) =>
               `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
           }),
@@ -126,6 +130,7 @@ export default function AccountPopover() {
           sx={{
             width: 36,
             height: 36,
+            // eslint-disable-next-line jsdoc/require-jsdoc
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         />

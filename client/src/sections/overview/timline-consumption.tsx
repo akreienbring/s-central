@@ -29,11 +29,12 @@ interface TimelineConsumptionProps {
 /**
   This component presents the Timeline charts of the periods
   minute, hour, day, month and year.
-  @param {string} title The title of the chart
-  @param {string} subheader The text shown underneath the title
-  @param {object} chart Holds additional data to be used in the chart
-  @param {function} handleTimelineChange Called when the type of the chart is changed
-  @param {number} selection The currently selected type of the chart
+  @param {TimelineConsumptionProps} props
+  @param {string} props.title The title of the chart
+  @param {string} props.subheader The text shown underneath the title
+  @param {TimelineData} props.chart Holds additional data to be used in the chart
+  @param {Function} props.handleTimelineChange Called when the type of the chart is changed
+  @param {number} props.selection The currently selected type of the chart
 */
 export default function TimelineConsumption({
   title,
@@ -81,6 +82,7 @@ export default function TimelineConsumption({
     xaxis: {
       type: 'datetime',
       labels: {
+        // eslint-disable-next-line jsdoc/require-jsdoc
         formatter: (value) => {
           if (typeof value !== 'undefined') {
             return fDateTime(Number(value), timeline!.format);

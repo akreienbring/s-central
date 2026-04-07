@@ -9,6 +9,12 @@ import { NAV, HEADER } from './config-layout';
 
 const SPACING = 8;
 
+/**
+ * Main Component of the React application
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
+ */
 export default function Main({ children }: { children: React.ReactNode }): JSX.Element {
   const lgUp = useResponsive('up', 'lg');
 

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import type { ThemeColorScheme } from '../types';
 
 import { varAlpha } from '@src/theme/utils/color';

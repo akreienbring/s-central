@@ -3,11 +3,12 @@
   A table that all devices or those assigned to a user.
   It allows sorting and selecting devices for batch operations.
  */
-import type { Device, BatchAlert, DeviceTableRow } from '@src/types/device';
+import type { Device, DeviceTableRow } from '@src/types/device';
 
 import { type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShelly } from '@src/hooks/use-shelly';
+import { publishEvent } from '@src/events/pubsub';
 import { emptyRows, getComparator } from '@src/utils/sort-array';
 import ShellyTableRow from '@src/sections/shellies/shelly-table-row';
 import ShellyTableHead from '@src/sections/shellies/shelly-table-head';
@@ -26,7 +27,8 @@ import { applyDeviceTableSort } from './shelly-sort-utils';
 /**
   The main table component that shows all devices.
   It allows sorting and selecting devices for batch operations.
-  @param {array} devices The devices to show in the table
+  @param {object} props
+  @param {Array} props.devices The devices to show in the table
   @returns {JSX.Element} The components with the table of devices. 
  */
 export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Element {
@@ -54,12 +56,6 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
       } as DeviceTableRow;
     })
   );
-  const [alert, setAlert] = useState<BatchAlert>({
-    title: '',
-    text: '',
-    severity: 'info',
-    visible: false,
-  });
   const { t } = useTranslation();
 
   /** 
@@ -77,7 +73,7 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
     must be updated to the stable or beta firmware.
     Checks if a stable / beta version is available.
     @param {string} type Must be "stable" or "beta"
-    @param {array} [ids] The ids of the devices that must be updated
+    @param {Array} [ids] The ids of the devices that must be updated
   */
   const handleFirmwareUpdates = (type: 'stable' | 'beta', ids?: string[]) => {
     if (typeof ids === 'undefined') ids = selected;
@@ -102,7 +98,7 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
     }
 
     if (checkedIds.length !== ids.length) {
-      setAlert({
+      publishEvent('userInfo', {
         title: '',
         text:
           checkedIds.length === 0
@@ -136,12 +132,20 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
     send(requestMsg);
   };
 
+  /**
+   * Sorts the table when a property in the table head was clicked
+   * @param {string} property
+   */
   const handleTableSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
+  /**
+    Add all devices to the selection for batch actions. 
+    @param {object} e The event of the clicked Checkbox
+  */
   const handleSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       const newSelected = rows.map((n) => n.id);
@@ -151,6 +155,11 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
     setSelected([]);
   };
 
+  /**
+   * Adds / removes the clicked device (checkbox) to/from the list of selected devices.
+   * For batch actions
+   * @param {string} id The id of the device to add
+   */
   const handleClick = (id: string) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: string[] = [];
@@ -170,13 +179,23 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
     setSelected(newSelected);
   };
 
+  /**
+    The table supports paging of the users.
+    Handle the new page setting.
+    @param {object} e The Mouse event
+    @param {number} newPage The current page of the table
+  */
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
     newPage: number
   ) => {
     setPage(newPage);
   };
 
+  /**
+   * Set the number of user rows that is shown on one page
+   * @param {object} e The change event when the number was changed
+   */
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
@@ -200,8 +219,6 @@ export default function ShellyTable({ devices }: { devices: Device[] }): JSX.Ele
         selected={selected}
         handleRebootDevices={handleRebootDevices}
         handleFirmwareUpdates={handleFirmwareUpdates}
-        alert={alert}
-        setAlert={setAlert}
       />
       <TableContainer>
         <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="small">

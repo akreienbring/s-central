@@ -34,7 +34,8 @@ const shellyWSClients = {};
 /*
   Every message that must be send to a shelly device is buffered here.
   There are messages that must be resend if the auth info was added.
-  Messages are identified by the device id and the RPC channel.
+  Messages are identified by the device id. Hence, only one message can be buffered for a device at the same time.
+  This means that every GetStatus request (1 per minute) overwrites all other buffered requests / commands.
 */
 const outstandingCommands = {};
 
@@ -85,7 +86,13 @@ function onMessage(event) {
     wsclient.send(notifyFullStatus);
     delete outstandingCommands[msg.src];
   } else if (typeof msg.method !== "undefined") {
-    // ignore other messages as they will be handled by wsHandler.
+    /*
+      Ignore other messages as they will be handled by wsHandler.
+      Background: ShellyConnector configures the outbound websocket on a shelly. These messages are received by the wsHandler and forwarded to the clients.
+      This shelly-wsclient also connects to the Shelly WS server as a WS client to request data or trigger actions.
+      Upon connecting as a client, the Shelly devices starts to send e.g. NotififyStatus messages to this client as well.
+      Hence: Messages like NotifyStatus are received here AND by WSHandler.
+    */
   }
 }
 
@@ -122,12 +129,18 @@ function createWSClient(device) {
     shellyws.on("message", onMessage);
 
     shellyws.on("close", (event) => {
-      console.warn(
-        `Websocket to Shelly ${
-          shellyWSClients[shellyws.id].cname
-        } was closed with code ${event.code}. Reason: ${event.reason}`,
-      );
-      delete shellyWSClients[shellyws.id];
+      if (shellyWSClients[shellyws.id]) {
+        console.warn(
+          `Websocket to Shelly ${
+            shellyWSClients[shellyws.id].cname
+          } was closed with code ${event.code}. Reason: ${event.reason}`,
+        );
+        delete shellyWSClients[shellyws.id];
+      } else {
+        console.warn(
+          `Websocket to Shelly was closed with code ${event.code}. Reason: ${event.reason}`,
+        );
+      }
     });
 
     shellyws.on("error", (event) => {
@@ -197,8 +210,9 @@ function sendCommand(device, method, params) {
   body.params = params;
   outstandingCommands[device.id] = { id: body.id, body };
 
-  if (isOpenSocket(shellyWSClient, device))
+  if (isOpenSocket(shellyWSClient, device)) {
     shellyWSClient.ws.send(JSON.stringify(body));
+  }
 }
 /**
  * Checks the timestamp of the open event or the last received message from the shelly device.

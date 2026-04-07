@@ -22,10 +22,11 @@ interface ShellyScriptListProps {
 /**
   Before presenting the scripts of a device the array of scripts will be extented
   to 3 scripts. A list of switches can be used to start / stop existing scripts
-  @param {string} deviceIP The IP of the device the scripts are existing on.
-  @param {boolean} deviceOnline True if the device in online
-  @param {DeviceScript[]} scripts The scripts of the device
-  @param {function} handleScriptToggle Gets called when a script is started / stopped
+  @param {ShellyScriptListProps} props
+  @param {string} props.deviceIP The IP of the device the scripts are existing on.
+  @param {boolean} props.deviceOnline True if the device in online
+  @param {DeviceScript[]} props.scripts The scripts of the device
+  @param {Function} props.handleScriptToggle Gets called when a script is started / stopped
   @returns {JSX.Element} A list of scripts with their name and a switch to start / stop them.
 */
 const ShellyScriptList = ({

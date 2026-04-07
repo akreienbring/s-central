@@ -30,14 +30,15 @@ interface ShellyFiltersProps {
 }
 
 /**
-  The component receives the following props:
-  @param {boolean} openFilter To determine if the dialog is shown or not
-  @param {function} onOpenFilter This will be called when the dialog was 
+  The Component is used to filter the shelly devices in the ShellyView
+  @param {ShellyFiltersProps} props
+  @param {boolean} props.openFilter To determine if the dialog is shown or not
+  @param {Function} props.onOpenFilter This will be called when the dialog was 
     opened to maintain the state in the parent component (ShellyView)
-  @param {function} onCloseFilter This will be called when the dialog was 
+  @param {Function} props.onCloseFilter This will be called when the dialog was 
     closed to maintain the state in the parent component (ShellyView)
-  @param {object} filter An object that contains filter options and current states about their settings (checked or not)
-  @param {function} handleDeviceFilter Will be called when a filter was selected and must be committed to the parent.
+  @param {Filter} props.filter An object that contains filter options and current states about their settings (checked or not)
+  @param {Function} props.handleDeviceFilter Will be called when a filter was selected and must be applied in the ShellyView.
   @returns {JSX.Element} A button to open the filter dialog and the dialog itself with all filter options.
 */
 export default function ShellyFilters({
@@ -59,7 +60,10 @@ export default function ShellyFilters({
 
   if (typeof filter === 'undefined') return null;
 
-  // if a model option is checked or unchecked this must be reflected in the state
+  /**
+   * If a model option is checked or unchecked this must be reflected in the state
+   * @param {number} position Indicates which checkbox was changed
+   */
   const handleModelFilterChange = (position: number) => {
     const updatedCheckedState = mChecked.map((checked, index) =>
       index === position ? !checked : checked
@@ -67,7 +71,10 @@ export default function ShellyFilters({
     setMChecked(updatedCheckedState);
   };
 
-  // if a generation option is checked or unchecked this must be reflected in the state
+  /**
+   * If a generation option is checked or unchecked this must be reflected in the state
+   * @param {number} position Indicates which checkbox was changed
+   */
   const handleGenFilterChange = (position: number) => {
     const updatedCheckedState = gChecked.map((checked, index) =>
       index === position ? !checked : checked
@@ -117,7 +124,9 @@ export default function ShellyFilters({
     </Stack>
   );
 
-  // sets all checkboxes to unchecked
+  /**
+   * Sets all checkboxes to unchecked
+   */
   const clearAll = () => {
     setMChecked(new Array(filter.mChecked.length).fill(false));
     setGChecked(new Array(filter.gChecked.length).fill(false));

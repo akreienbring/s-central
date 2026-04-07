@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import Iconify from '@src/components/iconify';
 import { useTranslation } from 'react-i18next';
 import { fDateTime } from '@src/utils/format-time';
-import { useState, useEffect, useCallback } from 'react';
+import { type JSX, useState, useEffect, useCallback } from 'react';
 import { subscribeEvent, unsubscribeEvent } from '@src/events/pubsub';
 
 import Button from '@mui/material/Button';
@@ -17,9 +17,9 @@ import CircularProgress from '@mui/material/CircularProgress';
   When the wbsocket receives data it publishes the custom event 'lastUpdateAt' with the current time.
   When the websocket is closed it publishes the event 'lastUpdateAt' with a null value.
   During rendering 'lastUpdateAt' may be undefined.
-  @returns {JSX.Element}
+  @returns {JSX.Element | null}
 */
-const LastUpdate = () => {
+const LastUpdate = (): JSX.Element | null => {
   const [lastUpdateAt, setLastUpdateAt] = useState<null | string | number>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ const LastUpdate = () => {
     };
   }, [handleLastUpdate]);
 
-  /*
+  /**
     When disconnected, this will reload the current location
     and hence reconnect the websocket.
   */
@@ -70,6 +70,7 @@ const LastUpdate = () => {
         )
       }
       onClick={handleClick}
+      sx={{ mr: { sm: 2 } }}
     >
       {lastUpdateAt === null
         ? t('_notconnected_')

@@ -15,8 +15,9 @@ interface PostEditorProps {
 
 /**
  * Component that displays the mui-tiptap-editor
- * @param {function} handleContentChange Every change is reported to keep the post up-to-date
- * @param {string}  content The initial content of the editor
+ * @param {PostEditorProps} props
+ * @param {Function} props.handleContentChange Every change is reported to keep the post up-to-date
+ * @param {string}  props.content The initial content of the editor
  */
 export default function PostEditor({ handleContentChange, content }: PostEditorProps): JSX.Element {
   const { t } = useTranslation();

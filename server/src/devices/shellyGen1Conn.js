@@ -45,7 +45,7 @@ async function getSwitches(device) {
 
   const res = await getStatus(device.ip, device.password);
   if (res?.status === 200) {
-    return buildSwitches(device.ip, res.data);
+    return buildSwitches(device.id, res.data);
   }
   return [];
 }
@@ -116,7 +116,7 @@ async function getNotifyFullStatus(device) {
       'counters' contains the consumption in w/h. Convert to mw/m to be compatible 
       with Gen2 devices.
     */
-    const switches = buildSwitches(device.ip, status);
+    const switches = buildSwitches(device.id, status);
     switches.forEach((aSwitch, index) => {
       notifyFullStatus.params[aSwitch.key] = {
         output: aSwitch.output,
@@ -146,11 +146,11 @@ async function getNotifyFullStatus(device) {
     Create an array of switches from the response of an status request.
     Properties of GEN1 switches are mapped to the corresponding properties of 
     GEN2 switches for compatibility on the client side
-    @param {string}  deviceIp The IP of the device the switch belongs to.
+    @param {string}  deviceId The ID of the device the switch belongs to.
     @param {object}  data The result of a status request.
     @return {array} The array with the GEN2 compatible switches.
 */
-function buildSwitches(deviceIp, data) {
+function buildSwitches(deviceId, data) {
   let arrOrig = [];
   let type;
   if (typeof data?.lights !== "undefined") {
@@ -169,7 +169,7 @@ function buildSwitches(deviceIp, data) {
   const arrSwitches = arrOrig.map((aSwitch, index) => {
     return {
       type,
-      deviceIp,
+      deviceId,
       key: `switch:${index}`,
       id: index,
       output: aSwitch.ison,
@@ -190,12 +190,12 @@ function buildSwitches(deviceIp, data) {
 
 /**
   Toggle the switch of a GEN1 device.
+  @param {object} device The device to which the switch belongs.
   @param {object} aSwitch The switch that must be toggled.
-  @param {string} [password] The password that is needed if the Authentication on the device is activated
 */
-function toggleSwitch(aSwitch, password) {
-  const url = `http://${aSwitch.deviceIp}/${aSwitch.type}/${aSwitch.id}?turn=toggle`;
-  shellyAxios.get(url, password).catch((err) => {
+function toggleSwitch(device, aSwitch) {
+  const url = `http://${device.ip}/${aSwitch.type}/${aSwitch.id}?turn=toggle`;
+  shellyAxios.get(url, device.password).catch((err) => {
     console.error(err.message);
   });
 }
@@ -205,18 +205,24 @@ function toggleSwitch(aSwitch, password) {
   Up to now the following types are supported:
   - 'light' for a light switch
   - 'color' for a color switch
+  - 'relay' for a relay switch
   see https://shelly.guide/webhooks-https-requests/ for details
+  
+  @param {object} device The device to which the switch belongs.
   @param {object} aSwitch The switch that must be toggled.
-  @param {string} [password] The password that is needed if the Authentication on the device is activated   
 */
-function setSwitch(aSwitch, password) {
+function setSwitch(device, aSwitch) {
   let url;
   if (aSwitch.type === "light") {
-    url = `http://${aSwitch.deviceIp}/${aSwitch.type}/${aSwitch.id}?brightness=${aSwitch.brightness}&white=${aSwitch.white}`;
+    url = `http://${device.ip}/${aSwitch.type}/${aSwitch.id}?brightness=${aSwitch.brightness}&white=${aSwitch.white}&turn=${aSwitch.output ? "on" : "off"}`;
+  } else if (aSwitch.type === "color") {
+    url = `http://${device.ip}/${aSwitch.type}/${aSwitch.id}?gain=${aSwitch.brightness}&white=${aSwitch.white}&red=${aSwitch.rgb[0]}&green=${aSwitch.rgb[1]}&blue=${aSwitch.rgb[2]}&turn=${aSwitch.output ? "on" : "off"}`;
+  } else if (aSwitch.type === "relay") {
+    url = `http://${device.ip}/${aSwitch.type}/${aSwitch.id}?turn=${aSwitch.output ? "on" : "off"}`;
   } else {
-    url = `http://${aSwitch.deviceIp}/${aSwitch.type}/${aSwitch.id}?gain=${aSwitch.brightness}&white=${aSwitch.white}&red=${aSwitch.rgb[0]}&green=${aSwitch.rgb[1]}&blue=${aSwitch.rgb[2]}`;
+    console.error(`Unknown switch type ${aSwitch.type}`);
   }
-  shellyAxios.get(url, password).catch((err) => {
+  shellyAxios.get(url, device.password).catch((err) => {
     console.error(err.message);
   });
 }

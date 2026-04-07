@@ -3,6 +3,11 @@ import { type NavItem } from '@src/types/navigation';
 
 // ----------------------------------------------------------------------
 
+/**
+ * Creates a SVG icon used for the nav bar from a given string
+ * @param name  The name of the SVG icon to create
+ * @returns
+ */
 const icon = (name: string) => (
   <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
 );

@@ -13,8 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { useShelly } from '@src/hooks/use-shelly';
 import { mapNumberToMax } from '@src/utils/general';
 import { emptyRows, getComparator } from '@src/utils/sort-array';
-import { subscribeEvent, unsubscribeEvent } from '@src/events/pubsub';
 import { useRef, type JSX, useState, useEffect, useCallback } from 'react';
+import { publishEvent, subscribeEvent, unsubscribeEvent } from '@src/events/pubsub';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -75,29 +75,46 @@ export default function UserView(): JSX.Element {
   */
   const handleUsersReceived = useCallback(
     (msg: SrvAnswerMsg) => {
-      const serverUsers = msg.data.users;
-      if (typeof serverUsers !== 'undefined') {
-        const clientUsers = serverUsers.map((serverUser: User) => ({
-          userid: serverUser.userid,
-          uuid: serverUser.uuid,
-          avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(serverUser.userid, 25)}.jpg`,
-          alias: serverUser.alias,
-          firstname: serverUser.firstname,
-          lastname: serverUser.lastname,
-          role: serverUser.role,
-          email: serverUser.email,
-          home: serverUser.home,
-          roleid: serverUser.roleid,
-        }));
-        isUsersLoaded.current = true;
-        setUsers(clientUsers);
-        setRowCount(
-          user!.roleid === 1 && user!.userid !== 1 ? clientUsers.length - 2 : clientUsers.length - 1
-        );
+      const result = msg.data.requestResult;
+      if (result) {
+        if (msg.event === 'user-delete' && !result.success && result.total && result.successful) {
+          const userInfo: UserInfo = {
+            title: '',
+            text: t('_usernotdeleted_', { total: result.total, successful: result.successful }),
+            severity: result.successful > 0 ? 'warning' : 'error',
+            visible: true,
+          };
+          publishEvent('userInfo', userInfo);
+        }
+
+        if (result.success || (typeof result.successful !== 'undefined' && result.successful > 0)) {
+          const serverUsers = msg.data.users;
+          if (typeof serverUsers !== 'undefined') {
+            const clientUsers = serverUsers.map((serverUser: User) => ({
+              userid: serverUser.userid,
+              uuid: serverUser.uuid,
+              avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(serverUser.userid, 25)}.jpg`,
+              alias: serverUser.alias,
+              firstname: serverUser.firstname,
+              lastname: serverUser.lastname,
+              role: serverUser.role,
+              email: serverUser.email,
+              home: serverUser.home,
+              roleid: serverUser.roleid,
+            }));
+            isUsersLoaded.current = true;
+            setUsers(clientUsers);
+            setRowCount(
+              user!.roleid === 1 && user!.userid !== 1
+                ? clientUsers.length - 2
+                : clientUsers.length - 1
+            );
+          }
+          setSelected([]);
+        }
       }
-      setSelected([]);
     },
-    [user]
+    [user, t]
   );
 
   /**
@@ -165,12 +182,15 @@ export default function UserView(): JSX.Element {
   }, [request, handleUpdateUserEvent, handleUsersReceived, user, handleDevicesReceived, isTest]);
   // --------------------- Websocket Implementation END------------------
 
-  /*
-    Open / Close the UserCreate Dialog
+  /** 
+    Open the UserCreate Dialog
   */
   const handleOpenCreate = () => {
     setOpenCreate(true);
   };
+  /** 
+    Close the UserCreate Dialog
+  */
   const handleCloseCreate = () => {
     setOpenCreate(false);
   };
@@ -184,8 +204,8 @@ export default function UserView(): JSX.Element {
   };
 
   /**
-   * Sorts the table by a certain user property
-   * @param {string} id The user property to sort the table (e.g. name)
+   * Sorts the table by a certain user property clicked in the table head
+   * @param {string} property The user property to sort the table (e.g. name)
    */
   const handleTableSort = (property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -195,11 +215,12 @@ export default function UserView(): JSX.Element {
     }
   };
 
-  /*
+  /**
     Add all users except the Admin to the selection. 
+    @param {object} e The event of the clicked Checkbox
   */
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
+  const handleSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
       const newSelected = users
         .filter((u) => u.userid !== 1 && user!.userid !== u.userid)
         .map((u) => u.alias);
@@ -213,7 +234,6 @@ export default function UserView(): JSX.Element {
   /**
     When a checkbox of the user table is clicked, 
     this function creates an array of selected aliases
-    @param {object} e The event
     @param {string} alias The alias of a user that must be added to the selection
   */
   const handleClick = (alias: string) => {
@@ -274,15 +294,23 @@ export default function UserView(): JSX.Element {
     request(requestMsg, handleUsersReceived);
   };
 
-  /*
-    The table supports paging of the users
+  /**
+    The table supports paging of the users.
+    Handle the new page setting.
+    @param {object} e The Mouse event
+    @param {number} newPage The current page of the table
   */
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
     newPage: number
   ) => {
     setPage(newPage);
   };
+
+  /**
+   * Set the number of user rows that is shown on one page
+   * @param {object} e The change event when the number was changed
+   */
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPage(0);
     setRowsPerPage(parseInt(e.target.value, 10));

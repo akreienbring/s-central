@@ -21,6 +21,7 @@ import Slider from '@mui/material/Slider';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
 
 interface ShellyControlsProps {
   device: Device;
@@ -30,8 +31,9 @@ interface ShellyControlsProps {
 /**
   Offers controls to change brightness, white value and rgb of the
   switch of a device.
-  @param {object} device The device with switches
-  @param {function} handleSwitchSet Called when values of a switch will 
+  @param {ShellyControlsProps} props
+  @param {Device} props.device The device with switches
+  @param {Function} props.handleSwitchSet Called when values of a switch will 
     be transmitted to the websocket server
   @returns {JSX.Element} The components with the controls for the switch of the device.
 */
@@ -48,7 +50,9 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
   const [brightness, setBrightness] = useState(aSwitch?.brightness);
   const [white, setWhite] = useState(aSwitch?.white);
 
-  // debounce protects the sever of to many updates while moving the sliders
+  /**
+   * debounce protects the sever of to many updates while moving the sliders
+   */
   const debouncedSwitchSet = useMemo(
     () => debounce(handleSwitchSet, 30, { leading: false, trailing: true }),
     [handleSwitchSet]
@@ -76,22 +80,24 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
   }, [handleCopySourceSet]);
 
   /**
-   * If the switch of this device is the copy source, the copy source values are updated.
+   * If the switch of this device is the copy source, the copy switch values are updated.
+   * @param {DeviceSwitch} copySwitch The switch that is currently the copy source
    */
   const updateCopySource = (copySwitch: DeviceSwitch) => {
-    if (copySource?.deviceId === device.id) {
-      publishEvent('copySourceSet', {
-        deviceId: device.id,
+    if (copySource?.aSwitch.deviceId === device.id) {
+      const newCopySource: SwitchCopySource = {
         deviceName: device.cname,
-        copySwitch,
-      });
+        aSwitch: copySwitch,
+      };
+      publishEvent('copySourceSet', newCopySource);
     }
   };
+
   /**
     Called when the color input was changed. If this device is the copy source then
     the color value of the copy source is also updated.
     @param {string} color The new color value stringified (depends on the 'format' of the input)
-    @param {object} colors an object of the color value in different formats stringified 
+    @param {MuiColorInputColors} colors an object of the color value in different formats stringified 
       (hex, hex8, hsl, hsv, rgb)
   */
   const handleRGBChange = (color: string, colors: MuiColorInputColors) => {
@@ -107,6 +113,12 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
     debouncedSwitchSet(aNewSwitch);
   };
 
+  /**
+    Called when the brightness value was changed. If this device is the copy source then
+    the color value of the copy source is also updated.
+    @param {Event} e The event when changing the brightness value
+    @param {number} newValue The new brightness value
+  */
   const handleBrightnessChange = (e: Event, newValue: number) => {
     setBrightness(newValue);
     const newASwitch = { ...aSwitch };
@@ -116,6 +128,12 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
     debouncedSwitchSet(newASwitch);
   };
 
+  /**
+    Called when the white value was changed. If this device is the copy source then
+    the color value of the copy source is also updated.
+    @param {Event} e The event when changing the white value
+    @param {number} newValue The new white value
+  */
   const handleWhiteChange = (e: Event, newValue: number) => {
     setWhite(newValue);
     const newASwitch = { ...aSwitch };
@@ -204,39 +222,41 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
           sx={{ pt: 1, ml: -1 }}
         />
       )}
-      <Stack direction="row" justifyContent="center" sx={{ ml: -2, mr: -2, minWidth: '110%' }}>
+      <CardActions sx={{ ml: -2, mr: -2, p: 0, minWidth: '110%', justifyContent: 'center' }}>
         <Tooltip
-          title={copySource?.deviceId !== device.id ? t('_copysettings_') : t('_copyreset_')}
+          title={
+            copySource?.aSwitch.deviceId !== device.id ? t('_copysettings_') : t('_copyreset_')
+          }
         >
           <IconButton
             data-testid="shelly_setcopysource_button"
             onClick={() => {
-              if (copySource?.deviceId !== device.id || copySource === null) {
-                publishEvent('copySourceSet', {
-                  deviceId: device.id,
+              if (copySource?.aSwitch.deviceId !== device.id || copySource === null) {
+                const newCopySource: SwitchCopySource = {
                   deviceName: device.cname,
                   aSwitch,
-                });
+                };
+                publishEvent('copySourceSet', newCopySource);
               } else {
                 publishEvent('copySourceSet', null);
               }
             }}
-            color={copySource?.deviceId !== device.id ? 'inherit' : 'success'}
+            color={copySource?.aSwitch.deviceId !== device.id ? 'inherit' : 'success'}
           >
             <Iconify
-              icon={copySource?.deviceId !== device.id ? 'tabler:copy-check' : 'tabler:copy-off'}
+              icon={copySource?.aSwitch.deviceId !== device.id ? 'tabler:copy' : 'tabler:copy-off'}
             />
           </IconButton>
         </Tooltip>
 
-        {copySource !== null && copySource.deviceId !== device.id && (
+        {copySource !== null && copySource.aSwitch.deviceId !== device.id && (
           <Tooltip title={t('_pastesettingsfrom_', { deviceName: copySource?.deviceName })}>
             <IconButton onClick={copyFromSource} color="success">
               <Iconify icon="fa7-regular:paste" />
             </IconButton>
           </Tooltip>
         )}
-      </Stack>
+      </CardActions>
     </Stack>
   );
 };

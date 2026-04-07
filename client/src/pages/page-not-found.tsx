@@ -3,6 +3,10 @@ import { NotFoundView } from '@src/sections/error';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The not found page
+ * @returns
+ */
 export default function NotFoundPage() {
   return (
     <>

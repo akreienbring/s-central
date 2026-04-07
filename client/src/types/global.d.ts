@@ -9,11 +9,21 @@ import type { User } from './user';
 import type { Blogpost } from './blogpost';
 import type { AuthError } from './digest-auth';
 import type { Notification } from '@src/types/scnotification';
-import type { Device, DeviceSwitch, DeviceScript, WifiSettings } from '@src/types/device';
+import type { Scene, Device, DeviceSwitch, DeviceScript, WifiSettings } from '@src/types/device';
 
 declare global {
   type SortOrder = 'asc' | 'desc';
 
+  /*
+  Displays information to the user by using a fading alert
+  */
+  type UserInfo = {
+    open?: boolean;
+    text: string;
+    severity: 'info' | 'success' | 'error' | 'warning';
+    visible: boolean;
+    title: string;
+  };
   /*
   When the context is reloaded the client tries to reconnect to the ws server
   with a message of this type. channelID will be maintained by the server to
@@ -72,7 +82,7 @@ declare global {
     source: string;
     secret?: string;
     requestID?: string;
-    data: { success?: boolean; user?: User; error?: object };
+    data: { success?: boolean; user?: User; error?: object; requestResult?: RequestResult };
   };
 
   /*
@@ -87,7 +97,6 @@ declare global {
     secret?: string;
     data: {
       deviceId?: string;
-      deviceIp?: string;
       ids?: number[] | string[];
       id?: number;
       blogpost?: Blogpost;
@@ -95,12 +104,21 @@ declare global {
       userid?: number;
       istest?: boolean;
       user?: User;
+      scene?: Scene;
       email?: string;
       userdevices?: string[];
       switch?: DeviceSwitch;
       script?: DeviceScript;
       scriptIndex?: number;
     };
+  };
+
+  type RequestResult = {
+    success: boolean;
+    message: string;
+    successful?: number;
+    total?: number;
+    ids?: number[] | string[];
   };
 
   /*
@@ -114,6 +132,7 @@ declare global {
     requestID?: string;
     secret?: string;
     data: {
+      requestResult?: RequestResult;
       wifisettings?: WifiSettings;
       rows?: [];
       roles?: { id: number; name: string }[];
@@ -124,6 +143,7 @@ declare global {
       userdevices?: string[];
       users?: User[];
       notifications?: Notification[];
+      scenes?: Scene[];
       successful?: number;
       total?: number;
       success?: boolean;
@@ -144,7 +164,10 @@ declare global {
     | 'notification-delete-all'
     | 'blogpost-delete'
     | 'blogpost-update'
-    | 'blogpost-create';
+    | 'blogpost-create'
+    | 'scene-create'
+    | 'scene-delete'
+    | 'scene-update';
 
   type CliRequestEvent =
     | 'notifications-get-all'
@@ -167,12 +190,13 @@ declare global {
     | 'users-get-all'
     | 'user-validate'
     | 'user-devices-get-all'
+    | 'scenes-get-all'
+    | 'scene-select'
     | 'toggle-switch'
     | 'set-switch'
     | 'toggle-script';
 
   // Further ideas to specialise types. CURRENTLY UNUSED
-  type RequestResult = { success: boolean; message: string; successful?: number; total?: number };
 
   type ClientDBRequestMsg = {
     event: DBCUDEvent;
@@ -224,7 +248,6 @@ declare global {
     secret?: string;
     data: {
       // toggling a script
-      deviceIp?: string;
       script?: DeviceScript;
       scriptIndex?: number;
       // toggling / setting a switch
@@ -238,7 +261,7 @@ declare global {
       userdevices?: string[];
       // get all devices of a specific user
       userid?: number;
-      //ShellyCard / ShellyTableRow / WifiForm requests a device
+      //ShellyCard / ShellyTableRow / WifiForm requests a device //toggle / set switches
       deviceId?: string;
       // receiving, creating, updating a blogpost,
       blogposts?: Blogpost[];

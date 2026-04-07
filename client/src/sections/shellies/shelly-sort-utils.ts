@@ -10,8 +10,9 @@ type ApplyDeviceSortProps = {
 };
 /**
  * Sorts the DeviceTableRows
- * @param {DeviceTableRow[]} inputData The Rows to sort / filter
- * @param {function} comparator A function that compares values for sorting
+ * @param {ApplyDeviceSortProps} props
+ * @param {DeviceTableRow[]} props.inputData The Rows to sort / filter
+ * @param {Function} props.comparator A function that compares values for sorting
  * @returns {DeviceTableRow[]} The sorted / filtered rows
  */
 export function applyDeviceSort({ inputData, comparator }: ApplyDeviceSortProps): Device[] {
@@ -35,8 +36,9 @@ type ApplyDeviceTableSortProps = {
 
 /**
  * Sorts the DeviceTableRows
- * @param {DeviceTableRow[]} inputData The Rows to sort / filter
- * @param {function} comparator A function that compares values for sorting
+ * @param {ApplyDeviceTableSortProps} props
+ * @param {DeviceTableRow[]} props.inputData The Rows to sort / filter
+ * @param {Function} props.comparator A function that compares values for sorting
  * @returns {DeviceTableRow[]} The sorted / filtered rows
  */
 export function applyDeviceTableSort({

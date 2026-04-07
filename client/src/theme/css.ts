@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 import { alpha } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------

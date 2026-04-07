@@ -20,6 +20,7 @@
 import type { User } from '@src/types/user';
 
 import { useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useShelly } from '@src/hooks/use-shelly';
 import { publishEvent } from '@src/events/pubsub';
 import { type JSX, useState, useEffect, useCallback } from 'react';
@@ -37,12 +38,13 @@ interface UserFormProps {
   Presents a form to create / update / validate a user. Communicates with the 
   websocket server. The 'currentUser' is set to the logged in user OR to a user
   that must be updated from the UserView / UserTableRow list.
-  @param {string} type Must be 'login', 'profile', 'security' , 'create' or 'settings'
-  @param {object} updateuser The user that can be updated. Only set when a user
+  @param {UserFormProps} props
+  @param {string} props.type Must be 'login', 'profile', 'security' , 'create' or 'settings'
+  @param {User} [props.updateuser] The user that can be updated. Only set when a user
     from the list of users (UserView / UserTableRow) is updated
-  @param {function} handleUsersReceived Will be used to update the list of all users
+  @param {Function} props.handleUsersReceived Will be used to update the list of all users
     in the UserView
-  @param {function} handleUpdateUser When a user was updated this must be reflected in the UserView
+  @param {Function} props.handleUpdateUser When a user was updated this must be reflected in the UserView
   @returns {JSX.Element}
 */
 const UserForm = ({
@@ -52,6 +54,8 @@ const UserForm = ({
   handleUpdateUser,
 }: UserFormProps): JSX.Element => {
   const { login, user, request } = useShelly();
+  const { t } = useTranslation();
+
   const [currentUser, setCurrentUser] = useState<User>(
     updateuser
       ? updateuser
@@ -78,13 +82,14 @@ const UserForm = ({
     request that was send by 'handleCurrentUser'
     @param {object} msg The message that was passed with the answer
   */
-  const handleUserValidation = useCallback(
+  const handleUserValidated = useCallback(
     (msg: SrvValidateMsg) => {
-      if (msg.data.success && msg.data.user) {
+      const result = msg.data.requestResult;
+      if (result && result.success && msg.data.user) {
         setCurrentUser(msg.data.user);
         login(msg.data.user, true);
       } else {
-        setRequestResult({ success: false, message: msg.message });
+        setRequestResult({ success: false, message: '_usernotexists_' });
       }
     },
     [login]
@@ -97,27 +102,31 @@ const UserForm = ({
     Presents the result of the request and 
     @param {object} msg The message that was passed with the answer from the server
   */
-  const handleUserUpdate = useCallback(
+  const handleUserUpdated = useCallback(
     (msg: SrvAnswerMsg) => {
-      setRequestResult({
-        success: msg.data.success,
-        message: msg.message,
-      } as RequestResult);
+      const result = msg.data.requestResult;
+      if (result) {
+        setRequestResult({
+          success: result.success,
+          message: result.success ? '_userupdated_' : result.message,
+        } as RequestResult);
 
-      const newCurrentUser: User = { ...currentUser };
-      if (user && user.userid === currentUser.userid) {
-        // setCurrentUser(newCurrentUser); TODO: not needed?
+        if (result.success) {
+          const newCurrentUser: User = { ...currentUser };
+          if (user && user.userid === currentUser.userid) {
+            // update the context user
+            if (type === 'security' || type === 'profile' || type === 'settings') {
+              delete newCurrentUser.password2;
+              delete newCurrentUser.password;
+              login(newCurrentUser, false);
+            }
+          }
 
-        // update the context user
-        if (type === 'security' || type === 'profile' || type === 'settings') {
-          delete newCurrentUser.password2;
-          delete newCurrentUser.password;
-          login(newCurrentUser, false);
+          if (typeof handleUpdateUser !== 'undefined') {
+            handleUpdateUser(newCurrentUser);
+          } else if (location.pathname === '/user') publishEvent('userUpdated', newCurrentUser);
         }
       }
-      if (typeof handleUpdateUser !== 'undefined') {
-        handleUpdateUser(newCurrentUser);
-      } else if (location.pathname === '/user') publishEvent('userUpdated', newCurrentUser);
     },
     [user, currentUser, login, handleUpdateUser, location, type]
   );
@@ -128,14 +137,18 @@ const UserForm = ({
     request that was send by 'handleCurrentUser'
     @param {object} msg The mesage that was passed with the answer from the server
   */
-  const handleUserCreate = useCallback(
+  const handleUserCreated = useCallback(
     (msg: SrvAnswerMsg) => {
-      setRequestResult({
-        success: msg.data.success,
-        message: msg.message,
-      } as RequestResult);
-      // if successful: update the users in UserView
-      if (msg.data.success && typeof handleUsersReceived !== 'undefined') handleUsersReceived(msg);
+      const result = msg.data.requestResult;
+      if (result) {
+        setRequestResult({
+          success: result.success,
+          message: result.success ? '_usercreated_' : result.message,
+        } as RequestResult);
+
+        // if successful: update the users in UserView
+        if (result.success && typeof handleUsersReceived !== 'undefined') handleUsersReceived(msg);
+      }
     },
     [handleUsersReceived]
   );
@@ -154,12 +167,22 @@ const UserForm = ({
    * @param {object} msg The received ws message indicating if
    *  the reset was successful or not
    */
-  const handleResetPW = useCallback((msg: SrvAnswerMsg) => {
-    setRequestResult({
-      success: msg.data.success,
-      message: msg.message,
-    } as RequestResult);
-  }, []);
+  const handleResetPW = useCallback(
+    (msg: SrvAnswerMsg) => {
+      const result = msg.data.requestResult;
+      if (result) {
+        setRequestResult({
+          success: result.success,
+          message: result.success
+            ? t('_resetpw_')
+            : result.message
+              ? t(result.message)
+              : t('_notresetpw_'),
+        } as RequestResult);
+      }
+    },
+    [t]
+  );
 
   // --------------------- Websocket Implementation BEGIN----------------
   /*
@@ -201,7 +224,7 @@ const UserForm = ({
           user: formUser,
         },
       };
-      request(requestMsg, handleUserValidation);
+      request(requestMsg, handleUserValidated);
     } else if (type === 'profile') {
       // send the updated user to the server
       const requestMsg: CliRequestMsg = {
@@ -212,7 +235,7 @@ const UserForm = ({
           user: formUser,
         },
       };
-      request(requestMsg, handleUserUpdate);
+      request(requestMsg, handleUserUpdated);
     } else if (type === 'create') {
       // send the created user to the server
       const requestMsg: CliRequestMsg = {
@@ -223,7 +246,7 @@ const UserForm = ({
           user: formUser,
         },
       };
-      request(requestMsg, handleUserCreate);
+      request(requestMsg, handleUserCreated);
     } else if (type === 'security') {
       // send the updated user to the server
       const requestMsg: CliRequestMsg = {
@@ -234,7 +257,7 @@ const UserForm = ({
           user: formUser,
         },
       };
-      request(requestMsg, handleUserUpdate);
+      request(requestMsg, handleUserUpdated);
     } else if (type === 'settings') {
       // send the updated user to the server
       const requestMsg: CliRequestMsg = {
@@ -245,7 +268,7 @@ const UserForm = ({
           user: formUser,
         },
       };
-      request(requestMsg, handleUserUpdate);
+      request(requestMsg, handleUserUpdated);
     }
   };
 

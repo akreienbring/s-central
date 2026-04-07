@@ -10,7 +10,7 @@
 /**
  * Subcribe to the event given with eventName
  * @param {string} eventName The name of the event to subscribe to
- * @param {function} listener The callback function that will be added
+ * @param {Function} listener The callback function that will be added
  */
 const subscribeEvent = (eventName: string, listener: EventListener) => {
   if (typeof document !== 'undefined') document.addEventListener(eventName, listener);

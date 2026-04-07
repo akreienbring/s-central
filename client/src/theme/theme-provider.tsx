@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 import type {} from './extend-theme-types';
 import type { ThemeOptions } from './types';
 

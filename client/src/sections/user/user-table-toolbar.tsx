@@ -27,13 +27,14 @@ interface UserTableToolbarProps {
 
 /**
  * User Table Toolbar that is used in the UserView component
- * @param {array} selected The array of selected user aliases
- * @param {string} filterName The current value of the filter / search
- * @param {function} onFilterName The function to call when the filter / search changes
- * @param {string} placeholder The placeholder text for the filter / search input
- * @param {function} handleDeleteSelected The function to call to delete the selected users
- * @param {boolean} showReallyDelete Whether to show the "really delete" confirmation
- * @param {function} handleShowReallyDelete The function to call to toggle the "really delete" confirmation
+ * @param {UserTableToolbarProps} props
+ * @param {Array} props.selected The array of selected user aliases
+ * @param {string} props.filterName The current value of the filter / search
+ * @param {Function} props.onFilterName The function to call when the filter / search changes
+ * @param {string} props.placeholder The placeholder text for the filter / search input
+ * @param {Function} props.handleDeleteSelected The function to call to delete the selected users
+ * @param {boolean} props.showReallyDelete Whether to show the "really delete" confirmation
+ * @param {Function} props.handleShowReallyDelete The function to call to toggle the "really delete" confirmation
  * @returns {JSX.Element}
  */
 export default function UserTableToolbar({
@@ -53,6 +54,7 @@ export default function UserTableToolbar({
         height: 96,
         display: 'flex',
         justifyContent: 'space-between',
+        // eslint-disable-next-line jsdoc/require-jsdoc
         p: (theme) => theme.spacing(0, 1, 0, 3),
         ...(selected.length > 0 && {
           color: 'primary.main',

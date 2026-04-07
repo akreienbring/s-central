@@ -7,6 +7,7 @@ import type { Sys } from '@src/types/device';
 import { type JSX } from 'react';
 import Iconify from '@src/components/iconify';
 import { createUUID } from '@src/utils/general';
+import { fByte } from '@src/utils/format-number';
 
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -21,9 +22,10 @@ interface SystemValuesProps {
 
 /**
   The values will be displayed in kb
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {object} sys mandatory The sys property of a 'NotifyFullStatus' websocket message.
+  @param {} props
+  @param {string}  props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {Sys} props.sys mandatory The sys property of a 'NotifyFullStatus' websocket message.
 */
 const SystemValues = ({ elementId, scrollableElementId, sys }: SystemValuesProps): JSX.Element => (
   <Stack
@@ -42,7 +44,7 @@ const SystemValues = ({ elementId, scrollableElementId, sys }: SystemValuesProps
       <Iconify icon="material-symbols-light:sd" sx={{ color: 'black' }} key={createUUID()} />
     </Highlighter>
     <Typography variant="caption" key={createUUID()}>
-      {Math.round(Number(sys.ram_free) / 1024)} kb free
+      {fByte(Number(sys.ram_free))} free
     </Typography>
     <Highlighter
       key={createUUID()}
@@ -53,7 +55,7 @@ const SystemValues = ({ elementId, scrollableElementId, sys }: SystemValuesProps
       <Iconify icon="material-symbols:storage-rounded" sx={{ color: 'black' }} key={createUUID()} />
     </Highlighter>
     <Typography variant="caption" key={createUUID()}>
-      {Math.round(Number(sys.fs_free) / 1024)} kb free
+      {fByte(Number(sys.fs_free))} free
     </Typography>
   </Stack>
 );

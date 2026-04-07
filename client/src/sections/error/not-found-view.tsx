@@ -14,6 +14,10 @@ import Typography from '@mui/material/Typography';
 
 // ----------------------------------------------------------------------
 
+/**
+ * This view is displayed if a non existing view was requested
+ * @returns {JSX.Element}
+ */
 export default function NotFoundView(): JSX.Element {
   const renderHeader = (
     <Box
@@ -24,6 +28,7 @@ export default function NotFoundView(): JSX.Element {
         width: 1,
         lineHeight: 0,
         position: 'fixed',
+        // eslint-disable-next-line jsdoc/require-jsdoc
         p: (theme) => ({ xs: theme.spacing(3, 3, 0), sm: theme.spacing(5, 5, 0) }),
       }}
     >

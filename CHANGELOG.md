@@ -1,10 +1,27 @@
-### Release v2.4.0
+### Release v2.5.0
+
+##### 07.04.2026
+
+**Client (2.5.0)**
+
+- feature: Save/Restore current switch settings for all or some devices as scene
+- fixed: Not using NotifyFullStatus for getting current script status
+- fixed: Userprofile updated in client even if data was not inserted in DB
+- fixed: Error when switch settings were pasted after the copy source was altered.
+
+**Server (2.5.0)**
+
+- fixed: Switch.Set and RGWB.Set commands not turning on / of the switches
+
+### Release v2.4.1
 
 ##### 28.03.2026
 
 **Server (2.4.1)**
 
 - fixed: Messages from Loghandler and endpoints not handled by client
+
+### Release v2.4.0
 
 ##### 27.03.2026
 

@@ -18,10 +18,11 @@ interface CurrentConsumptionProps {
 }
 /**
  * Component that displays the current consumption circle chart.
- * @param {string} title The title that is displayed on top of the chart
- * @param {string} subheader The subheader, shown beneath the title
- * @param {array} colors contains a color for every device
- * @param {array} series the consumption data used in the chart
+ * @param {CurrentConsumptionProps} props
+ * @param {string} props.title The title that is displayed on top of the chart
+ * @param {string} props.subheader The subheader, shown beneath the title
+ * @param {Array} props.colors contains a color for every device
+ * @param {Array} props.powerPerDevice the consumption data used in the chart
  */
 export default function CurrentConsumption({
   title,
@@ -63,6 +64,7 @@ export default function CurrentConsumption({
       shared: true,
       intersect: false,
       y: {
+        // eslint-disable-next-line jsdoc/require-jsdoc
         formatter: (value) => {
           if (typeof value !== 'undefined') {
             return fWh(value);

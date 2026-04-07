@@ -12,6 +12,7 @@ import type {
 } from '@src/types/device';
 
 import isEqual from 'lodash/isEqual';
+import { publishEvent } from '@src/events/pubsub';
 
 /**
   Checks a 'NotifyFullStatus' or 'NotifyStatus' websocket message for changes that must be
@@ -32,12 +33,18 @@ export default function updateDeviceValues(
   const params: Params | undefined = wsmessages?.notifyStatus?.params;
   const fullparams: Params | undefined = wsmessages?.notifyFullStatus?.params;
 
-  if (
-    (typeof fullparams !== 'undefined' && device.gen === 1) ||
-    (typeof params !== 'undefined' && device.gen >= 2)
-  ) {
-    // use NotifyStatus for Gen2+ and NotifiyFullstatus for Gen1
-    const finalParams: Params | undefined = device.gen === 1 ? fullparams : params;
+  if ((typeof fullparams !== 'undefined' && device.gen === 1) || device.gen >= 2) {
+    let finalParams: Params | undefined;
+    // use newest NotifyStatus OR NotifyFullStatus for Gen2+ and NotifiyFullstatus for Gen1
+    if (device.gen === 1) {
+      finalParams = fullparams;
+    } else {
+      if (params && fullparams) {
+        finalParams = params.ts > fullparams.ts ? params : fullparams;
+      } else {
+        finalParams = params || fullparams;
+      }
+    }
 
     if (finalParams && device.scripts.length > 0) {
       /*
@@ -64,12 +71,13 @@ export default function updateDeviceValues(
 
     if (finalParams && device.switches.length > 0) {
       /*
-    check the status of the switches of the device.
-    Get the id from the device switch and use the value
-    of the last NotifyFullStatus Event ONLY if the timestamp is 
-    younger than the last manual switching.
-  */
+        check the status of the switches of the device.
+        Get the id from the device switch and use the value
+        of the last NotifyFullStatus Event ONLY if the timestamp is 
+        younger than the last manual switching.
+      */
       let currentSwitch: ParamsSwitch | undefined;
+      let isSwitchChanged = false;
       device.switches.forEach((aSwitch: DeviceSwitch) => {
         currentSwitch = finalParams[`switch:${aSwitch.id}`] || finalParams[`rgbw:${aSwitch.id}`];
 
@@ -84,7 +92,7 @@ export default function updateDeviceValues(
             typeof currentSwitch?.output !== 'undefined' &&
             aSwitch.output !== currentSwitch.output
           ) {
-            isChanged = true;
+            isSwitchChanged = true;
             aSwitch.output = currentSwitch.output;
             console.log(
               `Switch ${aSwitch.key} of device ${device.cname} output was set to ${aSwitch.output}`
@@ -94,7 +102,7 @@ export default function updateDeviceValues(
             typeof currentSwitch?.brightness !== 'undefined' &&
             aSwitch.brightness !== currentSwitch.brightness
           ) {
-            isChanged = true;
+            isSwitchChanged = true;
             aSwitch.brightness = currentSwitch.brightness;
             console.log(
               `Switch ${aSwitch.key} of device ${device.cname} brightness was set to ${aSwitch.brightness}`
@@ -104,7 +112,7 @@ export default function updateDeviceValues(
             typeof currentSwitch?.white !== 'undefined' &&
             aSwitch.white !== currentSwitch.white
           ) {
-            isChanged = true;
+            isSwitchChanged = true;
             aSwitch.white = currentSwitch.white;
             console.log(
               `Switch ${aSwitch.key} of device ${device.cname} white was set to ${aSwitch.white}`
@@ -114,7 +122,7 @@ export default function updateDeviceValues(
             typeof currentSwitch?.rgb !== 'undefined' &&
             !isEqual(aSwitch.rgb, currentSwitch.rgb)
           ) {
-            isChanged = true;
+            isSwitchChanged = true;
             aSwitch.rgb = currentSwitch.rgb;
             console.log(
               `Switch ${aSwitch.key} of device ${device.cname} rgb was set to ${aSwitch.rgb}`
@@ -122,6 +130,13 @@ export default function updateDeviceValues(
           }
         }
       });
+
+      /*
+        If any of the switches of the devices was changed, this event will be
+        received by ShellyScenes to eventually update a selected scene. 
+      */
+      if (isSwitchChanged) publishEvent('switchChanged', device.id);
+      isChanged = isChanged || isSwitchChanged;
     }
   }
 

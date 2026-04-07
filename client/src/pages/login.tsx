@@ -3,6 +3,10 @@ import { LoginView } from '@src/sections/login';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The login page
+ * @returns
+ */
 export default function LoginPage() {
   return (
     <>

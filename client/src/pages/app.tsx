@@ -4,6 +4,10 @@ import { AppView } from '@src/sections/overview/view';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The Dashboard Page
+ * @returns
+ */
 export default function AppPage() {
   const { user } = useShelly();
   return (

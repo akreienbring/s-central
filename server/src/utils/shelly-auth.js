@@ -90,7 +90,7 @@ function getWSCredentials(message, password) {
 /**
   Build the http digest credentials that will be passed to the device
   as a response to the authentication callenge in the header
-  @param {array} headers The headers with the challenge information
+  @param {Array} headers The headers with the challenge information
   @param {string} password The password that protects the device
   @return {object} The authentication parameters
 */
@@ -125,7 +125,7 @@ function complementAuthParams(authParams, password) {
 
   let resp = endecrypt.hexHash(
     `${authParams.username}:${authParams.realm}:${password}`,
-    shellyHttpHashAlgo
+    shellyHttpHashAlgo,
   );
   resp += `:${authParams.nonce}`;
   resp += `:1:${authParams.cnonce}${static_noise_sha256}`;
@@ -150,7 +150,7 @@ function extractAuthParams(authHeader) {
     throw new Error(
       "WWW-Authenticate header is requesting unusual auth type " +
         authType +
-        "instead of Digest"
+        "instead of Digest",
     );
   }
 
@@ -163,7 +163,7 @@ function extractAuthParams(authHeader) {
       throw new Error(
         "WWW-Authenticate header is requesting unusual algorithm:" +
           _value +
-          " instead of SHA-256"
+          " instead of SHA-256",
       );
     }
 
@@ -172,7 +172,7 @@ function extractAuthParams(authHeader) {
         throw new Error(
           "WWW-Authenticate header is requesting unusial qop:" +
             _value +
-            " instead of auth"
+            " instead of auth",
         );
       }
       continue;

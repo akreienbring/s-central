@@ -13,6 +13,10 @@ const Page404 = lazy(() => import('@src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
 
+/**
+ * Defines the routes of the React application
+ * @returns {JSX.Element | null}
+ */
 export default function Router(): JSX.Element | null {
   const { user } = useShelly();
 

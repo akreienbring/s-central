@@ -9,6 +9,14 @@ interface ColorPreviewProps {
   sx?: object;
 }
 
+/**
+ * Used to indicate on/off status of KVS Entries
+ * @param {ColorPreviewProps} props
+ * @param {string[]} props.colors An array of colors to select
+ * @param {number} props.limit
+ * @param {object} [props.sx] The MUI styling properties
+ * @returns
+ */
 export default function ColorPreview({ colors, limit = 3, sx }: ColorPreviewProps) {
   const renderColors = colors.slice(0, limit);
 
@@ -25,7 +33,9 @@ export default function ColorPreview({ colors, limit = 3, sx }: ColorPreviewProp
             height: 16,
             bgcolor: color,
             borderRadius: '50%',
+            // eslint-disable-next-line jsdoc/require-jsdoc
             border: (theme) => `solid 2px ${theme.palette.background.paper}`,
+            // eslint-disable-next-line jsdoc/require-jsdoc
             boxShadow: (theme) => `inset -1px 1px 2px ${alpha(theme.palette.common.black, 0.24)}`,
           }}
         />

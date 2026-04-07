@@ -16,6 +16,17 @@ interface EnhancedTableHeadProps {
   handleTableSort: (property: string) => void;
 }
 
+/**
+ * The table head of the shelly devices table
+ * @param {EnhancedTableHeadProps} props
+ * @param {Function} props.handleSelectAllClick The function to call when the select all checkbox is clicked
+ * @param {SortOrder} props.order The order of the sorted table (asc or desc)
+ * @param {string} props.orderBy The column to order by (e.g. 'name', 'gen'...)
+ * @param {number} props.numSelected The number of selected rows
+ * @param {number} props.rowCount The number of rows in the table
+ * @param {Function} props.handleTableSort The function to call when a sort is requested
+ * @returns
+ */
 export default function ShellyTableHead({
   handleSelectAllClick,
   order,
@@ -26,7 +37,12 @@ export default function ShellyTableHead({
 }: EnhancedTableHeadProps): JSX.Element {
   const { t } = useTranslation();
 
-  const onSort = (property: string) => () => {
+  /**
+   * Requiered by the TableSortLabel component.
+   * Called when the sort function of a table head is clicked.
+   * @param {string} property The property used to sort the table
+   */
+  const handleSort = (property: string) => () => {
     handleTableSort(property);
   };
 
@@ -104,7 +120,7 @@ export default function ShellyTableHead({
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={onSort(headCell.id)}
+              onClick={handleSort(headCell.id)}
               hideSortIcon
             >
               {t(headCell.label)}

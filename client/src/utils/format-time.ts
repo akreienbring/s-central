@@ -1,12 +1,13 @@
 import i18n from 'i18next';
-import { es, de, enUS } from 'date-fns/locale';
+import { es, de, enUS, type Locale } from 'date-fns/locale';
 import { format, getTime, fromUnixTime, intervalToDuration, formatDistanceToNow } from 'date-fns';
 
 // ----------------------------------------------------------------------
-/*
-  Maps the current i18n language to a date-fns locale
+/**
+  Maps the currently active i18next language to a date-fns locale.
+  @returns {Locale} The corresponding data-fns locale
 */
-const getDatefnsLocale = () => {
+const getDatefnsLocale = (): Locale => {
   switch (i18n.language) {
     case 'en':
       return enUS;
@@ -73,7 +74,7 @@ export function fUnixTime(time: number, fmt: string): string {
 
 /**
  * Calculates the time difference between a given date and now.
- * @param {date} date The date to calculate the time difference for
+ * @param {Date} date The date to calculate the time difference for
  * @returns {string} The formatted distance string with suffix (e.g., "5 minutes ago") by using the current locale.
  */
 export function fToNow(date: Date): string {

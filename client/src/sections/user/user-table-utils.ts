@@ -12,9 +12,10 @@ type ApplyFilterProps = {
 
 /**
  * Apply sorting and filtering to the User table rows
- * @param {User[]} inputData The Rows to sort / filter
- * @param {string} filterName A property name of a row.
- * @param {function} comparator A function that compares values for sorting
+ * @param {ApplyFilterProps} props
+ * @param {User[]} props.inputData The Rows to sort / filter
+ * @param {string} props.filterName A property name of a row.
+ * @param {Function} props.comparator A function that compares values for sorting
  * @returns {User[]} The sorted / filtered rows
  */
 export function applyUserFilter({ inputData, comparator, filterName }: ApplyFilterProps): User[] {

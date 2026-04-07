@@ -12,18 +12,20 @@ import Iconify from '@src/components/iconify';
 import { useTranslation } from 'react-i18next';
 import { useShelly } from '@src/hooks/use-shelly';
 import { getComparator } from '@src/utils/sort-array';
-import TabPanel from '@src/sections/shellies/tabpanel';
+import ShellyTabs from '@src/sections/shellies/shelly-tabs';
 import { type JSX, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import ShellySort from '../shelly-sort';
+import ShellyScenes from '../shelly-scenes';
 import ShellyFilters from '../shelly-filters';
 import { applyDeviceSort } from '../shelly-sort-utils';
 
@@ -31,7 +33,7 @@ import { applyDeviceSort } from '../shelly-sort-utils';
  * The main view for the shelly devices. It presents all devices in different tabs and offers filter and sort options.
  * The devices are received from the websocket server and stored in the state. When a device update is received, the corresponding device in the state will be updated.
  * The filter and sort options are also stored in the state and applied to the devices when they are changed.
- * The view is divided into different tab panels that present different values of the devices. The components for the tab panels are located in the 'tabpanels' folder.
+ * The view is divided into different tab panels that present different values of the devices. The components for the tab panels are located in the 'ShellyTabss' folder.
  * @returns {JSX.Element} The main view for the shelly devices.
  */
 export default function ShelliesView(): JSX.Element {
@@ -42,6 +44,7 @@ export default function ShelliesView(): JSX.Element {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [sortOption, setSortOption] = useState<SortOption>('config');
   const [display, setDisplay] = useState<'minimized' | 'maximized'>('maximized');
+  const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
 
   const [filter, setFilter] = useState<Filter>({
     models: [],
@@ -58,7 +61,7 @@ export default function ShelliesView(): JSX.Element {
    * Will be called when devices were received via websocket from shellybroker.
    * The available models and generations are extracted from the devices.
    * These will be used for the checkboxes in the filter
-   * @param {object} msg The message with a 'devices-get-all' event.
+   * @param {SrvAnswerMsg} msg The message with a 'devices-get-all' event.
    */
   const handleDevicesReceived = useCallback((msg: SrvAnswerMsg) => {
     const models: string[] = [];
@@ -106,8 +109,50 @@ export default function ShelliesView(): JSX.Element {
   // --------------------- Websocket Implementation END----------------
 
   /**
-   * Called from TabPanel ONLY when a test is running.
-   * @param {deviceId} The ID of a test device
+   * From within the ShellyScenes component, this function is called to select or unselect all devices for scene creation.
+   * @param {boolean} all If true, all devices will be selected. If false, all devices will be unselected.
+   * @param {string[] | number[]} [ids] If all is false, the devices with the given ids will be selected.
+   * Or all devices will be unselected if ids is undefined.
+   */
+  const handleSetSelection = (all: boolean, ids: string[] | number[] | undefined) => {
+    if (typeof all !== 'undefined') {
+      if (all) {
+        if (selectedDevices.length !== currentDevices.length) {
+          setSelectedDevices(currentDevices.map((device) => device.id));
+        }
+      } else {
+        if (!ids || ids.length === 0) {
+          if (selectedDevices.length > 0) {
+            setSelectedDevices([]);
+          }
+        } else {
+          setSelectedDevices(ids as string[]);
+        }
+      }
+    }
+  };
+
+  /**
+   * Add or remove a singledevice from the selection for scene creation when it is selected or unselected in the ShellyCard component.
+   * The selected devices are stored in the state of this view, as the ShellyScenes component needs to know
+   * which devices are selected to create a scene with selected devices.
+   * @param {string}deviceId
+   */
+  const handleToggleSelection = (deviceId: string) => {
+    setSelectedDevices((prevSelected) => {
+      if (prevSelected.includes(deviceId)) {
+        // If the device is already selected, unselect it
+        return prevSelected.filter((id) => id !== deviceId);
+      } else {
+        // Otherwise, add it to the selection
+        return [...prevSelected, deviceId];
+      }
+    });
+  };
+
+  /**
+   * Called from ShellyTabs ONLY when a test is running.
+   * @param {string} deviceId The ID of a test device
    * @returns {Device} The original Testdevice
    */
   const getTestDevice = (deviceId: string): Device | undefined =>
@@ -124,11 +169,14 @@ export default function ShelliesView(): JSX.Element {
   };
 
   /**
-   * Opens / closes the filter dialog
+   * Opens the filter dialog
    */
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
+  /**
+   * Closes the filter dialog
+   */
   const handleCloseFilter = () => {
     setOpenFilter(false);
   };
@@ -180,7 +228,7 @@ export default function ShelliesView(): JSX.Element {
   /**
     Apply a filter to an array of devices.
     @param {DeviceFilters} deviceFilters  An object that contains the filters to apply.
-    @param {Device[]} devices The original array of devices to filter.
+    @param {Device[]} devicesToFilter The original array of devices to filter.
     @returns {Device[]} The filtered array of devices.
   */
   const filterDevices = (deviceFilters: DeviceFilters, devicesToFilter: Device[]): Device[] => {
@@ -257,6 +305,10 @@ export default function ShelliesView(): JSX.Element {
     setOpenFilter(false);
   };
 
+  /**
+   * Change the diplay of the cards (minimized or maximized)
+   * @param {string} newDisplay The display type to set
+   */
   const handleDisplayChange = (newDisplay: 'minimized' | 'maximized') => {
     setDisplay(newDisplay);
   };
@@ -264,18 +316,30 @@ export default function ShelliesView(): JSX.Element {
   return (
     <Container maxWidth="xl">
       <Typography variant="h4">Shellies</Typography>
-      <Stack direction="row" alignItems="center" flexWrap="wrap-reverse" justifyContent="flex-end">
-        <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        sx={{ alignItems: 'center', justifyContent: 'flex-end' }}
+      >
+        <Stack direction="row" spacing={0.5} sx={{ my: 1 }}>
           {currentTabIndex === 0 && display === 'minimized' && (
-            <IconButton onClick={() => handleDisplayChange('maximized')}>
-              <Iconify icon="solar:maximize-square-2-outline" />
-            </IconButton>
+            <Tooltip title={t('_maximizecards_')}>
+              <IconButton onClick={() => handleDisplayChange('maximized')}>
+                <Iconify icon="solar:maximize-square-2-outline" />
+              </IconButton>
+            </Tooltip>
           )}
           {currentTabIndex === 0 && display === 'maximized' && (
-            <IconButton onClick={() => handleDisplayChange('minimized')}>
-              <Iconify icon="solar:minimize-square-2-outline" />
-            </IconButton>
+            <Tooltip title={t('_minimizecards_')}>
+              <IconButton onClick={() => handleDisplayChange('minimized')}>
+                <Iconify icon="solar:minimize-square-2-outline" />
+              </IconButton>
+            </Tooltip>
           )}
+        </Stack>
+        {(currentTabIndex === 0 || currentTabIndex === 1) && (
+          <ShellyScenes selectedDevices={selectedDevices} handleSetSelection={handleSetSelection} />
+        )}
+        <Stack direction="row" spacing={0.5} sx={{ my: 1, flexShrink: 0 }}>
           <ShellyFilters
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
@@ -283,12 +347,11 @@ export default function ShelliesView(): JSX.Element {
             filter={filter}
             handleDeviceFilter={handleDeviceFilter}
           />
-
           <ShellySort handleSort={(sort: SortOption) => handleSort(sort, false)} />
         </Stack>
       </Stack>
 
-      <Box>
+      <Box sx={{ mb: 1 }}>
         <Tabs
           value={currentTabIndex}
           onChange={handleTabChange}
@@ -303,12 +366,14 @@ export default function ShelliesView(): JSX.Element {
           <Tab data-testid="shellies_list_tab" label="List / Batch" />
         </Tabs>
       </Box>
-      <TabPanel
+      <ShellyTabs
         index={currentTabIndex}
         devices={currentDevices}
         key="shelliesTab"
         display={display}
         getTestDevice={getTestDevice}
+        handleToggleSelection={handleToggleSelection}
+        selectedDevices={selectedDevices}
       />
     </Container>
   );

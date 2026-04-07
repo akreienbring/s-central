@@ -17,6 +17,15 @@ interface AppWidgetSummaryProps {
   sx?: object;
 }
 
+/**
+ * Displays values in the Dashboar View (AppView)
+ * @param {AppWidgetSummaryProps} props
+ * @param {string} props.title The Title that is describing the value
+ * @param {string} props.subtitle An additional subtitle
+ * @param {React.ReactNode} [props.icon] An optional icon to display
+ * @param {object} [props.sx] A MUI sx object for styling
+ * @returns {JSX.Element}
+ */
 export default function AppWidgetSummary({
   title,
   subtitle,

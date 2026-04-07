@@ -18,10 +18,11 @@ interface EnergyProps {
   consumption: number;
 }
 /**
-  The consumption will be displayed in 'w/h'.
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {number} consume The current energy consumption of a device in mw/m.
+  The device consumption will be displayed as icon with the unit 'w/h'.
+  @param {EnergyProps} props
+  @param {string} props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {number} props.consumption The current energy consumption of a device in mw/m.
 */
 const Energy = ({ elementId, scrollableElementId, consumption }: EnergyProps): JSX.Element => (
   <Stack

@@ -39,10 +39,11 @@ interface BlogpostFormProps {
 
 /**
  * Component that displays a form to create or update a Blogpost
- * @param {string} type The type of the form. Either 'create' or 'update'.
- * @param {function} handleUpdatePost Called when a Blogpost must be updated.
- * @param {object} A post that will be updated
- * @param {function} handleBlogpostsReceived Called when a list of blogposts arrives from the server
+ * @param {BlogpostFormProps} props
+ * @param {string} props.type The type of the form. Either 'create' or 'update'.
+ * @param {Function} props.handleUpdatePost Called when a Blogpost must be updated.
+ * @param {Blogpost} [props.updatepost] A post that will be updated
+ * @param {Function} props.handleBlogpostsReceived Called when a list of blogposts arrives from the server
  */
 const BlogpostForm = ({
   type,
@@ -69,14 +70,18 @@ const BlogpostForm = ({
     to the message
     @param {object} msg The message that was passed with the answer from the server
   */
-  const handleBlogpostCreate = (msg: SrvAnswerMsg) => {
-    setRequestResult({
-      success: msg.data.success,
-      message: msg.message,
-    } as RequestResult);
-    // if successful: update the posts in Blogview
-    if (msg.data.success && typeof handleBlogpostsReceived !== 'undefined')
-      handleBlogpostsReceived(msg);
+  const handleBlogpostCreated = (msg: SrvAnswerMsg) => {
+    const result = msg.data.requestResult;
+    if (result) {
+      setRequestResult({
+        success: result.success,
+        message: result.success ? t('_blogpostcreated_') : t('_blogpostnotcreated_'),
+      } as RequestResult);
+
+      // if successful: update the posts in Blogview
+      if (result.success && typeof handleBlogpostsReceived !== 'undefined')
+        handleBlogpostsReceived(msg);
+    }
   };
 
   /**
@@ -84,14 +89,18 @@ const BlogpostForm = ({
     request that was send by 'handleSubmit'
     @param {object} msg The mesage that was passed with the answer from the server
   */
-  const handleBlogpostUpdate = (msg: SrvAnswerMsg) => {
-    setRequestResult({
-      success: msg.data.success,
-      message: msg.message,
-    } as RequestResult);
-    // if successful: update the blogpost in BlogView
-    if (msg.data.success && typeof handleUpdatePost !== 'undefined')
-      handleUpdatePost(currentBlogpost);
+  const handleBlogpostUpdated = (msg: SrvAnswerMsg) => {
+    const result = msg.data.requestResult;
+    if (result) {
+      setRequestResult({
+        success: result.success,
+        message: result.success ? t('_blogpostupdated_') : t('_blogpostnotupdated_'),
+      } as RequestResult);
+
+      // if successful: update the blogpost in BlogView
+      if (result.success && typeof handleUpdatePost !== 'undefined')
+        handleUpdatePost(currentBlogpost);
+    }
   };
 
   /**
@@ -99,7 +108,7 @@ const BlogpostForm = ({
     up to date. This way it can be directly submitted to 
     the server without collecting the form entries.
     The name of the input must match a blogpost attribute!
-    @param {object} target The input field that was changed
+    @param {Event} e The change event of the input field that was changed
   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedBlogpost = { ...currentBlogpost };
@@ -125,9 +134,9 @@ const BlogpostForm = ({
   };
 
   /**
-   * Called when the submit button was clicked.
+   * Called when the submit button for a blogpost was clicked.
    * Creates or updates a blogpost by communicating with the server
-   * @param {object} event
+   * @param {Event} e The submit event of the form
    */
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -146,7 +155,7 @@ const BlogpostForm = ({
           blogpost: finalBlogpost,
         },
       };
-      request(requestMsg, handleBlogpostCreate);
+      request(requestMsg, handleBlogpostCreated);
     } else if (type === 'update') {
       // send the updated blogpost to the server
       const requestMsg: CliRequestMsg = {
@@ -157,7 +166,7 @@ const BlogpostForm = ({
           blogpost: currentBlogpost,
         },
       };
-      request(requestMsg, handleBlogpostUpdate);
+      request(requestMsg, handleBlogpostUpdated);
     }
   };
 

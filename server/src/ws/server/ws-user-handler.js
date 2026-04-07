@@ -26,16 +26,19 @@ function handle(msg, ws) {
       digest challenge response cyle. That means that his credentials
       are successfully validated by MessageValidator at this point.
      */
+    const userToValidate = msg.data.user;
+
     const validateAnswer = {
       event: msg.event,
       requestID: msg.requestID,
+      message: `OK, will validate the User ${userToValidate.email}`,
       source: "WSUserHandler",
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
-
-    const userToValidate = msg.data.user;
 
     const sql = `SELECT hash, salt, users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id WHERE users.email = ?`;
 
@@ -56,7 +59,7 @@ function handle(msg, ws) {
       };
       validateAnswer.secret = msg.secret;
     } else {
-      validateAnswer.message = "_usernotexists_";
+      validateAnswer.requestResult.success = false;
     }
     ws.send(JSON.stringify(validateAnswer));
   } else if (msg.event === "user-resetpw") {
@@ -67,7 +70,9 @@ function handle(msg, ws) {
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -99,24 +104,24 @@ function handle(msg, ws) {
           );
 
           if (info?.changes !== 1) {
-            // something went wrong
-            resetAnswer.message = "_notresetpw_";
-            resetAnswer.data.success = false;
+            console.error(
+              `Expected to reset 1 password, but resetted ${info.changes} passwords.`,
+            );
+            resetAnswer.data.requestResult.message = "_notresetpw_";
+            resetAnswer.data.requestResult.success = false;
           }
         } catch (err) {
           console.error(err.message);
-          resetAnswer.message = db.createMessageFromConflict(
-            err.message,
-            "_notresetpw_",
-          );
-          resetAnswer.data.success = false;
+          resetAnswer.data.requestResult.message = "_notresetpw_";
+          resetAnswer.data.requestResult.success = false;
         }
 
         ws.send(JSON.stringify(resetAnswer));
       });
     } else {
-      resetAnswer.message = "_usernotexists_";
-      resetAnswer.data.success = false;
+      console.error(`User with email ${msg.data.email} was not found`);
+      resetAnswer.data.requestResult.success = false;
+      resetAnswer.data.requestResult.message = "_usernotexists_";
     }
 
     ws.send(JSON.stringify(resetAnswer));
@@ -126,7 +131,11 @@ function handle(msg, ws) {
       message: "OK! Here are all the users",
       source: "WSUserHandler",
       requestID: msg.requestID,
-      data: {},
+      data: {
+        requestResult: {
+          success: true,
+        },
+      },
     };
 
     const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
@@ -136,11 +145,13 @@ function handle(msg, ws) {
     // client wants to update a user. Email and password are not affected
     const updateAnswer = {
       event: msg.event,
-      message: "_userupdated_",
+      message: "Ok, will update the users profile",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -158,27 +169,31 @@ function handle(msg, ws) {
         [userToUpdate.userid],
       );
       if (info.changes !== 1) {
-        // something went wrong
-        updateAnswer.message = "_usernotupdated_";
-        updateAnswer.data.success = false;
+        console.error(
+          `Expected to update 1 user, but updated ${info.changes} users.`,
+        );
+        updateAnswer.data.requestResult.message = "_usernotupdated_";
+        updateAnswer.data.requestResult.success = false;
       }
     } catch (err) {
       console.error(err.message);
-      updateAnswer.message = db.createMessageFromConflict(
+      updateAnswer.data.requestResult.message = db.createMessageFromConflict(
         err.message,
         "_usernotupdated_",
       );
-      updateAnswer.data.success = false;
+      updateAnswer.data.requestResult.success = false;
     }
     ws.send(JSON.stringify(updateAnswer));
   } else if (msg.event === "user-settings-update") {
     const settingsAnswer = {
       event: msg.event,
-      message: "_userupdated_",
+      message: "Ok, will update the users settings",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -194,28 +209,32 @@ function handle(msg, ws) {
         [userToUpdate.userid],
       );
       if (info.changes !== 1) {
-        // something went wrong
-        settingsAnswer.message = "_usernotupdated_";
-        settingsAnswer.data.success = false;
+        console.error(
+          `Expected to update 1 user, but updated ${info.changes} users.`,
+        );
+        settingsAnswer.data.requestResult.message = "_usernotupdated_";
+        settingsAnswer.data.requestResult.success = false;
       }
     } catch (err) {
       console.error(err.message);
-      settingsAnswer.message = db.createMessageFromConflict(
+      settingsAnswer.data.requestResult.message = db.createMessageFromConflict(
         err.message,
         "_usernotupdated_",
       );
-      settingsAnswer.data.success = false;
+      settingsAnswer.data.requestResult.success = false;
     }
     ws.send(JSON.stringify(settingsAnswer));
   } else if (msg.event === "user-security-update") {
     // client wants to update a users credentials.
     const securityAnswer = {
       event: msg.event,
-      message: "_userupdated_",
+      message: "Ok, will update the users security settings",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -239,17 +258,17 @@ function handle(msg, ws) {
           [userToUpdate.userid],
         );
         if (info.changes !== 1) {
-          // something went wrong
-          securityAnswer.message = "_usernotupdated_";
-          securityAnswer.data.success = false;
+          console.error(
+            `Expected to update 1 user, but updated ${info.changes} users.`,
+          );
+          securityAnswer.data.requestResult.message = "_usernotupdated_";
+          securityAnswer.data.requestResult.message.success = false;
         }
       } catch (err) {
         console.error(err.message);
-        securityAnswer.message = db.createMessageFromConflict(
-          err.message,
-          "_usernotupdated_",
-        );
-        securityAnswer.data.success = false;
+        securityAnswer.data.requestResult.message =
+          db.createMessageFromConflict(err.message, "_usernotupdated_");
+        securityAnswer.data.requestResult.success = false;
       }
       ws.send(JSON.stringify(securityAnswer));
     });
@@ -257,11 +276,13 @@ function handle(msg, ws) {
     // client wants to create a user
     const createAnswer = {
       event: msg.event,
-      message: "_usercreated_",
+      message: "Ok, will create a new user",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -297,33 +318,37 @@ function handle(msg, ws) {
         );
 
         if (info?.changes !== 1) {
-          // something went wrong
-          createAnswer.message = "_usernotcreated_";
-          createAnswer.data.success = false;
+          console.error(
+            `Expected to create 1 user, but created ${info.changes} users.`,
+          );
+          createAnswer.data.requestResult.message = "_usernotcreated_";
+          createAnswer.data.requestResult.success = false;
         } else {
           const sql = `SELECT users.id AS userid, uuid, email, firstname, lastname, home, alias, roles.name AS role, roles.id AS roleid FROM users INNER JOIN roles ON users.roleid = roles.id ORDER BY alias`;
           createAnswer.data.users = db.getUser(sql);
         }
       } catch (err) {
         console.error(err.message);
-        createAnswer.message = db.createMessageFromConflict(
+        createAnswer.data.requestResult.message = db.createMessageFromConflict(
           err.message,
           "_usernotcreated_",
         );
-        createAnswer.data.success = false;
+        createAnswer.data.requestResult.success = false;
       }
 
       ws.send(JSON.stringify(createAnswer));
     });
   } else if (msg.event === "user-delete") {
-    // client wants to update a user
+    // client wants to delete a user
     const deleteAnswer = {
       event: msg.event,
-      message: "_userdeleted_",
+      message: "Ok, will delete the user",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -331,9 +356,13 @@ function handle(msg, ws) {
     const info = db.del("users", searches, msg.data.ids, "OR");
 
     if (info.changes !== msg.data.ids.length) {
-      // something went wrong
-      deleteAnswer.message = "_usernotdeleted_";
-      deleteAnswer.data.success = false;
+      console.error(
+        `Expected to create ${msg.data.ids.length} users, but users ${info.changes} users.`,
+      );
+      deleteAnswer.data.requestResult.message = "_usernotdeleted_";
+      deleteAnswer.data.requestResult.success = false;
+      deleteAnswer.data.requestResult.total = msg.data.ids.length;
+      deleteAnswer.data.requestResult.successful = info.changes;
     } else {
       //delete all device assignments of the user
       const assingment_searches = new Array(msg.data.ids.length).fill(
@@ -370,11 +399,13 @@ function handle(msg, ws) {
     // client wants to update the devices of a user
     const deviceUpdateAnswer = {
       event: msg.event,
-      message: "_devicesupdated_",
+      message: "Ok, will update the devices of a user",
       source: "WSUserHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
     const userdevices = msg.data.ids;
@@ -384,6 +415,7 @@ function handle(msg, ws) {
     if (typeof userdevices !== "undefined" && typeof userid !== "undefined") {
       //delete all previous assignments and add the new ones
       db.del("user_devices", ["user_id"], [userid]);
+
       for (let i in userdevices) {
         const info = db.insert(
           "user_devices",
@@ -399,8 +431,7 @@ function handle(msg, ws) {
       }
     } else {
       console.error("Either userid or userdevices were not provided");
-      deviceUpdateAnswer.message = "_devicesnotupdated";
-      deviceUpdateAnswer.data.success = false;
+      deviceUpdateAnswer.data.requestResult.success = false;
       ws.send(JSON.stringify(deviceUpdateAnswer));
 
       return;
@@ -408,12 +439,11 @@ function handle(msg, ws) {
 
     if (!success) {
       console.error(`Could not add ${userdevices.length} to user ${userid}`);
-      deviceUpdateAnswer.message = "_devicesnotupdated";
     } else {
       console.log(`User ${userid} now manages ${userdevices.length} devices`);
     }
 
-    deviceUpdateAnswer.data.success = success;
+    deviceUpdateAnswer.data.requestResult.success = success;
     ws.send(JSON.stringify(deviceUpdateAnswer));
   }
 }

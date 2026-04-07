@@ -8,6 +8,10 @@ import { SCProvider } from './scontext';
 
 // ----------------------------------------------------------------------
 
+/**
+ * The React Application
+ * @returns
+ */
 export default function App() {
   useScrollToTop();
 

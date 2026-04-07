@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 /**
  * Converts a hex color to RGB channels.
  *
@@ -30,12 +32,12 @@ function hexToRgbChannel(hexColor: string): string {
 /**
  * Converts a hex palette color to RGB channels palette.
  *
- * @typedef {Object} InputPalette - The input palette object with hex color strings.
+ * @typedef {object} InputPalette - The input palette object with hex color strings.
  * @property {string} lighter - The lighter hex color.
  * @property {string} light - The light hex color.
  * @property {string} main - The main hex color.
  *
- * @typedef {Object} ChannelPalette - The output palette object with RGB channels.
+ * @typedef {object} ChannelPalette - The output palette object with RGB channels.
  * @property {string} lighterChannel - The lighter RGB channels.
  * @property {string} lightChannel - The light RGB channels.
  * @property {string} mainChannel - The main RGB channels.
@@ -82,8 +84,8 @@ export function createPaletteChannel<T extends InputPalette>(hexPalette: T): Cha
 /**
  * Adds an alpha channel to a color.
  *
- * @param {string} color - The color string in RGB channels or CSS variable format.
  * @param {number} [opacity=1] - The opacity value.
+ * @param {string} color The color to add the alpha channel to.
  * @returns {string} - The color string with alpha channel.
  * @throws {Error} - Throws an error if the color format is unsupported.
  *

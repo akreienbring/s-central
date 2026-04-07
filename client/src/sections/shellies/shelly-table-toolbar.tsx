@@ -2,13 +2,10 @@
   Author: André Kreienbring
   A Toolbar for the Shelly table that allows batch operations on selected devices.
 */
-import type { BatchAlert } from '@src/types/device';
-
 import { type JSX, useState } from 'react';
 import Iconify from '@src/components/iconify';
 import { useTranslation } from 'react-i18next';
 import WifiForm from '@src/sections/shellies/wifi-form';
-import FadingAlert from '@src/components/userinfo/fadingalert';
 
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,37 +18,37 @@ interface ShellyTableToolbarProps {
   selected: string[];
   handleRebootDevices: (ids?: string[]) => void;
   handleFirmwareUpdates: (type: 'stable' | 'beta', ids?: string[]) => void;
-  alert: BatchAlert;
-  setAlert: (alert: BatchAlert) => void;
 }
 
 /**
   Component that provides a toolbar for batch operations on selected Shelly devices.
   It includes options for rebooting devices, performing firmware updates, and updating WiFi settings.
-  @param {array} selected The ids of selected devices
-  @param {function} handleRebootDevices Function to handle rebooting selected devices
-  @param {function} handleStableUpdates Function to handle stable firmware updates for selected devices
-  @param {function} handleBetaUpdates Function to handle beta firmware updates for selected devices
-  @param {Alert} alert The current state of the batch operation alert
-  @param {function} setAlert Function to update the state of the batch operation alert
+  @param {ShellyTableToolbarProps} props
+  @param {Array} props.selected The ids of selected devices
+  @param {Function} props.handleRebootDevices Function to handle rebooting selected devices
+  @param {Function} props.handleStableUpdates Function to handle stable firmware updates for selected devices
+  @param {Function} props.handleBetaUpdates Function to handle beta firmware updates for selected devices
+  @param {Alert} props.alert The current state of the batch operation alert
+  @param {Function} props.setAlert Function to update the state of the batch operation alert
   @returns {JSX.Element} A toolbar with batch operation options for selected devices
 */
 export default function ShellyTableToolbar({
   selected,
   handleRebootDevices,
   handleFirmwareUpdates,
-  alert,
-  setAlert,
 }: ShellyTableToolbarProps): JSX.Element {
   const { t } = useTranslation();
   const [openWifi, setOpenWifi] = useState({ open: false });
 
   /**
-    Open / Close the Wifi update Dialog
+    Open the Wifi update Dialog
   */
   const handleOpenWifi = () => {
     setOpenWifi({ open: true });
   };
+  /**
+    Close the Wifi update Dialog
+  */
   const handleCloseWifi = () => {
     setOpenWifi({ open: false });
   };
@@ -65,6 +62,7 @@ export default function ShellyTableToolbar({
             pr: { xs: 1, sm: 1 },
           },
           selected.length > 0 && {
+            // eslint-disable-next-line jsdoc/require-jsdoc
             bgcolor: (theme) =>
               alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
           },
@@ -95,7 +93,6 @@ export default function ShellyTableToolbar({
               Batch
             </Typography>
           )}
-          <FadingAlert alert={alert} setAlert={setAlert} />
         </Stack>
         {selected.length > 0 && (
           <Stack

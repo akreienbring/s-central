@@ -1,1 +1,3126 @@
-import{n as e}from"./rolldown-runtime-DF2fYuay.js";import{C as t,a as n,b as r,c as i}from"./react-vendor-1oBNP9xV.js";import{i as a,n as o,s,t as c}from"./general-CHai_GLv.js";import{A as l,Ct as u,D as d,S as f,T as p,U as m,Y as h,_ as g,c as _,d as v,g as y,i as b,it as x,j as S,l as C,m as w,p as T,rt as E,s as D,t as O,tt as k,u as A}from"./ui-vendor-BkBimm3H.js";import{F as j,a as M,c as N,i as P,l as ee,n as F,o as I,r as te,s as ne,t as re}from"./large-libs-CmsqpX9Z.js";import{n as ie,r as ae,t as oe}from"./large-libs-3pZKuH16.js";import{t as se}from"./scrollbar-BYr01rnf.js";import{a as ce,b as L,c as le,d as R,g as z,h as B,i as ue,l as V,m as H,n as de,o as fe,r as U,s as pe,t as W,u as me}from"./large-libs-BQJSWAyF.js";import{t as G}from"./iconify-DdbsLvvz.js";import{a as he}from"./large-libs-B1VusGPf.js";import{n as ge,r as _e,t as K}from"./pubsub-ScaJTCsF.js";import{a as ve,i as ye}from"./index-CeP7z5de.js";import{i as be,t as xe}from"./device-consumption-BSTWB_iU.js";import{n as q,t as Se}from"./sort-array-n_rTF-n7.js";var J=e(t()),Y=e(ae()),X=e(n()),Ce=({online:e})=>(0,X.jsx)(G,{icon:e?`material-symbols:wifi`:`material-symbols:wifi-off`,sx:{color:e?`green`:`red`}});function we({switches:e,handleSwitchClick:t}){return e===void 0?null:(0,X.jsx)(k,{direction:`row`,children:e.map((e,n)=>(e.index=n,(0,X.jsx)(C,{title:`Toggle Switch ${e.id}`,children:(0,X.jsx)(d,{onClick:()=>t(e),sx:{padding:.5},children:(0,X.jsx)(G,{icon:`icomoon-free:switch`,sx:{cursor:`pointer`,color:e.output?`green`:`black`}},c())})},c())))},c())}var Te=({device:e,handleSwitchToggle:t,display:n})=>{let[r,i]=(0,J.useState)(e.switches);return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsxs)(k,{direction:`row`,sx:{minHeight:35,maxHeight:35,pr:1,pl:1,alignItems:`center`,justifyContent:`space-between`},children:[(0,X.jsx)(Ce,{online:e.online}),(0,X.jsx)(we,{switches:e.switches,handleSwitchClick:e=>{if(e.index!==void 0){e.output=!e.output;let n=[...r];n[e.index]=e,i(n),t(e)}}})]}),(0,X.jsx)(le,{title:(0,X.jsx)(p,{href:`http://${e.ip}`,target:`_blank`,color:`inherit`,underline:`hover`,children:e.cname.substring(0,14)}),subheader:`${e.name} ${e.gen>0?`(Gen ${e.gen})`:``}`,sx:{minWidth:200,minHeight:50,maxHeight:50,pt:1,pb:1}}),n===`maximized`&&(0,X.jsx)(de,{sx:{minWidth:160,maxWidth:160,minHeight:120,objectFit:`scale-down`},image:e.image,title:e.name,component:`img`,alt:e.name})]})},Ee=({scripts:e})=>e===void 0?[]:e.map(e=>e.logmessages&&e.logmessages.length>0?(0,X.jsxs)(k,{spacing:0,children:[(0,X.jsx)(h,{variant:`subtitle2`,children:e.name},c()),e.logmessages.map(e=>(0,X.jsxs)(k,{direction:`row`,spacing:1,sx:{minWidth:0},children:[(0,X.jsx)(h,{variant:`caption`,children:new Date(e.ts*1e3).toTimeString().substring(0,8)},c()),(0,X.jsx)(h,{variant:`caption`,noWrap:!0,children:e.msg},c())]},c()))]},c()):null);function De({colors:e,limit:t=3,sx:n}){let r=e.slice(0,t),i=e.length-t;return(0,X.jsxs)(k,{component:`span`,direction:`row`,alignItems:`center`,justifyContent:`flex-end`,sx:n,children:[r.map((e,t)=>(0,X.jsx)(E,{sx:{ml:-.75,width:16,height:16,bgcolor:e,borderRadius:`50%`,border:e=>`solid 2px ${e.palette.background.paper}`,boxShadow:e=>`inset -1px 1px 2px ${u(e.palette.common.black,.24)}`}},e+t)),e.length>t&&(0,X.jsx)(E,{component:`span`,sx:{typography:`subtitle2`},children:`+${i}`})]})}var Z=[`#00AB55`,`#D22B2B`,`#000000`];function Oe({deviceIp:e,kvs:t}){return t.map(t=>{let n=t.display===void 0?t.key:t.display;return(0,X.jsxs)(k,{direction:`row`,justifyContent:`space-between`,style:{gap:20},useFlexGap:!0,flexWrap:`wrap`,children:[(0,X.jsx)(p,{href:`http://${e}/#/key-value-store/edit?key=${t.key}`,target:`_blank`,color:`inherit`,underline:`hover`,variant:`subtitle2`,noWrap:!0,sx:{minWidth:100},children:(0,X.jsx)(h,{noWrap:!0,variant:`caption`,children:n.substring(0,14)},c())}),(0,X.jsx)(h,{variant:`caption`,children:(()=>{switch(t.style===void 0?t.value:t.style){case`boolean`:return Number(t.value)===1?`true`:`false`;case`color`:return(0,X.jsx)(De,{colors:Number(t.value)===1?Z.slice(0,1):Z.slice(1,2),sx:{pt:`5px`}},c());default:return t.value}})()},c())]},c())})}var ke=e(ie()),Ae=({device:e,handleSwitchSet:t})=>{let[n,i]=(0,J.useState)(null),[a,o]=(0,J.useState)(e.switches[0]),{t:s}=r(),[c,l]=(0,J.useState)(a.rgb===void 0?`undefined`:`rgb (${a.rgb[0]}, ${a.rgb[1]}, ${a.rgb[2]})`),[u,f]=(0,J.useState)(a?.brightness),[p,m]=(0,J.useState)(a?.white),g=(0,J.useMemo)(()=>(0,ke.default)(t,30,{leading:!1,trailing:!0}),[t]),v=(0,J.useCallback)(e=>{e!==null&&i(e.detail)},[]);(0,J.useEffect)(()=>(ge(`copySourceSet`,v),()=>{_e(`copySourceSet`,v)}),[v]);let y=t=>{n?.deviceId===e.id&&K(`copySourceSet`,{deviceId:e.id,deviceName:e.cname,copySwitch:t})},b=(e,t)=>{l(t.rgb);let n={...a};n.rgb=t.rgb.substring(t.rgb.indexOf(`(`)+1,t.rgb.indexOf(`)`)).split(`,`).map(e=>Number(e)),o(n),y(n),g(n)},x=(e,t)=>{f(t);let n={...a};n.brightness=t,o(n),y(n),g(n)},S=(e,t)=>{m(t);let n={...a};n.white=t,o(n),y(n),g(n)},w=()=>{if(n==null)return;let e={...a},r=n.aSwitch;a.brightness!==void 0&&r.brightness!==void 0&&(e.brightness=r.brightness,f(r.brightness)),a.white!==void 0&&r.white!==void 0&&(e.white=r.white,m(r.white)),a.rgb!==void 0&&r.rgb!==void 0&&(e.rgb=r.rgb,l(`rgb (${r.rgb[0]}, ${r.rgb[1]}, ${r.rgb[2]})`)),o(e),t(e)};return(0,X.jsxs)(k,{alignItems:`flex-start`,children:[a.brightness!==void 0&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(h,{variant:`subtitle2`,children:s(`Brightness`)}),(0,X.jsx)(_,{"data-testid":`shelly_brightness_slider`,value:u,min:0,max:100,step:10,marks:!0,valueLabelDisplay:`auto`,size:`small`,onChange:x,"aria-label":`Brighness slider`})]}),a.white!==void 0&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(h,{variant:`subtitle2`,children:s(`White`)}),(0,X.jsx)(_,{"data-testid":`shelly_white_slider`,value:p,min:0,max:e.gen===1?100:255,step:e.gen===1?10:25,marks:!0,valueLabelDisplay:`auto`,size:`small`,onChange:S,"aria-label":`White slider`})]}),a.rgb!==void 0&&(0,X.jsx)(O,{"data-testid":`shelly_multicolor_input`,format:`rgb`,isAlphaHidden:!0,value:c,onChange:b,size:`small`,variant:`outlined`,"aria-label":`Color Selection`,sx:{pt:1,ml:-1}}),(0,X.jsxs)(k,{direction:`row`,justifyContent:`center`,sx:{ml:-2,mr:-2,minWidth:`110%`},children:[(0,X.jsx)(C,{title:n?.deviceId===e.id?s(`_copyreset_`):s(`_copysettings_`),children:(0,X.jsx)(d,{"data-testid":`shelly_setcopysource_button`,onClick:()=>{n?.deviceId!==e.id||n===null?K(`copySourceSet`,{deviceId:e.id,deviceName:e.cname,aSwitch:a}):K(`copySourceSet`,null)},color:n?.deviceId===e.id?`success`:`inherit`,children:(0,X.jsx)(G,{icon:n?.deviceId===e.id?`tabler:copy-off`:`tabler:copy-check`})})}),n!==null&&n.deviceId!==e.id&&(0,X.jsx)(C,{title:s(`_pastesettingsfrom_`,{deviceName:n?.deviceName}),children:(0,X.jsx)(d,{onClick:w,color:`success`,children:(0,X.jsx)(G,{icon:`fa7-regular:paste`})})})]})]})},Q=({children:e,elementId:t,text:n,scrollableElementId:r})=>{let i=(e,n)=>{let i=document.getElementById(t);if(i&&o(i,n,e),e&&r){let e=document.getElementById(`markup`),t=document.getElementById(r);e&&t&&a(t,e)}};return(0,X.jsx)(p,{component:`div`,onClick:()=>i(!0,n),sx:{pt:1,cursor:`pointer`},children:e},c())},je=({elementId:e,scrollableElementId:t,white:n})=>(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"white":${n}`,children:(0,X.jsx)(G,{icon:`stash:circle-dot`,sx:{color:`black`}},c())},c()),(0,X.jsx)(h,{variant:`caption`,children:n},c())]},c()),Me=({elementId:e,scrollableElementId:t,event:n})=>{let r=n.data;if(r?.motion!==void 0)return(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"motion":${r.motion}`,children:(0,X.jsx)(G,{icon:Number(r.motion)===1?`material-symbols:directions-walk`:`fa6-solid:person`,sx:{color:Number(r.motion)===1?`blue`:`black`}},c())},c());if(r?.window!==void 0)return Number(r.window)===1?(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"window":${r.window}`,children:(0,X.jsx)(G,{icon:`material-symbols:door-open-rounded`,sx:{color:`black`}},c())},c()):(0,X.jsx)(G,{icon:`material-symbols:door-front-rounded`,sx:{color:`black`}},c());if(r?.button!==void 0)switch(Number(r.button)){case 1:return(0,X.jsx)(G,{icon:`mdi:number-1-box`,sx:{color:`blue`}},c());case 2:return(0,X.jsx)(G,{icon:`mdi:number-2-box`,sx:{color:`blue`}},c());case 3:return(0,X.jsx)(G,{icon:`mdi:number-3-box`,sx:{color:`blue`}},c());case 4:return(0,X.jsx)(G,{icon:`mdi:number-4-box`,sx:{color:`blue`}},c());case 254:return(0,X.jsx)(G,{icon:`f7:hand-point-left-fill`,sx:{color:`blue`}},c());default:return(0,X.jsx)(G,{icon:`f7:hand-point-left-fill`,sx:{color:`blue`}},c())}return(0,X.jsx)(G,{icon:`material-symbols:event-busy`,sx:{color:`black`}},c())},Ne=({elementId:e,scrollableElementId:t,event:n})=>{let r;switch(Number(n.id)){case 0:r=180;break;case 1:r=270;break;case 2:r=90;break;default:r=0}return(0,X.jsx)(k,{direction:`row`,children:(0,X.jsxs)(Q,{elementId:e,scrollableElementId:t,text:`"event":"${n.event}"`,children:[(0,X.jsx)(G,{icon:`system-uicons:grid-squares-add`,sx:{color:`black`},className:`rotate${r}`},c()),n.event===`single_push`&&(0,X.jsx)(G,{icon:`mdi:number-1-box`,sx:{color:`blue`}},c()),n.event===`double_push`&&(0,X.jsx)(G,{icon:`mdi:number-2-box`,sx:{color:`blue`}},c()),n.event===`triple_push`&&(0,X.jsx)(G,{icon:`mdi:number-3-box`,sx:{color:`blue`}},c()),(n.event===`long_push`||n.event===`btn_up`)&&(0,X.jsx)(G,{icon:`f7:hand-point-left-fill`,sx:{color:`blue`}},c())]},c())},c())},Pe=({elementId:e,scrollableElementId:t,events:n})=>{let r=[`single_push`,`double_push`,`triple_push`,`long_push`],i=n.map(n=>n.event===`shelly-blu`&&n.data!==void 0?(0,X.jsx)(Me,{elementId:e,scrollableElementId:t,event:n},c()):r.includes(n.event)?(0,X.jsx)(Ne,{elementId:e,scrollableElementId:t,event:n},c()):(n.event===`btn_up`||n.event,n.event===`scheduled_restart`?(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"event":"scheduled_restart"`,children:(0,X.jsx)(G,{icon:`solar:restart-square-bold`,sx:{color:`black`}},c())},c()):(0,X.jsx)(G,{icon:`ic:sharp-help`,sx:{color:`black`}},c())));return i.length>0?i:[(0,X.jsx)(G,{icon:`mdi:bug`,sx:{color:`red`}},c())]},Fe=({elementId:e,scrollableElementId:t,consumption:n})=>(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"aenergy":`,children:(0,X.jsx)(G,{icon:`material-symbols-light:bolt`,sx:{color:Number(n>0)?`blue`:`black`}},c())},c()),(0,X.jsx)(h,{variant:`caption`,children:be(n)},c())]},c()),Ie=({elementId:e,scrollableElementId:t,params:n})=>{if(n.matter===void 0)return null;let r=n.matter.num_fabrics;return(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"matter":{"num_fabrics":${r}`,children:(0,X.jsx)(G,{icon:`material-symbols:matter`,sx:{color:r>0?`green`:`red`}})},c()),r>0&&(0,X.jsx)(h,{variant:`subtitle2`,color:`green`,children:r},c())]},c())},Le=({elementId:e,scrollableElementId:t,params:n})=>{let r=[];return Object.keys(n).forEach(i=>{if(i.startsWith(`script`)){let a=n[`script:${Number(i.split(`:`)[1])}`];r.push((0,X.jsxs)(k,{justifyContent:`flex-start`,alignItems:`center`,spacing:.5,direction:`row`,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"script:${Number(i.split(`:`)[1])}":{"id":${a.id},"running":${a.running?`true`:`false`}`,children:(0,X.jsxs)(h,{variant:`subtitle2`,color:a.running?`green`:`red`,sx:{mb:1},children:[`{`,a.id,`}`]},c())},c()),(0,X.jsxs)(h,{variant:`caption`,children:[Math.round(Number(a?.mem_free)/1024),` kb free`]},c())]},c()))}}),r},Re=({elementId:e,scrollableElementId:t,version:n})=>(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"stable":{"version":"${n}"}}`,children:(0,X.jsx)(G,{icon:`material-symbols:system-update-alt`,sx:{color:`green`}},c())},c()),(0,X.jsx)(h,{variant:`caption`,children:n},c())]},c()),ze=({elementId:e,scrollableElementId:t,brightness:n})=>(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`"brightness":${n}`,children:(0,X.jsx)(G,{icon:`subway:black-white`,sx:{color:`black`},width:18,height:18},c())},c()),(0,X.jsxs)(h,{variant:`caption`,children:[n,`%`]},c())]},c()),Be=({elementId:e,scrollableElementId:t,sys:n})=>(0,X.jsxs)(k,{direction:`row`,justifyContent:`flex-start`,alignItems:`center`,spacing:.5,children:[(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`ram_free":${n.ram_free}`,children:(0,X.jsx)(G,{icon:`material-symbols-light:sd`,sx:{color:`black`}},c())},c()),(0,X.jsxs)(h,{variant:`caption`,children:[Math.round(Number(n.ram_free)/1024),` kb free`]},c()),(0,X.jsx)(Q,{elementId:e,scrollableElementId:t,text:`fs_free":${n.fs_free}`,children:(0,X.jsx)(G,{icon:`material-symbols:storage-rounded`,sx:{color:`black`}},c())},c()),(0,X.jsxs)(h,{variant:`caption`,children:[Math.round(Number(n.fs_free)/1024),` kb free`]},c())]},c()),Ve=({deviceName:e,wsMessage:t,elementId:n,scrollableElementId:r})=>{if(!t?.params)return[];let i=t.params,a=[];if(t.method===`NotifyEvent`)i?.events!==void 0&&a.push((0,X.jsx)(Pe,{elementId:n,scrollableElementId:r,events:i.events},c()));else{let o=xe(e,i);if(t.method===`NotifyFullStatus`){if(i?.ws?.connected!==void 0&&a.push((0,X.jsx)(Q,{elementId:n,scrollableElementId:r,text:`"ws":{"connected":${i.ws.connected?`true`:`false`}`,children:(0,X.jsx)(G,{icon:i.ws.connected?`carbon:connection-signal`:`carbon:connection-signal-off`,sx:{color:i.ws.connected?`green`:`red`}},c())},c())),i?.sys!==void 0&&a.push((0,X.jsx)(Be,{elementId:n,scrollableElementId:r,sys:i.sys},c())),i?.cloud?.connected!==void 0&&a.push((0,X.jsx)(Q,{elementId:n,scrollableElementId:r,text:`"cloud":{"connected":${i.cloud.connected?`true`:`false`}}`,children:(0,X.jsx)(G,{icon:`material-symbols-light:cloud`,sx:{color:i.cloud.connected?`green`:`black`}},c())},c())),i?.sys?.available_updates?.stable?.version!==void 0&&a.push((0,X.jsx)(Re,{elementId:n,scrollableElementId:r,version:i.sys.available_updates.stable.version},c())),a.push((0,X.jsx)(Le,{elementId:n,scrollableElementId:r,params:t.params},c())),o.hasSwitch&&a.push((0,X.jsx)(Fe,{elementId:n,scrollableElementId:r,consumption:o.totalPower},c())),i[`rgbw:0`]?.brightness!==void 0&&a.push((0,X.jsx)(ze,{elementId:n,scrollableElementId:r,brightness:i[`rgbw:0`].brightness},c())),i[`switch:0`]?.brightness!==void 0&&a.push((0,X.jsx)(ze,{elementId:n,scrollableElementId:r,brightness:i[`switch:0`].brightness},c())),i[`rgbw:0`]?.white!==void 0&&a.push((0,X.jsx)(je,{elementId:n,scrollableElementId:r,white:i[`rgbw:0`].white},c())),i[`switch:0`]?.white!==void 0&&a.push((0,X.jsx)(je,{elementId:n,scrollableElementId:r,white:i[`switch:0`].white},c())),i[`rgbw:0`]?.rgb!==void 0){let{rgb:e}=i[`rgbw:0`],t=`rgb(${e[0]}, ${e[1]}, ${e[2]})`;a.push((0,X.jsx)(Q,{elementId:n,scrollableElementId:r,text:`,"rgb":\\[${e[0]},${e[1]},${e[2]}\\]`,children:(0,X.jsx)(G,{icon:`material-symbols:light-mode`,sx:{color:t}},c())},c()))}i?.mqtt?.connected!==void 0&&a.push((0,X.jsx)(Q,{elementId:n,scrollableElementId:r,text:`"mqtt":{"connected":${i.mqtt?.connected?`true`:`false`}}`,children:(0,X.jsx)(G,{icon:`cbi:mqtt`,sx:{color:i.mqtt.connected?`green`:`red`}},c())},c())),i?.matter?.num_fabrics!==void 0&&a.push((0,X.jsx)(Ie,{elementId:n,scrollableElementId:r,params:i},c()))}else t.method===`NotifyStatus`?o.hasSwitch&&a.push((0,X.jsx)(Fe,{elementId:n,scrollableElementId:r,consumption:o.totalPower},c())):a.push((0,X.jsx)(G,{icon:`ic:sharp-help`,sx:{color:`black`}},c()))}return a},He=({ts:e})=>(0,X.jsx)(h,{variant:`subtitle2`,children:ve(e,`HH:mm`)},c()),Ue=({deviceId:e,deviceName:t,wsMessages:n})=>n===void 0?null:Object.keys(n).map((r,i)=>{let a=n[r];return(0,X.jsxs)(J.Fragment,{children:[(0,X.jsxs)(k,{direction:`row`,justifyContent:`left`,alignItems:`center`,spacing:2,children:[a?.params?.ts!==void 0&&(0,X.jsx)(He,{ts:a.params.ts},c()),(0,X.jsx)(h,{variant:`subtitle2`,children:a?.method},c()),(0,X.jsx)(Ve,{deviceName:t,wsMessage:a,elementId:`CCT_${e}_${i}`,scrollableElementId:`CC_${e}`,index:i},c())]},c()),(0,X.jsx)(h,{id:`CCT_${e}_${i}`,variant:`caption`,children:JSON.stringify(a)},c())]},c())}),We=x(ee)(({theme:e})=>({width:45,height:20,padding:5,"& .MuiSwitch-thumb":{backgroundColor:`#b0bec5`,width:17,height:17,...e.applyStyles(`dark`,{backgroundColor:`#003892`})},"& .MuiSwitch-track":{opacity:1,backgroundColor:`#d32f2f`,borderRadius:20/2,...e.applyStyles(`dark`,{backgroundColor:`#8796A5`})},"& .MuiSwitch-switchBase":{margin:1,padding:0,"&.Mui-checked":{color:`#fff`,transform:`translateX(22px)`,"& + .MuiSwitch-track":{opacity:1,backgroundColor:`#2e7d32`,...e.applyStyles(`dark`,{backgroundColor:`#8796A5`})},"& + .MuiSwitch-thumb":{opacity:1,backgroundColor:`#2e7d32`,...e.applyStyles(`dark`,{backgroundColor:`#8796A5`})}},"&.Mui-disabled":{color:`#fff`,transform:`translateX(22px)`,"& + .MuiSwitch-track":{opacity:1,backgroundColor:`#aab4be`,...e.applyStyles(`dark`,{backgroundColor:`#8796A5`})}}}})),Ge=({deviceIP:e,deviceOnline:t,scripts:n,handleScriptToggle:r})=>{let i=[,,,];for(let e=0;e<=2;e+=1)n[e]===void 0?i[e]={name:`n/a`,id:null,running:!1}:(i[e]=n[e],i[e].running=n[e].running&&t,i[e].index=e);return(0,X.jsx)(k,{children:i.map(t=>(0,X.jsxs)(k,{direction:`row`,style:{gap:20},useFlexGap:!0,flexWrap:`wrap`,children:[(0,X.jsx)(p,{href:t.id===null?`http://${e}/#/scripts`:`http://${e}/#/script/${t.id}`,target:`_blank`,color:`inherit`,underline:`hover`,variant:`subtitle2`,noWrap:!0,sx:{minWidth:100},children:(0,X.jsx)(h,{noWrap:!0,variant:`caption`,children:t.name.substring(0,14)},c())}),(0,X.jsx)(We,{size:`small`,defaultChecked:t.running,disabled:t.id===null,color:t.id===null?`default`:t.running?`success`:`warning`,onChange:()=>r(t.index)})]},c()))},c())};function Ke(e,t){let n=!e.online,r=t?.notifyStatus?.params,i=t?.notifyFullStatus?.params;if(i!==void 0&&e.gen===1||r!==void 0&&e.gen>=2){let t=e.gen===1?i:r;if(t&&e.scripts.length>0){let r;Object.values(e.scripts).forEach(i=>{r=t[`script:${i.id}`],r?.running!==void 0&&i.running!==r.running&&(n=!0,i.running=r.running,console.log(`Script ${i.name} of device ${e.cname} running was set to ${i.running}`))})}if(t&&e.switches.length>0){let r;e.switches.forEach(i=>{r=t[`switch:${i.id}`]||t[`rgbw:${i.id}`],(e.gen>=2||i.ts===void 0||t.ts-i.ts>2)&&(r?.output!==void 0&&i.output!==r.output&&(n=!0,i.output=r.output,console.log(`Switch ${i.key} of device ${e.cname} output was set to ${i.output}`)),r?.brightness!==void 0&&i.brightness!==r.brightness&&(n=!0,i.brightness=r.brightness,console.log(`Switch ${i.key} of device ${e.cname} brightness was set to ${i.brightness}`)),r?.white!==void 0&&i.white!==r.white&&(n=!0,i.white=r.white,console.log(`Switch ${i.key} of device ${e.cname} white was set to ${i.white}`)),r?.rgb!==void 0&&!(0,Y.default)(i.rgb,r.rgb)&&(n=!0,i.rgb=r.rgb,console.log(`Switch ${i.key} of device ${e.cname} rgb was set to ${i.rgb}`)))})}}return n&&(e.scripts=[...e.scripts],e.switches=[...e.switches]),i?.sys?.available_updates!==void 0&&(e.stable!==i.sys.available_updates?.stable?.version&&(e.stable=i.sys.available_updates?.stable?.version,console.log(`Device stable was set to ${e.stable}`),n=!0),e.beta!==i.sys.available_updates?.beta?.version&&(e.beta=i.sys.available_updates?.beta?.version,console.log(`Device beta was set to ${e.beta}`),n=!0)),n?{...e}:null}var qe=x(e=>{let{expand:t,deviceName:n,...r}=e;return(0,X.jsx)(d,{"data-testid":`shelly_openkvs_button_${n}`,...r})})(({theme:e,expand:t})=>({transform:t?`rotate(180deg)`:`rotate(0deg)`,marginLeft:`auto`,transition:e.transitions.create(`transform`,{duration:e.transitions.duration.shortest})})),Je=(0,J.memo)(({deviceId:e,deviceGen:t,tab:n,isUpdateNeeded:r,setDeviceLastUpdate:i,getDeviceLastUpdate:a,display:o})=>{let[l,u]=(0,J.useState)(!1),[f,p]=(0,J.useState)(null),[m,h]=(0,J.useState)([]),[g,_]=(0,J.useState)({}),[v,y]=(0,J.useState)([]),{request:b,subscribe:x,unsubscribe:S,send:C,isTest:w}=s(),T=(0,J.useCallback)(t=>{let n=t.data.device;n!==void 0&&(p(()=>n),h(()=>n.scripts),_(()=>({notifyFullStatus:n.notifyFullStatus,notifyStatus:n.notifyStatus,notifyEvent:n.notifyEvent})),y(()=>n.kvs),i(e,Date.now(),n))},[e,i]),E=(0,J.useCallback)(()=>{let t=r(e);t===null?b({event:`device-get`,source:`ShellyCard`,message:`ShellyCard needs a device`,data:{deviceId:e}},T):(t={...t},p(()=>t),h(()=>t.scripts),_(()=>({notifyFullStatus:t.notifyFullStatus,notifyStatus:t.notifyStatus,notifyEvent:t.notifyEvent})),y(()=>t.kvs))},[e,T,r,b]),D=(0,J.useCallback)(e=>{let t=e.eventType,r=e.data.device;if(r!==void 0){switch(t){case`script`:!(0,Y.default)(m,r.scripts)&&n===`sk`&&h(()=>r.scripts);break;case`kvs`:!(0,Y.default)(v,r.kvs)&&n===`sk`&&y(()=>r.kvs);break;case`log`:!(0,Y.default)(m,r.scripts)&&n===`log`&&h(()=>r.scripts);break;case`ws`:if(r?.notifyFullStatus?.params!==void 0||r?.notifyStatus?.params!==void 0){let e={notifyFullStatus:r.notifyFullStatus,notifyStatus:r.notifyStatus,notifyEvent:r.notifyEvent};n===`ws`&&_(()=>e);let t=a(r.id)?.device;if(t!==void 0){let n=Ke(t,e);n!==null&&(p(()=>n),h(()=>n.scripts))}else console.log(`oldDevice ${r.cname} is undefined in ShellyCard.handleDeviceUpdate`)}break;default:(0,Y.default)(f,r)||p(()=>r)}i(r.id,Date.now(),r)}},[f,a,v,m,n,i]);(0,J.useEffect)(()=>{if(E(),!(t===0||w))return x({subscriptionID:e,callback:D,all:!1},[`device-update`]),()=>{S(e,[`device-update`])}},[]);let O=()=>{u(!l)},A=e=>{e.ts=Math.floor(Date.now())/1e3,C({event:`toggle-switch`,source:`Shelly Card`,message:`${f.cname} wants to toggle a switch`,data:{switch:e}})},j=e=>{e.ts=Math.floor(Date.now())/1e3,C({event:`set-switch`,source:`Shelly Card`,message:`${f.cname} wants to set a switch`,data:{switch:e}})},M=e=>{let t=[...f.scripts],n=f.scripts[e];n.running=!n.running,t[e].running=n.running,h(t),C({event:`toggle-script`,source:`Shelly Card`,message:`${f.cname} wants to toggle a script`,data:{script:n,deviceIp:f.ip,scriptIndex:e}})};return f==null?null:(0,X.jsx)(V,{"data-testid":`shelly_card_${f.cname}`,raised:!0,children:(0,X.jsxs)(k,{direction:n===`ctrl`?`column`:`row`,children:[(0,X.jsxs)(k,{children:[(0,X.jsx)(Te,{device:f,handleSwitchToggle:A,display:o}),n===`sk`&&o===`maximized`&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(U,{sx:{minWidth:200,pt:0},children:(0,X.jsx)(k,{justifyContent:`left`,alignItems:`flex-start`,children:(0,X.jsx)(Ge,{deviceIP:f.ip,deviceOnline:f.online,scripts:m,handleScriptToggle:M})})}),(0,X.jsxs)(ue,{disableSpacing:!0,children:[(0,X.jsx)(d,{href:`http://${f.ip}/#/key-value-store`,target:`_blank`,"aria-label":`show KVS entries`,children:(0,X.jsx)(G,{icon:`material-symbols:storage-rounded`,sx:{color:f?.kvs?.length===0?`grey`:`green`}},c())}),(0,X.jsx)(qe,{deviceName:f.cname,disabled:f?.kvs?.length===0,onClick:O,expand:l,"aria-expanded":l,"aria-label":`show KVS entries`,children:(0,X.jsx)(G,{icon:`mdi:expand-more`,sx:{color:`gray`}},c())})]}),(0,X.jsx)(pe,{in:l,timeout:`auto`,mountOnEnter:!0,unmountOnExit:!0,children:(0,X.jsx)(U,{sx:{pt:0},children:(0,X.jsx)(k,{justifyContent:`left`,alignItems:`flex-start`,children:(0,X.jsx)(Oe,{deviceIp:f.ip,kvs:v})})})})]})]}),n===`ws`&&(0,X.jsx)(U,{id:`CC_${e}`,sx:{display:`flex`,width:1,overflowX:`auto`,overflowY:`auto`},children:(0,X.jsx)(k,{children:(0,X.jsx)(Ue,{deviceId:e,deviceName:f.name,wsMessages:g})})}),n===`log`&&(0,X.jsx)(U,{sx:{display:`flex`,width:1,overflowX:`auto`,overflowY:`auto`},children:(0,X.jsx)(k,{children:(0,X.jsx)(Ee,{scripts:m})})}),n===`ctrl`&&(0,X.jsx)(U,{sx:{minWidth:230,maxWidth:230,pl:2,pr:2},children:(0,X.jsx)(Ae,{device:f,handleSwitchSet:j})})]})})}),Ye=e(oe());function Xe({type:e,title:t,openWifi:n,row:i,onCloseWifi:a,selected:o}){let[c,u]=(0,J.useState)(e===`single`?{}:{ssid:``,password:``}),[f,p]=(0,J.useState)(!1),[m,_]=(0,J.useState)(!1),[y,b]=(0,J.useState)({success:!0,message:``,successful:0,total:0}),{t:x}=r(),{request:S}=s(),C=(0,J.useCallback)(e=>{e.data.wifisettings&&u(e.data.wifisettings)},[]),w=(0,J.useCallback)(e=>{b({success:e.data.success,successful:e.data.successful,total:e.data.total,message:e.message})},[]);(0,J.useEffect)(()=>{n&&i&&e===`single`&&Ye.default.isEmpty(c)&&S({event:`device-get-wifi-settings`,source:`Wifi Form`,message:`Wifi Form needs the wifi settings of a device`,data:{deviceId:i.id}},C)},[i,C,S,n,e,c]);let T=t=>{t.preventDefault(),i&&S({event:`device-wifi-update`,source:`Wifi Form`,message:`Updating the wifi settings`,data:{wifisettings:c,ids:e===`single`?[i.id]:o}},w)},D=e=>{let t={...c};e.target.name===`ssid`&&(t[e.target.name]=e.target.value),e.target.name===`password`&&(t[e.target.name]=e.target.value),u(t)};return Ye.default.isEmpty(c)?null:(0,X.jsxs)(L,{anchor:`right`,open:n,onClose:a,slotProps:{paper:{sx:{width:300,border:`none`,overflow:`hidden`}}},children:[(0,X.jsxs)(k,{direction:`row`,alignItems:`center`,justifyContent:`space-between`,sx:{px:1,py:2},children:[(0,X.jsx)(h,{variant:`h6`,sx:{ml:1},children:t}),(0,X.jsx)(d,{"data-testid":`device_closewifi_button`,onClick:a,children:(0,X.jsx)(G,{icon:`eva:close-fill`})})]}),(0,X.jsx)(h,{variant:`subtitle2`,color:`error`,sx:{ml:1},children:x(`_wifiwarming_`)}),(0,X.jsx)(z,{}),(0,X.jsx)(g,{fullWidth:!0,children:(0,X.jsx)(E,{component:`form`,onSubmit:T,sx:{display:`flex`,flexDirection:`column`,gap:2},children:(0,X.jsxs)(k,{spacing:3,sx:{px:3,py:3},children:[(0,X.jsx)(v,{required:!0,autoComplete:`off`,label:`SSID`,name:`ssid`,value:c.ssid,onChange:D,slotProps:{htmlInput:{"data-testid":`wifi_ssid_input`,maxLength:25}}}),(0,X.jsx)(v,{required:!0,name:`password`,autoComplete:`new-password`,label:x(`Password`),onChange:D,type:f?`text`:`password`,slotProps:{input:{endAdornment:(0,X.jsx)(A,{position:`end`,children:(0,X.jsx)(d,{onClick:()=>p(!f),edge:`end`,children:(0,X.jsx)(G,{icon:f?`eva:eye-fill`:`eva:eye-off-fill`})})})},htmlInput:{maxLength:20}}}),e===`single`&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(v,{disabled:!0,label:`IP`,name:`ip`,value:c.ip}),(0,X.jsx)(v,{disabled:!0,label:`Mode`,name:`ipv4mode`,value:c.ipv4mode}),(0,X.jsx)(v,{disabled:!0,label:`Gatway`,name:`gw`,value:c.gw}),(0,X.jsx)(v,{disabled:!0,label:`Mask`,name:`netmask`,value:c.netmask}),(0,X.jsx)(v,{disabled:!0,label:`DNS`,name:`nameserver`,value:c.nameserver==null?``:c.nameserver})]}),(0,X.jsx)(H,{required:!0,control:(0,X.jsx)(B,{color:`error`,checked:m,onChange:e=>_(e.target.checked)}),label:x(`_acceptrisk_`)}),(0,X.jsx)(h,{variant:`subtitle2`,color:y.success?`success`:`error`,children:x(y.message,{successful:y.successful,total:y.total})}),(0,X.jsx)(l,{disabled:!c.password||!c.ssid||!m,fullWidth:!0,size:`large`,type:`submit`,color:`inherit`,variant:`outlined`,startIcon:(0,X.jsx)(G,{icon:`formkit:submit`}),children:x(`Save`)})]})})})]})}var Ze=({count:e,max:t})=>(0,X.jsxs)(E,{position:`relative`,display:`inline-flex`,children:[(0,X.jsx)(S,{size:40,variant:`indeterminate`,color:e>=t-1?`error`:`success`}),(0,X.jsx)(E,{top:0,left:0,bottom:0,right:0,position:`absolute`,display:`flex`,alignItems:`center`,justifyContent:`center`,children:(0,X.jsx)(h,{variant:`caption`,component:`div`,sx:{color:`text.primary`},children:`${e}/${t}`})})]});function Qe({row:e,labelId:t,isItemSelected:n,handleClick:i,handleRebootDevices:a,handleFirmwareUpdates:o,handleUpdateRow:c}){let{t:l}=r(),{request:u,subscribe:p,unsubscribe:m,isTest:g}=s(),[_,v]=(0,J.useState)(e),[y,b]=(0,J.useState)(null),[x,T]=(0,J.useState)({open:!1}),E=()=>{T({open:!0})},D=()=>{T({open:!1})},O=e=>{e.stopPropagation(),b(e.currentTarget)},k=e=>{switch(e){case`reboot`:a([_.id]);break;case`stable`:o(`stable`,[_.id]);break;case`beta`:o(`beta`,[_.id]);break;case`wifi`:E();break;default:break}b(null)},A=(0,J.useCallback)(e=>{let t=e.data.device,n=t?.notifyFullStatus?.params?.sys;if((t?.updateStablePending||t?.updateBetaPending)&&console.log(`Update pending on device ${t?.cname}`),t&&t.gen>0){let e={id:t.id,image:t.image,name:t.cname.substring(0,14),model:t.name,gen:t.gen,uptime:n?n.uptime:0,restart:t.rebootPending?`reboot pending`:n?n.restart_required:void 0,firmware:t.fw_id,stable:t.updateStablePending?`stable pending`:t.stable,beta:t.updateBetaPending?`beta pending`:t.beta,reloads:t.reloads};c(e),v(e)}},[v,c]);return(0,J.useEffect)(()=>{if(!g&&(u({event:`device-get`,source:`ShellyCard`,message:`ShellyCard needs a device`,data:{deviceId:e.id}},A),e.gen!==0))return p({subscriptionID:e.id,callback:A,all:!1},[`device-update`]),()=>{m(e.id,[`device-update`])}},[]),(0,X.jsxs)(X.Fragment,{children:[(0,X.jsxs)(F,{hover:!0,onClick:()=>i(_.id),role:`checkbox`,"aria-checked":n,tabIndex:-1,selected:n,sx:{cursor:`pointer`},children:[(0,X.jsx)(I,{padding:`checkbox`,children:(0,X.jsx)(B,{color:`primary`,checked:n})}),(0,X.jsx)(I,{align:`right`,sx:{minWidth:70,maxWidth:70,objectFit:`scale-down`},children:(0,X.jsx)(`img`,{src:e.image,alt:e.name,width:`70`,height:`70`})}),(0,X.jsx)(I,{id:t,scope:`row`,padding:`none`,children:(0,X.jsx)(h,{children:_.name})}),(0,X.jsx)(I,{align:`left`,children:(0,X.jsxs)(h,{children:[_.model,` `]})}),(0,X.jsx)(I,{align:`left`,children:(0,X.jsx)(h,{children:_.gen})}),(0,X.jsx)(I,{align:`left`,children:(0,X.jsx)(h,{children:ye(_.uptime)})}),(0,X.jsx)(I,{align:`left`,children:(0,X.jsx)(h,{color:_.restart===`reboot pending`?`success`:`string`,children:_.restart===`reboot pending`?(0,X.jsx)(S,{size:25,variant:`indeterminate`,color:`success`}):_.restart?(0,X.jsx)(C,{title:l(`_required_`),children:(0,X.jsx)(G,{icon:`mdi:restart-alert`,width:25,height:25,sx:{color:`red`}})}):(0,X.jsx)(C,{title:l(`_notrequired_`),children:(0,X.jsx)(G,{icon:`mdi:restart-off`,width:25,height:25})})})}),(0,X.jsx)(I,{align:`left`,children:(0,X.jsx)(h,{children:_.firmware===void 0?`--`:_.gen===1?_.firmware.substring(_.firmware.lastIndexOf(`/`)+2,_.firmware.lastIndexOf(`g`)-1):_.firmware.substring(_.firmware.lastIndexOf(`/`)+1,_.firmware.lastIndexOf(`-`))})}),(0,X.jsx)(I,{align:`left`,children:_.stable===`stable pending`?(0,X.jsx)(Ze,{count:_.reloads?_.reloads:1,max:5}):(0,X.jsx)(h,{children:_.stable===void 0?`--`:_.stable})}),(0,X.jsx)(I,{align:`left`,children:_.beta===`beta pending`?(0,X.jsx)(Ze,{count:_.reloads?_.reloads:1,max:5}):(0,X.jsx)(h,{children:_.beta===void 0?`--`:_.beta})}),(0,X.jsx)(I,{align:`right`,children:(0,X.jsx)(d,{"data-testid":`device${_.id}_openmenue_button`,onClick:O,children:(0,X.jsx)(G,{icon:`eva:more-vertical-fill`})})})]},_.id),(0,X.jsxs)(w,{open:!!y,anchorEl:y,onClose:k,anchorOrigin:{vertical:`top`,horizontal:`left`},transformOrigin:{vertical:`top`,horizontal:`right`},slotProps:{paper:{sx:{width:300}}},children:[(0,X.jsxs)(f,{onClick:()=>{k(`stable`)},disabled:_.stable===void 0,children:[(0,X.jsx)(G,{icon:`material-symbols:system-update-alt`,sx:{color:`green`,mr:2}}),l(`_firmwarestable_`)]}),(0,X.jsxs)(f,{onClick:()=>{k(`beta`)},disabled:_.beta===void 0,children:[(0,X.jsx)(G,{icon:`material-symbols:system-update-alt`,sx:{color:`red`,mr:2}}),l(`_firmwarebeta_`)]}),(0,X.jsxs)(f,{onClick:()=>{k(`reboot`)},children:[(0,X.jsx)(G,{icon:`ix:reboot`,sx:{mr:2}}),l(`Reboot`)]}),(0,X.jsxs)(f,{"data-testid":`device${_.id}_openwifi_button`,onClick:()=>k(`wifi`),children:[(0,X.jsx)(G,{icon:`material-symbols:wifi`,sx:{mr:2}}),`Wifi`]})]}),(0,X.jsx)(Xe,{type:`single`,title:`Wifi ${_.name}`,openWifi:x.open,row:_,onCloseWifi:D,selected:[e.id]})]})}function $e({handleSelectAllClick:e,order:t,orderBy:n,numSelected:i,rowCount:a,handleTableSort:o}){let{t:s}=r(),c=e=>()=>{o(e)};return(0,X.jsx)(P,{children:(0,X.jsxs)(F,{children:[(0,X.jsx)(I,{padding:`checkbox`,children:(0,X.jsx)(B,{color:`primary`,indeterminate:i>0&&i<a,checked:a>0&&i===a,onChange:e})}),[{id:`image`,disablePadding:!0,label:``},{id:`name`,disablePadding:!0,label:`Name`},{id:`model`,disablePadding:!1,label:`Model`},{id:`gen`,disablePadding:!1,label:`Gen`},{id:`uptime`,disablePadding:!1,label:`Uptime`},{id:`restart`,disablePadding:!1,label:`Reboot`},{id:`firmware`,disablePadding:!1,label:`Firmware`},{id:`stable`,disablePadding:!1,label:`Stable`},{id:`beta`,disablePadding:!1,label:`Beta`},{id:`menue`,disablePadding:!0,label:``}].map(e=>(0,X.jsx)(I,{align:`left`,padding:e.disablePadding?`none`:`normal`,sortDirection:n===e.id?t:!1,children:(0,X.jsx)(re,{active:n===e.id,direction:n===e.id?t:`asc`,onClick:c(e.id),hideSortIcon:!0,children:s(e.label)})},e.id))]})})}function et({alert:e,setAlert:t}){return(0,X.jsx)(m,{in:e.visible,timeout:{enter:0,exit:2e3},addEndListener:()=>{setTimeout(()=>{t({title:e.title,text:e.text,severity:e.severity,visible:!1})},5e3)},children:(0,X.jsxs)(fe,{severity:e.severity,variant:`filled`,sx:{maxHeight:`50px`,width:`100%`},children:[e.title!==``&&(0,X.jsx)(ce,{children:e.title}),e.text]})})}function tt({selected:e,handleRebootDevices:t,handleFirmwareUpdates:n,alert:i,setAlert:a}){let{t:o}=r(),[s,c]=(0,J.useState)({open:!1}),l=()=>{c({open:!0})};return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsxs)(j,{sx:[{pl:{sm:2},pr:{xs:1,sm:1}},e.length>0&&{bgcolor:e=>u(e.palette.primary.main,e.palette.action.activatedOpacity)}],children:[(0,X.jsxs)(k,{direction:`row`,spacing:2,sx:{px:1,py:2,justifyContent:`flex-start`,alignItems:`center`,width:`60%`},children:[e.length>0?(0,X.jsxs)(h,{sx:{flex:`1 1 40%`},color:`inherit`,variant:`subtitle1`,component:`div`,children:[`Batch ${e.length}`,` `,o(`selected`)]}):(0,X.jsx)(h,{sx:{flex:`1 1 40%`},variant:`h6`,id:`tableTitle`,component:`div`,children:`Batch`}),(0,X.jsx)(et,{alert:i,setAlert:a})]}),e.length>0&&(0,X.jsxs)(k,{direction:`row`,sx:{px:1,py:2,justifyContent:`flex-end`,alignItems:`center`,width:`40%`},children:[(0,X.jsx)(C,{title:o(`_firmwarestable_`),children:(0,X.jsx)(d,{onClick:()=>n(`stable`),children:(0,X.jsx)(G,{icon:`material-symbols:system-update-alt`,sx:{color:`green`}})})}),(0,X.jsx)(C,{title:o(`_firmwarebeta_`),children:(0,X.jsx)(d,{onClick:()=>n(`beta`),children:(0,X.jsx)(G,{icon:`material-symbols:system-update-alt`,sx:{color:`red`}})})}),(0,X.jsx)(C,{title:o(`Reboot`),children:(0,X.jsx)(d,{onClick:()=>t(),children:(0,X.jsx)(G,{icon:`ix:reboot`})})}),(0,X.jsx)(C,{title:`Wifi`,children:(0,X.jsx)(d,{onClick:()=>l(),children:(0,X.jsx)(G,{icon:`material-symbols:wifi`})})})]})]}),(0,X.jsx)(Xe,{type:`selected`,title:`Wifi ${e.length} ${o(`selected`)}`,openWifi:s.open,onCloseWifi:()=>{c({open:!1})},selected:e})]})}function nt({inputData:e,comparator:t}){let n=e.map((e,t)=>[e,t]);return n.sort((e,n)=>{let r=t(e[0],n[0]);return r===0?e[1]-n[1]:r}),e=n.map(e=>e[0]),e}function rt({inputData:e,comparator:t}){let n=e.map((e,t)=>[e,t]);return n.sort((e,n)=>{let r=t(e[0],n[0]);return r===0?e[1]-n[1]:r}),e=n.map(e=>e[0]),e}function it({devices:e}){let[t,n]=(0,J.useState)(`asc`),[i,a]=(0,J.useState)(``),[o,c]=(0,J.useState)([]),[l,u]=(0,J.useState)(0),[d,f]=(0,J.useState)(5),{send:p}=s(),[m,h]=(0,J.useState)(e.map(e=>{let t=e?.notifyFullStatus?.params?.sys;return{id:e.id,image:e.image,name:e.cname.substring(0,14),model:e.name,gen:e.gen,uptime:t?.uptime,restart:e.rebootPending?`reboot pending`:t?.restart_required,firmware:e.fw_id,stable:e.updateStablePending?`stable pending`:e.stable,beta:e.updateBetaPending?`beta pending`:e.beta,reloads:e.reloads}})),[g,_]=(0,J.useState)({title:``,text:``,severity:`info`,visible:!1}),{t:v}=r(),y=e=>{let t=[...m];t[t.findIndex(t=>t.id===e.id)]=e,h(t)},b=(e,t)=>{t===void 0&&(t=o);let n=t.filter(t=>{let n=m.find(e=>e.id===t);return e===`stable`?n?.stable!==void 0:n?.beta!==void 0});n.length>0&&p({event:`devices-${e}-update`,source:`Shelly Table`,message:`Shelly Table wants to update the firmware of devices`,data:{ids:n}}),n.length!==t.length&&_({title:``,text:n.length===0?v(`_noupdateavailable_`,{type:e}):v(`_updateavailable_`,{checked:n.length,selected:t.length,type:e}),severity:`warning`,visible:!0})},x=e=>{e===void 0&&(e=o),p({event:`devices-reboot`,source:`Shelly Table`,message:`Shelly Table wants to reboot devices`,data:{ids:e}})},S=e=>{n(i===e&&t===`asc`?`desc`:`asc`),a(e)},C=e=>{if(e.target.checked){c(m.map(e=>e.id));return}c([])},w=e=>{let t=o.indexOf(e),n=[];t===-1?n=n.concat(o,e):t===0?n=n.concat(o.slice(1)):t===o.length-1?n=n.concat(o.slice(0,-1)):t>0&&(n=n.concat(o.slice(0,t),o.slice(t+1))),c(n)},T=(e,t)=>{u(t)},E=e=>{f(parseInt(e.target.value,10)),u(0)},D=Se(l,d,m.length),O=rt({inputData:m,comparator:q(t,i)});return(0,X.jsxs)(V,{children:[(0,X.jsx)(tt,{selected:o,handleRebootDevices:x,handleFirmwareUpdates:b,alert:g,setAlert:_}),(0,X.jsx)(M,{children:(0,X.jsxs)(N,{sx:{minWidth:750},"aria-labelledby":`tableTitle`,size:`small`,children:[(0,X.jsx)($e,{numSelected:o.length,order:t,orderBy:i,handleSelectAllClick:C,handleTableSort:S,rowCount:m.length}),(0,X.jsxs)(ne,{children:[O.slice(l*d,l*d+d).map((e,t)=>{let n=o.includes(e.id);return(0,X.jsx)(Qe,{row:e,labelId:`enhanced-table-checkbox-${t}`,isItemSelected:n,handleClick:w,handleRebootDevices:x,handleFirmwareUpdates:b,handleUpdateRow:y},e.id)}),D>0&&(0,X.jsx)(F,{style:{height:33*D},children:(0,X.jsx)(I,{colSpan:10})})]})]})}),(0,X.jsx)(te,{rowsPerPageOptions:[5,10,25],component:`div`,count:m.length,rowsPerPage:d,page:l,onPageChange:T,onRowsPerPageChange:E})]})}var at=({index:e,devices:t,display:n,getTestDevice:r})=>{let{isTest:i}=s(),a=[`sk`,`ctrl`,`log`,`ws`,`table`][e],o=(0,J.useRef)({});console.log(`TabPanel rendered for tab ${a} and received ${t.length} devices`);let l=e=>{let t=o.current[e];return t===void 0?null:t},u=(e,t,n)=>{o.current[e]={ts:t,device:n}},d=e=>{if(i){let t=r(e);if(t!==void 0)return t}let t=o.current[e];return t===void 0||he(Date.now(),new Date(t.ts))>=60?null:t.device};return a===`table`?(0,X.jsx)(it,{devices:t},JSON.stringify(t)):(0,X.jsx)(R,{container:!0,spacing:2,size:{xs:12,sm:a===`sk`||a===`ctrl`?6:12,md:a===`sk`||a===`ctrl`?4:12,lg:a===`sk`||a===`ctrl`?3:12,xl:a===`sk`||a===`ctrl`?2:12},children:t.map(e=>{let t=e?.switches[0];return a===`sk`||a===`ws`&&e.gen>0||a===`log`&&e.gen>1||a===`ctrl`&&e.gen>0&&(t?.brightness!==void 0||t?.white!==void 0||t?.rgb!==void 0)?(0,X.jsx)(R,{sx:{minWidth:a===`sk`||a===`ctrl`?0:1},children:(0,X.jsx)(Je,{deviceId:e.id,deviceGen:e.gen,tab:a,isUpdateNeeded:d,setDeviceLastUpdate:u,getDeviceLastUpdate:l,display:n},e.id)},c()):null})})},$=[{value:`config`,label:`Config`},{value:`cname`,label:`Name`},{value:`name`,label:`Model`},{value:`gen`,label:`Gen`}];function ot({handleSort:e}){let[t,n]=(0,J.useState)(null),[i,a]=(0,J.useState)(0),{t:o}=r(),s=e=>{n(e.currentTarget)},c=()=>{n(null)},u=(t,r)=>{n(null),a(r),e($[r].value)};return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsxs)(l,{"data-testid":`sort_open_button`,disableRipple:!0,color:`inherit`,onClick:s,endIcon:(0,X.jsx)(G,{icon:t?`eva:chevron-up-fill`:`eva:chevron-down-fill`}),children:[o(`_sortby_`),`:\xA0`,(0,X.jsx)(h,{component:`span`,variant:`subtitle2`,sx:{color:`text.secondary`},children:o($[i].label)})]}),(0,X.jsx)(T,{open:!!t,anchorEl:t,onClose:c,anchorOrigin:{vertical:`bottom`,horizontal:`right`},transformOrigin:{vertical:`top`,horizontal:`right`},slotProps:{paper:{sx:{[`& .${y.root}`]:{p:0}}}},children:$.map((e,t)=>(0,X.jsx)(f,{"data-testid":`sort_option_${e.label}`,onClick:e=>u(e,t),selected:t===i,children:o(e.label)},e.value))})]})}function st({openFilter:e,onOpenFilter:t,onCloseFilter:n,filter:i,handleDeviceFilter:a}){let[o,s]=(0,J.useState)([]),[c,u]=(0,J.useState)([]),{t:f}=r();if((0,J.useEffect)(()=>{s(Array.from(i.mChecked)),u(Array.from(i.gChecked))},[i]),i===void 0)return null;let p=e=>{s(o.map((t,n)=>n===e?!t:t))},m=e=>{u(c.map((t,n)=>n===e?!t:t))},g=(0,X.jsxs)(k,{spacing:1,children:[(0,X.jsx)(h,{variant:`subtitle2`,children:f(`Model`)}),(0,X.jsx)(W,{children:i.models.map((e,t)=>(0,X.jsx)(H,{"data-testid":`filter_model_checkbox_${t}`,control:(0,X.jsx)(B,{checked:!!o[t],onChange:()=>p(t)}),label:e},e))})]}),_=(0,X.jsxs)(k,{spacing:1,children:[(0,X.jsx)(h,{variant:`subtitle2`,children:f(`Generation`)}),(0,X.jsx)(W,{children:i.generations.map((e,t)=>(0,X.jsx)(H,{"data-testid":`filter_gen_checkbox_${t}`,value:e,control:(0,X.jsx)(B,{checked:!!c[t],onChange:()=>m(t)}),label:e===``?`no Gen`:`Gen ${e}`},e))})]}),v=()=>{s(Array(i.mChecked.length).fill(!1)),u(Array(i.gChecked.length).fill(!1))};return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsxs)(l,{"data-testid":`filter_open_button`,disableRipple:!0,color:i.isFilter?`success`:`inherit`,endIcon:(0,X.jsx)(G,{icon:`ic:round-filter-list`}),onClick:t,children:[f(`Filters`),`\xA0`]}),(0,X.jsxs)(L,{anchor:`right`,open:e,onClose:n,slotProps:{paper:{sx:{width:300,border:`none`,overflow:`hidden`}}},children:[(0,X.jsxs)(k,{direction:`row`,alignItems:`center`,justifyContent:`space-between`,sx:{px:1,py:2},children:[(0,X.jsx)(h,{variant:`h6`,sx:{ml:1},children:f(`Filters`)}),(0,X.jsx)(d,{onClick:n,children:(0,X.jsx)(G,{icon:`eva:close-fill`})})]}),(0,X.jsx)(z,{}),(0,X.jsx)(se,{children:(0,X.jsxs)(k,{spacing:3,sx:{p:3},children:[g,_]})}),(0,X.jsx)(E,{sx:{p:3},children:(0,X.jsxs)(k,{direction:`row`,spacing:2,children:[(0,X.jsx)(l,{"data-testid":`filter_submit_button`,fullWidth:!0,size:`large`,color:`inherit`,variant:`outlined`,startIcon:(0,X.jsx)(G,{icon:`formkit:submit`}),onClick:()=>a(o,c),children:f(`Submit`)}),(0,X.jsx)(l,{"data-testid":`filter_clear_button`,fullWidth:!0,size:`large`,color:`inherit`,variant:`outlined`,startIcon:(0,X.jsx)(G,{icon:`ic:round-clear-all`}),onClick:()=>v(),children:f(`Clear`)})]})})]})]})}function ct(){let{user:e,request:t,isTest:n}=s(),[i,a]=(0,J.useState)([]),[o,c]=(0,J.useState)([]),[l,u]=(0,J.useState)(!1),[f,p]=(0,J.useState)(0),[m,g]=(0,J.useState)(`config`),[_,v]=(0,J.useState)(`maximized`),[y,x]=(0,J.useState)({models:[],generations:[],mChecked:[],gChecked:[],isFilter:!1,deviceFilters:{}}),{t:S}=r(),C=(0,J.useCallback)(e=>{let t=[],n=[],r=e.data.devices;r.forEach(e=>{t.includes(e.name)||t.push(e.name),n.includes(e.gen.toString())||n.push(e.gen.toString())});let i={models:t,generations:n,mChecked:Array(t.length).fill(!1),gChecked:Array(n.length).fill(!1),isFilter:!1,deviceFilters:{}};a(r),c(r),x(i)},[]);(0,J.useEffect)(()=>{e!==null&&t({event:`devices-get-all`,source:`Shelly View`,message:`Shelly View needs the list of devices`,data:{userid:e.roleid==1?void 0:e.userid,istest:n}},C)},[C,t,e,n]);let w=e=>o.find(t=>t.id===e),T=(e,t)=>{t!==0&&v(`maximized`),p(t)},O=()=>{u(!0)},A=()=>{u(!1)},j=(e,t)=>{g(e);let n=i.length!==o.length,r=[];switch(e){case`config`:r=[...i];break;case`gen`:r=nt({inputData:i,comparator:q(`asc`,`gen`)});break;default:r=nt({inputData:i,comparator:q(`asc`,e)})}return t?r:(n&&(r=M(y.deviceFilters,r)),c(()=>r),null)},M=(e,t)=>t.filter(t=>{for(let n in e)if(n===`name`&&e[n].includes(t[n])||n===`gen`&&e[n].includes(t[n].toString()))return!0;return!1}),N=(e,t)=>{let n=!1,r={name:[],gen:[]};if(y.models.forEach((t,i)=>{e[i]&&(n=!0,r.name===void 0&&(r.name=[]),r.name.push(t))}),y.generations.forEach((e,i)=>{t[i]&&(n=!0,r.gen===void 0&&(r.gen=[]),r.gen.push(e))}),x({models:y.models,generations:y.generations,mChecked:e,gChecked:t,isFilter:n,deviceFilters:r}),n){let e=[];if(m!==`config`){let t=j(m,!0);t!==null&&(e=t)}else e=[...i];e=M(r,e),c(e)}else{let e=j(m,!0);e!==null&&c(e)}u(!1)},P=e=>{v(e)};return(0,X.jsxs)(me,{maxWidth:`xl`,children:[(0,X.jsx)(h,{variant:`h4`,children:`Shellies`}),(0,X.jsx)(k,{direction:`row`,alignItems:`center`,flexWrap:`wrap-reverse`,justifyContent:`flex-end`,children:(0,X.jsxs)(k,{direction:`row`,spacing:1,flexShrink:0,sx:{my:1},children:[f===0&&_===`minimized`&&(0,X.jsx)(d,{onClick:()=>P(`maximized`),children:(0,X.jsx)(G,{icon:`solar:maximize-square-2-outline`})}),f===0&&_===`maximized`&&(0,X.jsx)(d,{onClick:()=>P(`minimized`),children:(0,X.jsx)(G,{icon:`solar:minimize-square-2-outline`})}),(0,X.jsx)(st,{openFilter:l,onOpenFilter:O,onCloseFilter:A,filter:y,handleDeviceFilter:N}),(0,X.jsx)(ot,{handleSort:e=>j(e,!1)})]})}),(0,X.jsx)(E,{children:(0,X.jsxs)(b,{value:f,onChange:T,variant:`scrollable`,scrollButtons:`auto`,"aria-label":`shelly tabs`,children:[(0,X.jsx)(D,{"data-testid":`shellies_script_tab`,label:`Script / KVS`}),(0,X.jsx)(D,{"data-testid":`shellies_control_tab`,label:S(`Control`)}),(0,X.jsx)(D,{"data-testid":`shellies_logs_tab`,label:`Logs`}),(0,X.jsx)(D,{"data-testid":`shellies_ws_tab`,label:`WS Inspector`}),(0,X.jsx)(D,{"data-testid":`shellies_list_tab`,label:`List / Batch`})]})}),(0,X.jsx)(at,{index:f,devices:o,display:_,getTestDevice:w},`shelliesTab`)]})}function lt(){let{user:e}=s();return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(i,{children:(0,X.jsx)(`title`,{children:` Shellies`})}),e?(0,X.jsx)(ct,{}):null]})}export{lt as default};
+import { n as e } from "./rolldown-runtime-DF2fYuay.js";
+import { C as t, a as n, b as r, c as i } from "./react-vendor-1oBNP9xV.js";
+import { i as a, n as o, s, t as c } from "./general-CHai_GLv.js";
+import {
+  A as l,
+  Ct as u,
+  D as d,
+  S as f,
+  T as p,
+  U as m,
+  Y as h,
+  _ as g,
+  c as _,
+  d as v,
+  g as y,
+  i as b,
+  it as x,
+  j as S,
+  l as C,
+  m as w,
+  p as T,
+  rt as E,
+  s as D,
+  t as O,
+  tt as k,
+  u as A,
+} from "./ui-vendor-BkBimm3H.js";
+import {
+  F as j,
+  a as M,
+  c as N,
+  i as P,
+  l as ee,
+  n as F,
+  o as I,
+  r as te,
+  s as ne,
+  t as re,
+} from "./large-libs-CmsqpX9Z.js";
+import { n as ie, r as ae, t as oe } from "./large-libs-3pZKuH16.js";
+import { t as se } from "./scrollbar-BYr01rnf.js";
+import {
+  a as ce,
+  b as L,
+  c as le,
+  d as R,
+  g as z,
+  h as B,
+  i as ue,
+  l as V,
+  m as H,
+  n as de,
+  o as fe,
+  r as U,
+  s as pe,
+  t as W,
+  u as me,
+} from "./large-libs-BQJSWAyF.js";
+import { t as G } from "./iconify-DdbsLvvz.js";
+import { a as he } from "./large-libs-B1VusGPf.js";
+import { n as ge, r as _e, t as K } from "./pubsub-ScaJTCsF.js";
+import { a as ve, i as ye } from "./index-CeP7z5de.js";
+import { i as be, t as xe } from "./device-consumption-BSTWB_iU.js";
+import { n as q, t as Se } from "./sort-array-n_rTF-n7.js";
+var J = e(t()),
+  Y = e(ae()),
+  X = e(n()),
+  Ce = ({ online: e }) =>
+    (0, X.jsx)(G, {
+      icon: e ? `material-symbols:wifi` : `material-symbols:wifi-off`,
+      sx: { color: e ? `green` : `red` },
+    });
+function we({ switches: e, handleSwitchClick: t }) {
+  return e === void 0
+    ? null
+    : (0, X.jsx)(
+        k,
+        {
+          direction: `row`,
+          children: e.map(
+            (e, n) => (
+              (e.index = n),
+              (0, X.jsx)(
+                C,
+                {
+                  title: `Toggle Switch ${e.id}`,
+                  children: (0, X.jsx)(d, {
+                    onClick: () => t(e),
+                    sx: { padding: 0.5 },
+                    children: (0, X.jsx)(
+                      G,
+                      {
+                        icon: `icomoon-free:switch`,
+                        sx: {
+                          cursor: `pointer`,
+                          color: e.output ? `green` : `black`,
+                        },
+                      },
+                      c(),
+                    ),
+                  }),
+                },
+                c(),
+              )
+            ),
+          ),
+        },
+        c(),
+      );
+}
+var Te = ({ device: e, handleSwitchToggle: t, display: n }) => {
+    let [r, i] = (0, J.useState)(e.switches);
+    return (0, X.jsxs)(X.Fragment, {
+      children: [
+        (0, X.jsxs)(k, {
+          direction: `row`,
+          sx: {
+            minHeight: 35,
+            maxHeight: 35,
+            pr: 1,
+            pl: 1,
+            alignItems: `center`,
+            justifyContent: `space-between`,
+          },
+          children: [
+            (0, X.jsx)(Ce, { online: e.online }),
+            (0, X.jsx)(we, {
+              switches: e.switches,
+              handleSwitchClick: (e) => {
+                if (e.index !== void 0) {
+                  e.output = !e.output;
+                  let n = [...r];
+                  ((n[e.index] = e), i(n), t(e));
+                }
+              },
+            }),
+          ],
+        }),
+        (0, X.jsx)(le, {
+          title: (0, X.jsx)(p, {
+            href: `http://${e.ip}`,
+            target: `_blank`,
+            color: `inherit`,
+            underline: `hover`,
+            children: e.cname.substring(0, 14),
+          }),
+          subheader: `${e.name} ${e.gen > 0 ? `(Gen ${e.gen})` : ``}`,
+          sx: { minWidth: 200, minHeight: 50, maxHeight: 50, pt: 1, pb: 1 },
+        }),
+        n === `maximized` &&
+          (0, X.jsx)(de, {
+            sx: {
+              minWidth: 160,
+              maxWidth: 160,
+              minHeight: 120,
+              objectFit: `scale-down`,
+            },
+            image: e.image,
+            title: e.name,
+            component: `img`,
+            alt: e.name,
+          }),
+      ],
+    });
+  },
+  Ee = ({ scripts: e }) =>
+    e === void 0
+      ? []
+      : e.map((e) =>
+          e.logmessages && e.logmessages.length > 0
+            ? (0, X.jsxs)(
+                k,
+                {
+                  spacing: 0,
+                  children: [
+                    (0, X.jsx)(
+                      h,
+                      { variant: `subtitle2`, children: e.name },
+                      c(),
+                    ),
+                    e.logmessages.map((e) =>
+                      (0, X.jsxs)(
+                        k,
+                        {
+                          direction: `row`,
+                          spacing: 1,
+                          sx: { minWidth: 0 },
+                          children: [
+                            (0, X.jsx)(
+                              h,
+                              {
+                                variant: `caption`,
+                                children: new Date(e.ts * 1e3)
+                                  .toTimeString()
+                                  .substring(0, 8),
+                              },
+                              c(),
+                            ),
+                            (0, X.jsx)(
+                              h,
+                              {
+                                variant: `caption`,
+                                noWrap: !0,
+                                children: e.msg,
+                              },
+                              c(),
+                            ),
+                          ],
+                        },
+                        c(),
+                      ),
+                    ),
+                  ],
+                },
+                c(),
+              )
+            : null,
+        );
+function De({ colors: e, limit: t = 3, sx: n }) {
+  let r = e.slice(0, t),
+    i = e.length - t;
+  return (0, X.jsxs)(k, {
+    component: `span`,
+    direction: `row`,
+    alignItems: `center`,
+    justifyContent: `flex-end`,
+    sx: n,
+    children: [
+      r.map((e, t) =>
+        (0, X.jsx)(
+          E,
+          {
+            sx: {
+              ml: -0.75,
+              width: 16,
+              height: 16,
+              bgcolor: e,
+              borderRadius: `50%`,
+              border: (e) => `solid 2px ${e.palette.background.paper}`,
+              boxShadow: (e) =>
+                `inset -1px 1px 2px ${u(e.palette.common.black, 0.24)}`,
+            },
+          },
+          e + t,
+        ),
+      ),
+      e.length > t &&
+        (0, X.jsx)(E, {
+          component: `span`,
+          sx: { typography: `subtitle2` },
+          children: `+${i}`,
+        }),
+    ],
+  });
+}
+var Z = [`#00AB55`, `#D22B2B`, `#000000`];
+function Oe({ deviceIp: e, kvs: t }) {
+  return t.map((t) => {
+    let n = t.display === void 0 ? t.key : t.display;
+    return (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `space-between`,
+        style: { gap: 20 },
+        useFlexGap: !0,
+        flexWrap: `wrap`,
+        children: [
+          (0, X.jsx)(p, {
+            href: `http://${e}/#/key-value-store/edit?key=${t.key}`,
+            target: `_blank`,
+            color: `inherit`,
+            underline: `hover`,
+            variant: `subtitle2`,
+            noWrap: !0,
+            sx: { minWidth: 100 },
+            children: (0, X.jsx)(
+              h,
+              { noWrap: !0, variant: `caption`, children: n.substring(0, 14) },
+              c(),
+            ),
+          }),
+          (0, X.jsx)(
+            h,
+            {
+              variant: `caption`,
+              children: (() => {
+                switch (t.style === void 0 ? t.value : t.style) {
+                  case `boolean`:
+                    return Number(t.value) === 1 ? `true` : `false`;
+                  case `color`:
+                    return (0, X.jsx)(
+                      De,
+                      {
+                        colors:
+                          Number(t.value) === 1 ? Z.slice(0, 1) : Z.slice(1, 2),
+                        sx: { pt: `5px` },
+                      },
+                      c(),
+                    );
+                  default:
+                    return t.value;
+                }
+              })(),
+            },
+            c(),
+          ),
+        ],
+      },
+      c(),
+    );
+  });
+}
+var ke = e(ie()),
+  Ae = ({ device: e, handleSwitchSet: t }) => {
+    let [n, i] = (0, J.useState)(null),
+      [a, o] = (0, J.useState)(e.switches[0]),
+      { t: s } = r(),
+      [c, l] = (0, J.useState)(
+        a.rgb === void 0
+          ? `undefined`
+          : `rgb (${a.rgb[0]}, ${a.rgb[1]}, ${a.rgb[2]})`,
+      ),
+      [u, f] = (0, J.useState)(a?.brightness),
+      [p, m] = (0, J.useState)(a?.white),
+      g = (0, J.useMemo)(
+        () => (0, ke.default)(t, 30, { leading: !1, trailing: !0 }),
+        [t],
+      ),
+      v = (0, J.useCallback)((e) => {
+        e !== null && i(e.detail);
+      }, []);
+    (0, J.useEffect)(
+      () => (
+        ge(`copySourceSet`, v),
+        () => {
+          _e(`copySourceSet`, v);
+        }
+      ),
+      [v],
+    );
+    let y = (t) => {
+        n?.deviceId === e.id &&
+          K(`copySourceSet`, {
+            deviceId: e.id,
+            deviceName: e.cname,
+            copySwitch: t,
+          });
+      },
+      b = (e, t) => {
+        l(t.rgb);
+        let n = { ...a };
+        ((n.rgb = t.rgb
+          .substring(t.rgb.indexOf(`(`) + 1, t.rgb.indexOf(`)`))
+          .split(`,`)
+          .map((e) => Number(e))),
+          o(n),
+          y(n),
+          g(n));
+      },
+      x = (e, t) => {
+        f(t);
+        let n = { ...a };
+        ((n.brightness = t), o(n), y(n), g(n));
+      },
+      S = (e, t) => {
+        m(t);
+        let n = { ...a };
+        ((n.white = t), o(n), y(n), g(n));
+      },
+      w = () => {
+        if (n == null) return;
+        let e = { ...a },
+          r = n.aSwitch;
+        (a.brightness !== void 0 &&
+          r.brightness !== void 0 &&
+          ((e.brightness = r.brightness), f(r.brightness)),
+          a.white !== void 0 &&
+            r.white !== void 0 &&
+            ((e.white = r.white), m(r.white)),
+          a.rgb !== void 0 &&
+            r.rgb !== void 0 &&
+            ((e.rgb = r.rgb), l(`rgb (${r.rgb[0]}, ${r.rgb[1]}, ${r.rgb[2]})`)),
+          o(e),
+          t(e));
+      };
+    return (0, X.jsxs)(k, {
+      alignItems: `flex-start`,
+      children: [
+        a.brightness !== void 0 &&
+          (0, X.jsxs)(X.Fragment, {
+            children: [
+              (0, X.jsx)(h, {
+                variant: `subtitle2`,
+                children: s(`Brightness`),
+              }),
+              (0, X.jsx)(_, {
+                "data-testid": `shelly_brightness_slider`,
+                value: u,
+                min: 0,
+                max: 100,
+                step: 10,
+                marks: !0,
+                valueLabelDisplay: `auto`,
+                size: `small`,
+                onChange: x,
+                "aria-label": `Brighness slider`,
+              }),
+            ],
+          }),
+        a.white !== void 0 &&
+          (0, X.jsxs)(X.Fragment, {
+            children: [
+              (0, X.jsx)(h, { variant: `subtitle2`, children: s(`White`) }),
+              (0, X.jsx)(_, {
+                "data-testid": `shelly_white_slider`,
+                value: p,
+                min: 0,
+                max: e.gen === 1 ? 100 : 255,
+                step: e.gen === 1 ? 10 : 25,
+                marks: !0,
+                valueLabelDisplay: `auto`,
+                size: `small`,
+                onChange: S,
+                "aria-label": `White slider`,
+              }),
+            ],
+          }),
+        a.rgb !== void 0 &&
+          (0, X.jsx)(O, {
+            "data-testid": `shelly_multicolor_input`,
+            format: `rgb`,
+            isAlphaHidden: !0,
+            value: c,
+            onChange: b,
+            size: `small`,
+            variant: `outlined`,
+            "aria-label": `Color Selection`,
+            sx: { pt: 1, ml: -1 },
+          }),
+        (0, X.jsxs)(k, {
+          direction: `row`,
+          justifyContent: `center`,
+          sx: { ml: -2, mr: -2, minWidth: `110%` },
+          children: [
+            (0, X.jsx)(C, {
+              title:
+                n?.deviceId === e.id ? s(`_copyreset_`) : s(`_copysettings_`),
+              children: (0, X.jsx)(d, {
+                "data-testid": `shelly_setcopysource_button`,
+                onClick: () => {
+                  n?.deviceId !== e.id || n === null
+                    ? K(`copySourceSet`, {
+                        deviceId: e.id,
+                        deviceName: e.cname,
+                        aSwitch: a,
+                      })
+                    : K(`copySourceSet`, null);
+                },
+                color: n?.deviceId === e.id ? `success` : `inherit`,
+                children: (0, X.jsx)(G, {
+                  icon:
+                    n?.deviceId === e.id
+                      ? `tabler:copy-off`
+                      : `tabler:copy-check`,
+                }),
+              }),
+            }),
+            n !== null &&
+              n.deviceId !== e.id &&
+              (0, X.jsx)(C, {
+                title: s(`_pastesettingsfrom_`, { deviceName: n?.deviceName }),
+                children: (0, X.jsx)(d, {
+                  onClick: w,
+                  color: `success`,
+                  children: (0, X.jsx)(G, { icon: `fa7-regular:paste` }),
+                }),
+              }),
+          ],
+        }),
+      ],
+    });
+  },
+  Q = ({ children: e, elementId: t, text: n, scrollableElementId: r }) => {
+    let i = (e, n) => {
+      let i = document.getElementById(t);
+      if ((i && o(i, n, e), e && r)) {
+        let e = document.getElementById(`markup`),
+          t = document.getElementById(r);
+        e && t && a(t, e);
+      }
+    };
+    return (0, X.jsx)(
+      p,
+      {
+        component: `div`,
+        onClick: () => i(!0, n),
+        sx: { pt: 1, cursor: `pointer` },
+        children: e,
+      },
+      c(),
+    );
+  },
+  je = ({ elementId: e, scrollableElementId: t, white: n }) =>
+    (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"white":${n}`,
+              children: (0, X.jsx)(
+                G,
+                { icon: `stash:circle-dot`, sx: { color: `black` } },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsx)(h, { variant: `caption`, children: n }, c()),
+        ],
+      },
+      c(),
+    ),
+  Me = ({ elementId: e, scrollableElementId: t, event: n }) => {
+    let r = n.data;
+    if (r?.motion !== void 0)
+      return (0, X.jsx)(
+        Q,
+        {
+          elementId: e,
+          scrollableElementId: t,
+          text: `"motion":${r.motion}`,
+          children: (0, X.jsx)(
+            G,
+            {
+              icon:
+                Number(r.motion) === 1
+                  ? `material-symbols:directions-walk`
+                  : `fa6-solid:person`,
+              sx: { color: Number(r.motion) === 1 ? `blue` : `black` },
+            },
+            c(),
+          ),
+        },
+        c(),
+      );
+    if (r?.window !== void 0)
+      return Number(r.window) === 1
+        ? (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"window":${r.window}`,
+              children: (0, X.jsx)(
+                G,
+                {
+                  icon: `material-symbols:door-open-rounded`,
+                  sx: { color: `black` },
+                },
+                c(),
+              ),
+            },
+            c(),
+          )
+        : (0, X.jsx)(
+            G,
+            {
+              icon: `material-symbols:door-front-rounded`,
+              sx: { color: `black` },
+            },
+            c(),
+          );
+    if (r?.button !== void 0)
+      switch (Number(r.button)) {
+        case 1:
+          return (0, X.jsx)(
+            G,
+            { icon: `mdi:number-1-box`, sx: { color: `blue` } },
+            c(),
+          );
+        case 2:
+          return (0, X.jsx)(
+            G,
+            { icon: `mdi:number-2-box`, sx: { color: `blue` } },
+            c(),
+          );
+        case 3:
+          return (0, X.jsx)(
+            G,
+            { icon: `mdi:number-3-box`, sx: { color: `blue` } },
+            c(),
+          );
+        case 4:
+          return (0, X.jsx)(
+            G,
+            { icon: `mdi:number-4-box`, sx: { color: `blue` } },
+            c(),
+          );
+        case 254:
+          return (0, X.jsx)(
+            G,
+            { icon: `f7:hand-point-left-fill`, sx: { color: `blue` } },
+            c(),
+          );
+        default:
+          return (0, X.jsx)(
+            G,
+            { icon: `f7:hand-point-left-fill`, sx: { color: `blue` } },
+            c(),
+          );
+      }
+    return (0, X.jsx)(
+      G,
+      { icon: `material-symbols:event-busy`, sx: { color: `black` } },
+      c(),
+    );
+  },
+  Ne = ({ elementId: e, scrollableElementId: t, event: n }) => {
+    let r;
+    switch (Number(n.id)) {
+      case 0:
+        r = 180;
+        break;
+      case 1:
+        r = 270;
+        break;
+      case 2:
+        r = 90;
+        break;
+      default:
+        r = 0;
+    }
+    return (0, X.jsx)(
+      k,
+      {
+        direction: `row`,
+        children: (0, X.jsxs)(
+          Q,
+          {
+            elementId: e,
+            scrollableElementId: t,
+            text: `"event":"${n.event}"`,
+            children: [
+              (0, X.jsx)(
+                G,
+                {
+                  icon: `system-uicons:grid-squares-add`,
+                  sx: { color: `black` },
+                  className: `rotate${r}`,
+                },
+                c(),
+              ),
+              n.event === `single_push` &&
+                (0, X.jsx)(
+                  G,
+                  { icon: `mdi:number-1-box`, sx: { color: `blue` } },
+                  c(),
+                ),
+              n.event === `double_push` &&
+                (0, X.jsx)(
+                  G,
+                  { icon: `mdi:number-2-box`, sx: { color: `blue` } },
+                  c(),
+                ),
+              n.event === `triple_push` &&
+                (0, X.jsx)(
+                  G,
+                  { icon: `mdi:number-3-box`, sx: { color: `blue` } },
+                  c(),
+                ),
+              (n.event === `long_push` || n.event === `btn_up`) &&
+                (0, X.jsx)(
+                  G,
+                  { icon: `f7:hand-point-left-fill`, sx: { color: `blue` } },
+                  c(),
+                ),
+            ],
+          },
+          c(),
+        ),
+      },
+      c(),
+    );
+  },
+  Pe = ({ elementId: e, scrollableElementId: t, events: n }) => {
+    let r = [`single_push`, `double_push`, `triple_push`, `long_push`],
+      i = n.map((n) =>
+        n.event === `shelly-blu` && n.data !== void 0
+          ? (0, X.jsx)(
+              Me,
+              { elementId: e, scrollableElementId: t, event: n },
+              c(),
+            )
+          : r.includes(n.event)
+            ? (0, X.jsx)(
+                Ne,
+                { elementId: e, scrollableElementId: t, event: n },
+                c(),
+              )
+            : (n.event === `btn_up` || n.event,
+              n.event === `scheduled_restart`
+                ? (0, X.jsx)(
+                    Q,
+                    {
+                      elementId: e,
+                      scrollableElementId: t,
+                      text: `"event":"scheduled_restart"`,
+                      children: (0, X.jsx)(
+                        G,
+                        {
+                          icon: `solar:restart-square-bold`,
+                          sx: { color: `black` },
+                        },
+                        c(),
+                      ),
+                    },
+                    c(),
+                  )
+                : (0, X.jsx)(
+                    G,
+                    { icon: `ic:sharp-help`, sx: { color: `black` } },
+                    c(),
+                  )),
+      );
+    return i.length > 0
+      ? i
+      : [(0, X.jsx)(G, { icon: `mdi:bug`, sx: { color: `red` } }, c())];
+  },
+  Fe = ({ elementId: e, scrollableElementId: t, consumption: n }) =>
+    (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"aenergy":`,
+              children: (0, X.jsx)(
+                G,
+                {
+                  icon: `material-symbols-light:bolt`,
+                  sx: { color: Number(n > 0) ? `blue` : `black` },
+                },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsx)(h, { variant: `caption`, children: be(n) }, c()),
+        ],
+      },
+      c(),
+    ),
+  Ie = ({ elementId: e, scrollableElementId: t, params: n }) => {
+    if (n.matter === void 0) return null;
+    let r = n.matter.num_fabrics;
+    return (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"matter":{"num_fabrics":${r}`,
+              children: (0, X.jsx)(G, {
+                icon: `material-symbols:matter`,
+                sx: { color: r > 0 ? `green` : `red` },
+              }),
+            },
+            c(),
+          ),
+          r > 0 &&
+            (0, X.jsx)(
+              h,
+              { variant: `subtitle2`, color: `green`, children: r },
+              c(),
+            ),
+        ],
+      },
+      c(),
+    );
+  },
+  Le = ({ elementId: e, scrollableElementId: t, params: n }) => {
+    let r = [];
+    return (
+      Object.keys(n).forEach((i) => {
+        if (i.startsWith(`script`)) {
+          let a = n[`script:${Number(i.split(`:`)[1])}`];
+          r.push(
+            (0, X.jsxs)(
+              k,
+              {
+                justifyContent: `flex-start`,
+                alignItems: `center`,
+                spacing: 0.5,
+                direction: `row`,
+                children: [
+                  (0, X.jsx)(
+                    Q,
+                    {
+                      elementId: e,
+                      scrollableElementId: t,
+                      text: `"script:${Number(i.split(`:`)[1])}":{"id":${a.id},"running":${a.running ? `true` : `false`}`,
+                      children: (0, X.jsxs)(
+                        h,
+                        {
+                          variant: `subtitle2`,
+                          color: a.running ? `green` : `red`,
+                          sx: { mb: 1 },
+                          children: [`{`, a.id, `}`],
+                        },
+                        c(),
+                      ),
+                    },
+                    c(),
+                  ),
+                  (0, X.jsxs)(
+                    h,
+                    {
+                      variant: `caption`,
+                      children: [
+                        Math.round(Number(a?.mem_free) / 1024),
+                        ` kb free`,
+                      ],
+                    },
+                    c(),
+                  ),
+                ],
+              },
+              c(),
+            ),
+          );
+        }
+      }),
+      r
+    );
+  },
+  Re = ({ elementId: e, scrollableElementId: t, version: n }) =>
+    (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"stable":{"version":"${n}"}}`,
+              children: (0, X.jsx)(
+                G,
+                {
+                  icon: `material-symbols:system-update-alt`,
+                  sx: { color: `green` },
+                },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsx)(h, { variant: `caption`, children: n }, c()),
+        ],
+      },
+      c(),
+    ),
+  ze = ({ elementId: e, scrollableElementId: t, brightness: n }) =>
+    (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `"brightness":${n}`,
+              children: (0, X.jsx)(
+                G,
+                {
+                  icon: `subway:black-white`,
+                  sx: { color: `black` },
+                  width: 18,
+                  height: 18,
+                },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsxs)(h, { variant: `caption`, children: [n, `%`] }, c()),
+        ],
+      },
+      c(),
+    ),
+  Be = ({ elementId: e, scrollableElementId: t, sys: n }) =>
+    (0, X.jsxs)(
+      k,
+      {
+        direction: `row`,
+        justifyContent: `flex-start`,
+        alignItems: `center`,
+        spacing: 0.5,
+        children: [
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `ram_free":${n.ram_free}`,
+              children: (0, X.jsx)(
+                G,
+                { icon: `material-symbols-light:sd`, sx: { color: `black` } },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsxs)(
+            h,
+            {
+              variant: `caption`,
+              children: [Math.round(Number(n.ram_free) / 1024), ` kb free`],
+            },
+            c(),
+          ),
+          (0, X.jsx)(
+            Q,
+            {
+              elementId: e,
+              scrollableElementId: t,
+              text: `fs_free":${n.fs_free}`,
+              children: (0, X.jsx)(
+                G,
+                {
+                  icon: `material-symbols:storage-rounded`,
+                  sx: { color: `black` },
+                },
+                c(),
+              ),
+            },
+            c(),
+          ),
+          (0, X.jsxs)(
+            h,
+            {
+              variant: `caption`,
+              children: [Math.round(Number(n.fs_free) / 1024), ` kb free`],
+            },
+            c(),
+          ),
+        ],
+      },
+      c(),
+    ),
+  Ve = ({
+    deviceName: e,
+    wsMessage: t,
+    elementId: n,
+    scrollableElementId: r,
+  }) => {
+    if (!t?.params) return [];
+    let i = t.params,
+      a = [];
+    if (t.method === `NotifyEvent`)
+      i?.events !== void 0 &&
+        a.push(
+          (0, X.jsx)(
+            Pe,
+            { elementId: n, scrollableElementId: r, events: i.events },
+            c(),
+          ),
+        );
+    else {
+      let o = xe(e, i);
+      if (t.method === `NotifyFullStatus`) {
+        if (
+          (i?.ws?.connected !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                Q,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  text: `"ws":{"connected":${i.ws.connected ? `true` : `false`}`,
+                  children: (0, X.jsx)(
+                    G,
+                    {
+                      icon: i.ws.connected
+                        ? `carbon:connection-signal`
+                        : `carbon:connection-signal-off`,
+                      sx: { color: i.ws.connected ? `green` : `red` },
+                    },
+                    c(),
+                  ),
+                },
+                c(),
+              ),
+            ),
+          i?.sys !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                Be,
+                { elementId: n, scrollableElementId: r, sys: i.sys },
+                c(),
+              ),
+            ),
+          i?.cloud?.connected !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                Q,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  text: `"cloud":{"connected":${i.cloud.connected ? `true` : `false`}}`,
+                  children: (0, X.jsx)(
+                    G,
+                    {
+                      icon: `material-symbols-light:cloud`,
+                      sx: { color: i.cloud.connected ? `green` : `black` },
+                    },
+                    c(),
+                  ),
+                },
+                c(),
+              ),
+            ),
+          i?.sys?.available_updates?.stable?.version !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                Re,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  version: i.sys.available_updates.stable.version,
+                },
+                c(),
+              ),
+            ),
+          a.push(
+            (0, X.jsx)(
+              Le,
+              { elementId: n, scrollableElementId: r, params: t.params },
+              c(),
+            ),
+          ),
+          o.hasSwitch &&
+            a.push(
+              (0, X.jsx)(
+                Fe,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  consumption: o.totalPower,
+                },
+                c(),
+              ),
+            ),
+          i[`rgbw:0`]?.brightness !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                ze,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  brightness: i[`rgbw:0`].brightness,
+                },
+                c(),
+              ),
+            ),
+          i[`switch:0`]?.brightness !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                ze,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  brightness: i[`switch:0`].brightness,
+                },
+                c(),
+              ),
+            ),
+          i[`rgbw:0`]?.white !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                je,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  white: i[`rgbw:0`].white,
+                },
+                c(),
+              ),
+            ),
+          i[`switch:0`]?.white !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                je,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  white: i[`switch:0`].white,
+                },
+                c(),
+              ),
+            ),
+          i[`rgbw:0`]?.rgb !== void 0)
+        ) {
+          let { rgb: e } = i[`rgbw:0`],
+            t = `rgb(${e[0]}, ${e[1]}, ${e[2]})`;
+          a.push(
+            (0, X.jsx)(
+              Q,
+              {
+                elementId: n,
+                scrollableElementId: r,
+                text: `,"rgb":\\[${e[0]},${e[1]},${e[2]}\\]`,
+                children: (0, X.jsx)(
+                  G,
+                  { icon: `material-symbols:light-mode`, sx: { color: t } },
+                  c(),
+                ),
+              },
+              c(),
+            ),
+          );
+        }
+        (i?.mqtt?.connected !== void 0 &&
+          a.push(
+            (0, X.jsx)(
+              Q,
+              {
+                elementId: n,
+                scrollableElementId: r,
+                text: `"mqtt":{"connected":${i.mqtt?.connected ? `true` : `false`}}`,
+                children: (0, X.jsx)(
+                  G,
+                  {
+                    icon: `cbi:mqtt`,
+                    sx: { color: i.mqtt.connected ? `green` : `red` },
+                  },
+                  c(),
+                ),
+              },
+              c(),
+            ),
+          ),
+          i?.matter?.num_fabrics !== void 0 &&
+            a.push(
+              (0, X.jsx)(
+                Ie,
+                { elementId: n, scrollableElementId: r, params: i },
+                c(),
+              ),
+            ));
+      } else
+        t.method === `NotifyStatus`
+          ? o.hasSwitch &&
+            a.push(
+              (0, X.jsx)(
+                Fe,
+                {
+                  elementId: n,
+                  scrollableElementId: r,
+                  consumption: o.totalPower,
+                },
+                c(),
+              ),
+            )
+          : a.push(
+              (0, X.jsx)(
+                G,
+                { icon: `ic:sharp-help`, sx: { color: `black` } },
+                c(),
+              ),
+            );
+    }
+    return a;
+  },
+  He = ({ ts: e }) =>
+    (0, X.jsx)(h, { variant: `subtitle2`, children: ve(e, `HH:mm`) }, c()),
+  Ue = ({ deviceId: e, deviceName: t, wsMessages: n }) =>
+    n === void 0
+      ? null
+      : Object.keys(n).map((r, i) => {
+          let a = n[r];
+          return (0, X.jsxs)(
+            J.Fragment,
+            {
+              children: [
+                (0, X.jsxs)(
+                  k,
+                  {
+                    direction: `row`,
+                    justifyContent: `left`,
+                    alignItems: `center`,
+                    spacing: 2,
+                    children: [
+                      a?.params?.ts !== void 0 &&
+                        (0, X.jsx)(He, { ts: a.params.ts }, c()),
+                      (0, X.jsx)(
+                        h,
+                        { variant: `subtitle2`, children: a?.method },
+                        c(),
+                      ),
+                      (0, X.jsx)(
+                        Ve,
+                        {
+                          deviceName: t,
+                          wsMessage: a,
+                          elementId: `CCT_${e}_${i}`,
+                          scrollableElementId: `CC_${e}`,
+                          index: i,
+                        },
+                        c(),
+                      ),
+                    ],
+                  },
+                  c(),
+                ),
+                (0, X.jsx)(
+                  h,
+                  {
+                    id: `CCT_${e}_${i}`,
+                    variant: `caption`,
+                    children: JSON.stringify(a),
+                  },
+                  c(),
+                ),
+              ],
+            },
+            c(),
+          );
+        }),
+  We = x(ee)(({ theme: e }) => ({
+    width: 45,
+    height: 20,
+    padding: 5,
+    "& .MuiSwitch-thumb": {
+      backgroundColor: `#b0bec5`,
+      width: 17,
+      height: 17,
+      ...e.applyStyles(`dark`, { backgroundColor: `#003892` }),
+    },
+    "& .MuiSwitch-track": {
+      opacity: 1,
+      backgroundColor: `#d32f2f`,
+      borderRadius: 20 / 2,
+      ...e.applyStyles(`dark`, { backgroundColor: `#8796A5` }),
+    },
+    "& .MuiSwitch-switchBase": {
+      margin: 1,
+      padding: 0,
+      "&.Mui-checked": {
+        color: `#fff`,
+        transform: `translateX(22px)`,
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor: `#2e7d32`,
+          ...e.applyStyles(`dark`, { backgroundColor: `#8796A5` }),
+        },
+        "& + .MuiSwitch-thumb": {
+          opacity: 1,
+          backgroundColor: `#2e7d32`,
+          ...e.applyStyles(`dark`, { backgroundColor: `#8796A5` }),
+        },
+      },
+      "&.Mui-disabled": {
+        color: `#fff`,
+        transform: `translateX(22px)`,
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor: `#aab4be`,
+          ...e.applyStyles(`dark`, { backgroundColor: `#8796A5` }),
+        },
+      },
+    },
+  })),
+  Ge = ({
+    deviceIP: e,
+    deviceOnline: t,
+    scripts: n,
+    handleScriptToggle: r,
+  }) => {
+    let i = [, , ,];
+    for (let e = 0; e <= 2; e += 1)
+      n[e] === void 0
+        ? (i[e] = { name: `n/a`, id: null, running: !1 })
+        : ((i[e] = n[e]), (i[e].running = n[e].running && t), (i[e].index = e));
+    return (0, X.jsx)(
+      k,
+      {
+        children: i.map((t) =>
+          (0, X.jsxs)(
+            k,
+            {
+              direction: `row`,
+              style: { gap: 20 },
+              useFlexGap: !0,
+              flexWrap: `wrap`,
+              children: [
+                (0, X.jsx)(p, {
+                  href:
+                    t.id === null
+                      ? `http://${e}/#/scripts`
+                      : `http://${e}/#/script/${t.id}`,
+                  target: `_blank`,
+                  color: `inherit`,
+                  underline: `hover`,
+                  variant: `subtitle2`,
+                  noWrap: !0,
+                  sx: { minWidth: 100 },
+                  children: (0, X.jsx)(
+                    h,
+                    {
+                      noWrap: !0,
+                      variant: `caption`,
+                      children: t.name.substring(0, 14),
+                    },
+                    c(),
+                  ),
+                }),
+                (0, X.jsx)(We, {
+                  size: `small`,
+                  defaultChecked: t.running,
+                  disabled: t.id === null,
+                  color:
+                    t.id === null
+                      ? `default`
+                      : t.running
+                        ? `success`
+                        : `warning`,
+                  onChange: () => r(t.index),
+                }),
+              ],
+            },
+            c(),
+          ),
+        ),
+      },
+      c(),
+    );
+  };
+function Ke(e, t) {
+  let n = !e.online,
+    r = t?.notifyStatus?.params,
+    i = t?.notifyFullStatus?.params;
+  if ((i !== void 0 && e.gen === 1) || (r !== void 0 && e.gen >= 2)) {
+    let t = e.gen === 1 ? i : r;
+    if (t && e.scripts.length > 0) {
+      let r;
+      Object.values(e.scripts).forEach((i) => {
+        ((r = t[`script:${i.id}`]),
+          r?.running !== void 0 &&
+            i.running !== r.running &&
+            ((n = !0),
+            (i.running = r.running),
+            console.log(
+              `Script ${i.name} of device ${e.cname} running was set to ${i.running}`,
+            )));
+      });
+    }
+    if (t && e.switches.length > 0) {
+      let r;
+      e.switches.forEach((i) => {
+        ((r = t[`switch:${i.id}`] || t[`rgbw:${i.id}`]),
+          (e.gen >= 2 || i.ts === void 0 || t.ts - i.ts > 2) &&
+            (r?.output !== void 0 &&
+              i.output !== r.output &&
+              ((n = !0),
+              (i.output = r.output),
+              console.log(
+                `Switch ${i.key} of device ${e.cname} output was set to ${i.output}`,
+              )),
+            r?.brightness !== void 0 &&
+              i.brightness !== r.brightness &&
+              ((n = !0),
+              (i.brightness = r.brightness),
+              console.log(
+                `Switch ${i.key} of device ${e.cname} brightness was set to ${i.brightness}`,
+              )),
+            r?.white !== void 0 &&
+              i.white !== r.white &&
+              ((n = !0),
+              (i.white = r.white),
+              console.log(
+                `Switch ${i.key} of device ${e.cname} white was set to ${i.white}`,
+              )),
+            r?.rgb !== void 0 &&
+              !(0, Y.default)(i.rgb, r.rgb) &&
+              ((n = !0),
+              (i.rgb = r.rgb),
+              console.log(
+                `Switch ${i.key} of device ${e.cname} rgb was set to ${i.rgb}`,
+              ))));
+      });
+    }
+  }
+  return (
+    n && ((e.scripts = [...e.scripts]), (e.switches = [...e.switches])),
+    i?.sys?.available_updates !== void 0 &&
+      (e.stable !== i.sys.available_updates?.stable?.version &&
+        ((e.stable = i.sys.available_updates?.stable?.version),
+        console.log(`Device stable was set to ${e.stable}`),
+        (n = !0)),
+      e.beta !== i.sys.available_updates?.beta?.version &&
+        ((e.beta = i.sys.available_updates?.beta?.version),
+        console.log(`Device beta was set to ${e.beta}`),
+        (n = !0))),
+    n ? { ...e } : null
+  );
+}
+var qe = x((e) => {
+    let { expand: t, deviceName: n, ...r } = e;
+    return (0, X.jsx)(d, { "data-testid": `shelly_openkvs_button_${n}`, ...r });
+  })(({ theme: e, expand: t }) => ({
+    transform: t ? `rotate(180deg)` : `rotate(0deg)`,
+    marginLeft: `auto`,
+    transition: e.transitions.create(`transform`, {
+      duration: e.transitions.duration.shortest,
+    }),
+  })),
+  Je = (0, J.memo)(
+    ({
+      deviceId: e,
+      deviceGen: t,
+      tab: n,
+      isUpdateNeeded: r,
+      setDeviceLastUpdate: i,
+      getDeviceLastUpdate: a,
+      display: o,
+    }) => {
+      let [l, u] = (0, J.useState)(!1),
+        [f, p] = (0, J.useState)(null),
+        [m, h] = (0, J.useState)([]),
+        [g, _] = (0, J.useState)({}),
+        [v, y] = (0, J.useState)([]),
+        { request: b, subscribe: x, unsubscribe: S, send: C, isTest: w } = s(),
+        T = (0, J.useCallback)(
+          (t) => {
+            let n = t.data.device;
+            n !== void 0 &&
+              (p(() => n),
+              h(() => n.scripts),
+              _(() => ({
+                notifyFullStatus: n.notifyFullStatus,
+                notifyStatus: n.notifyStatus,
+                notifyEvent: n.notifyEvent,
+              })),
+              y(() => n.kvs),
+              i(e, Date.now(), n));
+          },
+          [e, i],
+        ),
+        E = (0, J.useCallback)(() => {
+          let t = r(e);
+          t === null
+            ? b(
+                {
+                  event: `device-get`,
+                  source: `ShellyCard`,
+                  message: `ShellyCard needs a device`,
+                  data: { deviceId: e },
+                },
+                T,
+              )
+            : ((t = { ...t }),
+              p(() => t),
+              h(() => t.scripts),
+              _(() => ({
+                notifyFullStatus: t.notifyFullStatus,
+                notifyStatus: t.notifyStatus,
+                notifyEvent: t.notifyEvent,
+              })),
+              y(() => t.kvs));
+        }, [e, T, r, b]),
+        D = (0, J.useCallback)(
+          (e) => {
+            let t = e.eventType,
+              r = e.data.device;
+            if (r !== void 0) {
+              switch (t) {
+                case `script`:
+                  !(0, Y.default)(m, r.scripts) &&
+                    n === `sk` &&
+                    h(() => r.scripts);
+                  break;
+                case `kvs`:
+                  !(0, Y.default)(v, r.kvs) && n === `sk` && y(() => r.kvs);
+                  break;
+                case `log`:
+                  !(0, Y.default)(m, r.scripts) &&
+                    n === `log` &&
+                    h(() => r.scripts);
+                  break;
+                case `ws`:
+                  if (
+                    r?.notifyFullStatus?.params !== void 0 ||
+                    r?.notifyStatus?.params !== void 0
+                  ) {
+                    let e = {
+                      notifyFullStatus: r.notifyFullStatus,
+                      notifyStatus: r.notifyStatus,
+                      notifyEvent: r.notifyEvent,
+                    };
+                    n === `ws` && _(() => e);
+                    let t = a(r.id)?.device;
+                    if (t !== void 0) {
+                      let n = Ke(t, e);
+                      n !== null && (p(() => n), h(() => n.scripts));
+                    } else
+                      console.log(
+                        `oldDevice ${r.cname} is undefined in ShellyCard.handleDeviceUpdate`,
+                      );
+                  }
+                  break;
+                default:
+                  (0, Y.default)(f, r) || p(() => r);
+              }
+              i(r.id, Date.now(), r);
+            }
+          },
+          [f, a, v, m, n, i],
+        );
+      (0, J.useEffect)(() => {
+        if ((E(), !(t === 0 || w)))
+          return (
+            x({ subscriptionID: e, callback: D, all: !1 }, [`device-update`]),
+            () => {
+              S(e, [`device-update`]);
+            }
+          );
+      }, []);
+      let O = () => {
+          u(!l);
+        },
+        A = (e) => {
+          ((e.ts = Math.floor(Date.now()) / 1e3),
+            C({
+              event: `toggle-switch`,
+              source: `Shelly Card`,
+              message: `${f.cname} wants to toggle a switch`,
+              data: { switch: e },
+            }));
+        },
+        j = (e) => {
+          ((e.ts = Math.floor(Date.now()) / 1e3),
+            C({
+              event: `set-switch`,
+              source: `Shelly Card`,
+              message: `${f.cname} wants to set a switch`,
+              data: { switch: e },
+            }));
+        },
+        M = (e) => {
+          let t = [...f.scripts],
+            n = f.scripts[e];
+          ((n.running = !n.running),
+            (t[e].running = n.running),
+            h(t),
+            C({
+              event: `toggle-script`,
+              source: `Shelly Card`,
+              message: `${f.cname} wants to toggle a script`,
+              data: { script: n, deviceIp: f.ip, scriptIndex: e },
+            }));
+        };
+      return f == null
+        ? null
+        : (0, X.jsx)(V, {
+            "data-testid": `shelly_card_${f.cname}`,
+            raised: !0,
+            children: (0, X.jsxs)(k, {
+              direction: n === `ctrl` ? `column` : `row`,
+              children: [
+                (0, X.jsxs)(k, {
+                  children: [
+                    (0, X.jsx)(Te, {
+                      device: f,
+                      handleSwitchToggle: A,
+                      display: o,
+                    }),
+                    n === `sk` &&
+                      o === `maximized` &&
+                      (0, X.jsxs)(X.Fragment, {
+                        children: [
+                          (0, X.jsx)(U, {
+                            sx: { minWidth: 200, pt: 0 },
+                            children: (0, X.jsx)(k, {
+                              justifyContent: `left`,
+                              alignItems: `flex-start`,
+                              children: (0, X.jsx)(Ge, {
+                                deviceIP: f.ip,
+                                deviceOnline: f.online,
+                                scripts: m,
+                                handleScriptToggle: M,
+                              }),
+                            }),
+                          }),
+                          (0, X.jsxs)(ue, {
+                            disableSpacing: !0,
+                            children: [
+                              (0, X.jsx)(d, {
+                                href: `http://${f.ip}/#/key-value-store`,
+                                target: `_blank`,
+                                "aria-label": `show KVS entries`,
+                                children: (0, X.jsx)(
+                                  G,
+                                  {
+                                    icon: `material-symbols:storage-rounded`,
+                                    sx: {
+                                      color:
+                                        f?.kvs?.length === 0 ? `grey` : `green`,
+                                    },
+                                  },
+                                  c(),
+                                ),
+                              }),
+                              (0, X.jsx)(qe, {
+                                deviceName: f.cname,
+                                disabled: f?.kvs?.length === 0,
+                                onClick: O,
+                                expand: l,
+                                "aria-expanded": l,
+                                "aria-label": `show KVS entries`,
+                                children: (0, X.jsx)(
+                                  G,
+                                  {
+                                    icon: `mdi:expand-more`,
+                                    sx: { color: `gray` },
+                                  },
+                                  c(),
+                                ),
+                              }),
+                            ],
+                          }),
+                          (0, X.jsx)(pe, {
+                            in: l,
+                            timeout: `auto`,
+                            mountOnEnter: !0,
+                            unmountOnExit: !0,
+                            children: (0, X.jsx)(U, {
+                              sx: { pt: 0 },
+                              children: (0, X.jsx)(k, {
+                                justifyContent: `left`,
+                                alignItems: `flex-start`,
+                                children: (0, X.jsx)(Oe, {
+                                  deviceIp: f.ip,
+                                  kvs: v,
+                                }),
+                              }),
+                            }),
+                          }),
+                        ],
+                      }),
+                  ],
+                }),
+                n === `ws` &&
+                  (0, X.jsx)(U, {
+                    id: `CC_${e}`,
+                    sx: {
+                      display: `flex`,
+                      width: 1,
+                      overflowX: `auto`,
+                      overflowY: `auto`,
+                    },
+                    children: (0, X.jsx)(k, {
+                      children: (0, X.jsx)(Ue, {
+                        deviceId: e,
+                        deviceName: f.name,
+                        wsMessages: g,
+                      }),
+                    }),
+                  }),
+                n === `log` &&
+                  (0, X.jsx)(U, {
+                    sx: {
+                      display: `flex`,
+                      width: 1,
+                      overflowX: `auto`,
+                      overflowY: `auto`,
+                    },
+                    children: (0, X.jsx)(k, {
+                      children: (0, X.jsx)(Ee, { scripts: m }),
+                    }),
+                  }),
+                n === `ctrl` &&
+                  (0, X.jsx)(U, {
+                    sx: { minWidth: 230, maxWidth: 230, pl: 2, pr: 2 },
+                    children: (0, X.jsx)(Ae, { device: f, handleSwitchSet: j }),
+                  }),
+              ],
+            }),
+          });
+    },
+  ),
+  Ye = e(oe());
+function Xe({
+  type: e,
+  title: t,
+  openWifi: n,
+  row: i,
+  onCloseWifi: a,
+  selected: o,
+}) {
+  let [c, u] = (0, J.useState)(
+      e === `single` ? {} : { ssid: ``, password: `` },
+    ),
+    [f, p] = (0, J.useState)(!1),
+    [m, _] = (0, J.useState)(!1),
+    [y, b] = (0, J.useState)({
+      success: !0,
+      message: ``,
+      successful: 0,
+      total: 0,
+    }),
+    { t: x } = r(),
+    { request: S } = s(),
+    C = (0, J.useCallback)((e) => {
+      e.data.wifisettings && u(e.data.wifisettings);
+    }, []),
+    w = (0, J.useCallback)((e) => {
+      b({
+        success: e.data.success,
+        successful: e.data.successful,
+        total: e.data.total,
+        message: e.message,
+      });
+    }, []);
+  (0, J.useEffect)(() => {
+    n &&
+      i &&
+      e === `single` &&
+      Ye.default.isEmpty(c) &&
+      S(
+        {
+          event: `device-get-wifi-settings`,
+          source: `Wifi Form`,
+          message: `Wifi Form needs the wifi settings of a device`,
+          data: { deviceId: i.id },
+        },
+        C,
+      );
+  }, [i, C, S, n, e, c]);
+  let T = (t) => {
+      (t.preventDefault(),
+        i &&
+          S(
+            {
+              event: `device-wifi-update`,
+              source: `Wifi Form`,
+              message: `Updating the wifi settings`,
+              data: { wifisettings: c, ids: e === `single` ? [i.id] : o },
+            },
+            w,
+          ));
+    },
+    D = (e) => {
+      let t = { ...c };
+      (e.target.name === `ssid` && (t[e.target.name] = e.target.value),
+        e.target.name === `password` && (t[e.target.name] = e.target.value),
+        u(t));
+    };
+  return Ye.default.isEmpty(c)
+    ? null
+    : (0, X.jsxs)(L, {
+        anchor: `right`,
+        open: n,
+        onClose: a,
+        slotProps: {
+          paper: { sx: { width: 300, border: `none`, overflow: `hidden` } },
+        },
+        children: [
+          (0, X.jsxs)(k, {
+            direction: `row`,
+            alignItems: `center`,
+            justifyContent: `space-between`,
+            sx: { px: 1, py: 2 },
+            children: [
+              (0, X.jsx)(h, { variant: `h6`, sx: { ml: 1 }, children: t }),
+              (0, X.jsx)(d, {
+                "data-testid": `device_closewifi_button`,
+                onClick: a,
+                children: (0, X.jsx)(G, { icon: `eva:close-fill` }),
+              }),
+            ],
+          }),
+          (0, X.jsx)(h, {
+            variant: `subtitle2`,
+            color: `error`,
+            sx: { ml: 1 },
+            children: x(`_wifiwarming_`),
+          }),
+          (0, X.jsx)(z, {}),
+          (0, X.jsx)(g, {
+            fullWidth: !0,
+            children: (0, X.jsx)(E, {
+              component: `form`,
+              onSubmit: T,
+              sx: { display: `flex`, flexDirection: `column`, gap: 2 },
+              children: (0, X.jsxs)(k, {
+                spacing: 3,
+                sx: { px: 3, py: 3 },
+                children: [
+                  (0, X.jsx)(v, {
+                    required: !0,
+                    autoComplete: `off`,
+                    label: `SSID`,
+                    name: `ssid`,
+                    value: c.ssid,
+                    onChange: D,
+                    slotProps: {
+                      htmlInput: {
+                        "data-testid": `wifi_ssid_input`,
+                        maxLength: 25,
+                      },
+                    },
+                  }),
+                  (0, X.jsx)(v, {
+                    required: !0,
+                    name: `password`,
+                    autoComplete: `new-password`,
+                    label: x(`Password`),
+                    onChange: D,
+                    type: f ? `text` : `password`,
+                    slotProps: {
+                      input: {
+                        endAdornment: (0, X.jsx)(A, {
+                          position: `end`,
+                          children: (0, X.jsx)(d, {
+                            onClick: () => p(!f),
+                            edge: `end`,
+                            children: (0, X.jsx)(G, {
+                              icon: f ? `eva:eye-fill` : `eva:eye-off-fill`,
+                            }),
+                          }),
+                        }),
+                      },
+                      htmlInput: { maxLength: 20 },
+                    },
+                  }),
+                  e === `single` &&
+                    (0, X.jsxs)(X.Fragment, {
+                      children: [
+                        (0, X.jsx)(v, {
+                          disabled: !0,
+                          label: `IP`,
+                          name: `ip`,
+                          value: c.ip,
+                        }),
+                        (0, X.jsx)(v, {
+                          disabled: !0,
+                          label: `Mode`,
+                          name: `ipv4mode`,
+                          value: c.ipv4mode,
+                        }),
+                        (0, X.jsx)(v, {
+                          disabled: !0,
+                          label: `Gatway`,
+                          name: `gw`,
+                          value: c.gw,
+                        }),
+                        (0, X.jsx)(v, {
+                          disabled: !0,
+                          label: `Mask`,
+                          name: `netmask`,
+                          value: c.netmask,
+                        }),
+                        (0, X.jsx)(v, {
+                          disabled: !0,
+                          label: `DNS`,
+                          name: `nameserver`,
+                          value: c.nameserver == null ? `` : c.nameserver,
+                        }),
+                      ],
+                    }),
+                  (0, X.jsx)(H, {
+                    required: !0,
+                    control: (0, X.jsx)(B, {
+                      color: `error`,
+                      checked: m,
+                      onChange: (e) => _(e.target.checked),
+                    }),
+                    label: x(`_acceptrisk_`),
+                  }),
+                  (0, X.jsx)(h, {
+                    variant: `subtitle2`,
+                    color: y.success ? `success` : `error`,
+                    children: x(y.message, {
+                      successful: y.successful,
+                      total: y.total,
+                    }),
+                  }),
+                  (0, X.jsx)(l, {
+                    disabled: !c.password || !c.ssid || !m,
+                    fullWidth: !0,
+                    size: `large`,
+                    type: `submit`,
+                    color: `inherit`,
+                    variant: `outlined`,
+                    startIcon: (0, X.jsx)(G, { icon: `formkit:submit` }),
+                    children: x(`Save`),
+                  }),
+                ],
+              }),
+            }),
+          }),
+        ],
+      });
+}
+var Ze = ({ count: e, max: t }) =>
+  (0, X.jsxs)(E, {
+    position: `relative`,
+    display: `inline-flex`,
+    children: [
+      (0, X.jsx)(S, {
+        size: 40,
+        variant: `indeterminate`,
+        color: e >= t - 1 ? `error` : `success`,
+      }),
+      (0, X.jsx)(E, {
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        position: `absolute`,
+        display: `flex`,
+        alignItems: `center`,
+        justifyContent: `center`,
+        children: (0, X.jsx)(h, {
+          variant: `caption`,
+          component: `div`,
+          sx: { color: `text.primary` },
+          children: `${e}/${t}`,
+        }),
+      }),
+    ],
+  });
+function Qe({
+  row: e,
+  labelId: t,
+  isItemSelected: n,
+  handleClick: i,
+  handleRebootDevices: a,
+  handleFirmwareUpdates: o,
+  handleUpdateRow: c,
+}) {
+  let { t: l } = r(),
+    { request: u, subscribe: p, unsubscribe: m, isTest: g } = s(),
+    [_, v] = (0, J.useState)(e),
+    [y, b] = (0, J.useState)(null),
+    [x, T] = (0, J.useState)({ open: !1 }),
+    E = () => {
+      T({ open: !0 });
+    },
+    D = () => {
+      T({ open: !1 });
+    },
+    O = (e) => {
+      (e.stopPropagation(), b(e.currentTarget));
+    },
+    k = (e) => {
+      switch (e) {
+        case `reboot`:
+          a([_.id]);
+          break;
+        case `stable`:
+          o(`stable`, [_.id]);
+          break;
+        case `beta`:
+          o(`beta`, [_.id]);
+          break;
+        case `wifi`:
+          E();
+          break;
+        default:
+          break;
+      }
+      b(null);
+    },
+    A = (0, J.useCallback)(
+      (e) => {
+        let t = e.data.device,
+          n = t?.notifyFullStatus?.params?.sys;
+        if (
+          ((t?.updateStablePending || t?.updateBetaPending) &&
+            console.log(`Update pending on device ${t?.cname}`),
+          t && t.gen > 0)
+        ) {
+          let e = {
+            id: t.id,
+            image: t.image,
+            name: t.cname.substring(0, 14),
+            model: t.name,
+            gen: t.gen,
+            uptime: n ? n.uptime : 0,
+            restart: t.rebootPending
+              ? `reboot pending`
+              : n
+                ? n.restart_required
+                : void 0,
+            firmware: t.fw_id,
+            stable: t.updateStablePending ? `stable pending` : t.stable,
+            beta: t.updateBetaPending ? `beta pending` : t.beta,
+            reloads: t.reloads,
+          };
+          (c(e), v(e));
+        }
+      },
+      [v, c],
+    );
+  return (
+    (0, J.useEffect)(() => {
+      if (
+        !g &&
+        (u(
+          {
+            event: `device-get`,
+            source: `ShellyCard`,
+            message: `ShellyCard needs a device`,
+            data: { deviceId: e.id },
+          },
+          A,
+        ),
+        e.gen !== 0)
+      )
+        return (
+          p({ subscriptionID: e.id, callback: A, all: !1 }, [`device-update`]),
+          () => {
+            m(e.id, [`device-update`]);
+          }
+        );
+    }, []),
+    (0, X.jsxs)(X.Fragment, {
+      children: [
+        (0, X.jsxs)(
+          F,
+          {
+            hover: !0,
+            onClick: () => i(_.id),
+            role: `checkbox`,
+            "aria-checked": n,
+            tabIndex: -1,
+            selected: n,
+            sx: { cursor: `pointer` },
+            children: [
+              (0, X.jsx)(I, {
+                padding: `checkbox`,
+                children: (0, X.jsx)(B, { color: `primary`, checked: n }),
+              }),
+              (0, X.jsx)(I, {
+                align: `right`,
+                sx: { minWidth: 70, maxWidth: 70, objectFit: `scale-down` },
+                children: (0, X.jsx)(`img`, {
+                  src: e.image,
+                  alt: e.name,
+                  width: `70`,
+                  height: `70`,
+                }),
+              }),
+              (0, X.jsx)(I, {
+                id: t,
+                scope: `row`,
+                padding: `none`,
+                children: (0, X.jsx)(h, { children: _.name }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children: (0, X.jsxs)(h, { children: [_.model, ` `] }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children: (0, X.jsx)(h, { children: _.gen }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children: (0, X.jsx)(h, { children: ye(_.uptime) }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children: (0, X.jsx)(h, {
+                  color: _.restart === `reboot pending` ? `success` : `string`,
+                  children:
+                    _.restart === `reboot pending`
+                      ? (0, X.jsx)(S, {
+                          size: 25,
+                          variant: `indeterminate`,
+                          color: `success`,
+                        })
+                      : _.restart
+                        ? (0, X.jsx)(C, {
+                            title: l(`_required_`),
+                            children: (0, X.jsx)(G, {
+                              icon: `mdi:restart-alert`,
+                              width: 25,
+                              height: 25,
+                              sx: { color: `red` },
+                            }),
+                          })
+                        : (0, X.jsx)(C, {
+                            title: l(`_notrequired_`),
+                            children: (0, X.jsx)(G, {
+                              icon: `mdi:restart-off`,
+                              width: 25,
+                              height: 25,
+                            }),
+                          }),
+                }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children: (0, X.jsx)(h, {
+                  children:
+                    _.firmware === void 0
+                      ? `--`
+                      : _.gen === 1
+                        ? _.firmware.substring(
+                            _.firmware.lastIndexOf(`/`) + 2,
+                            _.firmware.lastIndexOf(`g`) - 1,
+                          )
+                        : _.firmware.substring(
+                            _.firmware.lastIndexOf(`/`) + 1,
+                            _.firmware.lastIndexOf(`-`),
+                          ),
+                }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children:
+                  _.stable === `stable pending`
+                    ? (0, X.jsx)(Ze, {
+                        count: _.reloads ? _.reloads : 1,
+                        max: 5,
+                      })
+                    : (0, X.jsx)(h, {
+                        children: _.stable === void 0 ? `--` : _.stable,
+                      }),
+              }),
+              (0, X.jsx)(I, {
+                align: `left`,
+                children:
+                  _.beta === `beta pending`
+                    ? (0, X.jsx)(Ze, {
+                        count: _.reloads ? _.reloads : 1,
+                        max: 5,
+                      })
+                    : (0, X.jsx)(h, {
+                        children: _.beta === void 0 ? `--` : _.beta,
+                      }),
+              }),
+              (0, X.jsx)(I, {
+                align: `right`,
+                children: (0, X.jsx)(d, {
+                  "data-testid": `device${_.id}_openmenue_button`,
+                  onClick: O,
+                  children: (0, X.jsx)(G, { icon: `eva:more-vertical-fill` }),
+                }),
+              }),
+            ],
+          },
+          _.id,
+        ),
+        (0, X.jsxs)(w, {
+          open: !!y,
+          anchorEl: y,
+          onClose: k,
+          anchorOrigin: { vertical: `top`, horizontal: `left` },
+          transformOrigin: { vertical: `top`, horizontal: `right` },
+          slotProps: { paper: { sx: { width: 300 } } },
+          children: [
+            (0, X.jsxs)(f, {
+              onClick: () => {
+                k(`stable`);
+              },
+              disabled: _.stable === void 0,
+              children: [
+                (0, X.jsx)(G, {
+                  icon: `material-symbols:system-update-alt`,
+                  sx: { color: `green`, mr: 2 },
+                }),
+                l(`_firmwarestable_`),
+              ],
+            }),
+            (0, X.jsxs)(f, {
+              onClick: () => {
+                k(`beta`);
+              },
+              disabled: _.beta === void 0,
+              children: [
+                (0, X.jsx)(G, {
+                  icon: `material-symbols:system-update-alt`,
+                  sx: { color: `red`, mr: 2 },
+                }),
+                l(`_firmwarebeta_`),
+              ],
+            }),
+            (0, X.jsxs)(f, {
+              onClick: () => {
+                k(`reboot`);
+              },
+              children: [
+                (0, X.jsx)(G, { icon: `ix:reboot`, sx: { mr: 2 } }),
+                l(`Reboot`),
+              ],
+            }),
+            (0, X.jsxs)(f, {
+              "data-testid": `device${_.id}_openwifi_button`,
+              onClick: () => k(`wifi`),
+              children: [
+                (0, X.jsx)(G, { icon: `material-symbols:wifi`, sx: { mr: 2 } }),
+                `Wifi`,
+              ],
+            }),
+          ],
+        }),
+        (0, X.jsx)(Xe, {
+          type: `single`,
+          title: `Wifi ${_.name}`,
+          openWifi: x.open,
+          row: _,
+          onCloseWifi: D,
+          selected: [e.id],
+        }),
+      ],
+    })
+  );
+}
+function $e({
+  handleSelectAllClick: e,
+  order: t,
+  orderBy: n,
+  numSelected: i,
+  rowCount: a,
+  handleTableSort: o,
+}) {
+  let { t: s } = r(),
+    c = (e) => () => {
+      o(e);
+    };
+  return (0, X.jsx)(P, {
+    children: (0, X.jsxs)(F, {
+      children: [
+        (0, X.jsx)(I, {
+          padding: `checkbox`,
+          children: (0, X.jsx)(B, {
+            color: `primary`,
+            indeterminate: i > 0 && i < a,
+            checked: a > 0 && i === a,
+            onChange: e,
+          }),
+        }),
+        [
+          { id: `image`, disablePadding: !0, label: `` },
+          { id: `name`, disablePadding: !0, label: `Name` },
+          { id: `model`, disablePadding: !1, label: `Model` },
+          { id: `gen`, disablePadding: !1, label: `Gen` },
+          { id: `uptime`, disablePadding: !1, label: `Uptime` },
+          { id: `restart`, disablePadding: !1, label: `Reboot` },
+          { id: `firmware`, disablePadding: !1, label: `Firmware` },
+          { id: `stable`, disablePadding: !1, label: `Stable` },
+          { id: `beta`, disablePadding: !1, label: `Beta` },
+          { id: `menue`, disablePadding: !0, label: `` },
+        ].map((e) =>
+          (0, X.jsx)(
+            I,
+            {
+              align: `left`,
+              padding: e.disablePadding ? `none` : `normal`,
+              sortDirection: n === e.id ? t : !1,
+              children: (0, X.jsx)(re, {
+                active: n === e.id,
+                direction: n === e.id ? t : `asc`,
+                onClick: c(e.id),
+                hideSortIcon: !0,
+                children: s(e.label),
+              }),
+            },
+            e.id,
+          ),
+        ),
+      ],
+    }),
+  });
+}
+function et({ alert: e, setAlert: t }) {
+  return (0, X.jsx)(m, {
+    in: e.visible,
+    timeout: { enter: 0, exit: 2e3 },
+    addEndListener: () => {
+      setTimeout(() => {
+        t({ title: e.title, text: e.text, severity: e.severity, visible: !1 });
+      }, 5e3);
+    },
+    children: (0, X.jsxs)(fe, {
+      severity: e.severity,
+      variant: `filled`,
+      sx: { maxHeight: `50px`, width: `100%` },
+      children: [
+        e.title !== `` && (0, X.jsx)(ce, { children: e.title }),
+        e.text,
+      ],
+    }),
+  });
+}
+function tt({
+  selected: e,
+  handleRebootDevices: t,
+  handleFirmwareUpdates: n,
+  alert: i,
+  setAlert: a,
+}) {
+  let { t: o } = r(),
+    [s, c] = (0, J.useState)({ open: !1 }),
+    l = () => {
+      c({ open: !0 });
+    };
+  return (0, X.jsxs)(X.Fragment, {
+    children: [
+      (0, X.jsxs)(j, {
+        sx: [
+          { pl: { sm: 2 }, pr: { xs: 1, sm: 1 } },
+          e.length > 0 && {
+            bgcolor: (e) =>
+              u(e.palette.primary.main, e.palette.action.activatedOpacity),
+          },
+        ],
+        children: [
+          (0, X.jsxs)(k, {
+            direction: `row`,
+            spacing: 2,
+            sx: {
+              px: 1,
+              py: 2,
+              justifyContent: `flex-start`,
+              alignItems: `center`,
+              width: `60%`,
+            },
+            children: [
+              e.length > 0
+                ? (0, X.jsxs)(h, {
+                    sx: { flex: `1 1 40%` },
+                    color: `inherit`,
+                    variant: `subtitle1`,
+                    component: `div`,
+                    children: [`Batch ${e.length}`, ` `, o(`selected`)],
+                  })
+                : (0, X.jsx)(h, {
+                    sx: { flex: `1 1 40%` },
+                    variant: `h6`,
+                    id: `tableTitle`,
+                    component: `div`,
+                    children: `Batch`,
+                  }),
+              (0, X.jsx)(et, { alert: i, setAlert: a }),
+            ],
+          }),
+          e.length > 0 &&
+            (0, X.jsxs)(k, {
+              direction: `row`,
+              sx: {
+                px: 1,
+                py: 2,
+                justifyContent: `flex-end`,
+                alignItems: `center`,
+                width: `40%`,
+              },
+              children: [
+                (0, X.jsx)(C, {
+                  title: o(`_firmwarestable_`),
+                  children: (0, X.jsx)(d, {
+                    onClick: () => n(`stable`),
+                    children: (0, X.jsx)(G, {
+                      icon: `material-symbols:system-update-alt`,
+                      sx: { color: `green` },
+                    }),
+                  }),
+                }),
+                (0, X.jsx)(C, {
+                  title: o(`_firmwarebeta_`),
+                  children: (0, X.jsx)(d, {
+                    onClick: () => n(`beta`),
+                    children: (0, X.jsx)(G, {
+                      icon: `material-symbols:system-update-alt`,
+                      sx: { color: `red` },
+                    }),
+                  }),
+                }),
+                (0, X.jsx)(C, {
+                  title: o(`Reboot`),
+                  children: (0, X.jsx)(d, {
+                    onClick: () => t(),
+                    children: (0, X.jsx)(G, { icon: `ix:reboot` }),
+                  }),
+                }),
+                (0, X.jsx)(C, {
+                  title: `Wifi`,
+                  children: (0, X.jsx)(d, {
+                    onClick: () => l(),
+                    children: (0, X.jsx)(G, { icon: `material-symbols:wifi` }),
+                  }),
+                }),
+              ],
+            }),
+        ],
+      }),
+      (0, X.jsx)(Xe, {
+        type: `selected`,
+        title: `Wifi ${e.length} ${o(`selected`)}`,
+        openWifi: s.open,
+        onCloseWifi: () => {
+          c({ open: !1 });
+        },
+        selected: e,
+      }),
+    ],
+  });
+}
+function nt({ inputData: e, comparator: t }) {
+  let n = e.map((e, t) => [e, t]);
+  return (
+    n.sort((e, n) => {
+      let r = t(e[0], n[0]);
+      return r === 0 ? e[1] - n[1] : r;
+    }),
+    (e = n.map((e) => e[0])),
+    e
+  );
+}
+function rt({ inputData: e, comparator: t }) {
+  let n = e.map((e, t) => [e, t]);
+  return (
+    n.sort((e, n) => {
+      let r = t(e[0], n[0]);
+      return r === 0 ? e[1] - n[1] : r;
+    }),
+    (e = n.map((e) => e[0])),
+    e
+  );
+}
+function it({ devices: e }) {
+  let [t, n] = (0, J.useState)(`asc`),
+    [i, a] = (0, J.useState)(``),
+    [o, c] = (0, J.useState)([]),
+    [l, u] = (0, J.useState)(0),
+    [d, f] = (0, J.useState)(5),
+    { send: p } = s(),
+    [m, h] = (0, J.useState)(
+      e.map((e) => {
+        let t = e?.notifyFullStatus?.params?.sys;
+        return {
+          id: e.id,
+          image: e.image,
+          name: e.cname.substring(0, 14),
+          model: e.name,
+          gen: e.gen,
+          uptime: t?.uptime,
+          restart: e.rebootPending ? `reboot pending` : t?.restart_required,
+          firmware: e.fw_id,
+          stable: e.updateStablePending ? `stable pending` : e.stable,
+          beta: e.updateBetaPending ? `beta pending` : e.beta,
+          reloads: e.reloads,
+        };
+      }),
+    ),
+    [g, _] = (0, J.useState)({
+      title: ``,
+      text: ``,
+      severity: `info`,
+      visible: !1,
+    }),
+    { t: v } = r(),
+    y = (e) => {
+      let t = [...m];
+      ((t[t.findIndex((t) => t.id === e.id)] = e), h(t));
+    },
+    b = (e, t) => {
+      t === void 0 && (t = o);
+      let n = t.filter((t) => {
+        let n = m.find((e) => e.id === t);
+        return e === `stable` ? n?.stable !== void 0 : n?.beta !== void 0;
+      });
+      (n.length > 0 &&
+        p({
+          event: `devices-${e}-update`,
+          source: `Shelly Table`,
+          message: `Shelly Table wants to update the firmware of devices`,
+          data: { ids: n },
+        }),
+        n.length !== t.length &&
+          _({
+            title: ``,
+            text:
+              n.length === 0
+                ? v(`_noupdateavailable_`, { type: e })
+                : v(`_updateavailable_`, {
+                    checked: n.length,
+                    selected: t.length,
+                    type: e,
+                  }),
+            severity: `warning`,
+            visible: !0,
+          }));
+    },
+    x = (e) => {
+      (e === void 0 && (e = o),
+        p({
+          event: `devices-reboot`,
+          source: `Shelly Table`,
+          message: `Shelly Table wants to reboot devices`,
+          data: { ids: e },
+        }));
+    },
+    S = (e) => {
+      (n(i === e && t === `asc` ? `desc` : `asc`), a(e));
+    },
+    C = (e) => {
+      if (e.target.checked) {
+        c(m.map((e) => e.id));
+        return;
+      }
+      c([]);
+    },
+    w = (e) => {
+      let t = o.indexOf(e),
+        n = [];
+      (t === -1
+        ? (n = n.concat(o, e))
+        : t === 0
+          ? (n = n.concat(o.slice(1)))
+          : t === o.length - 1
+            ? (n = n.concat(o.slice(0, -1)))
+            : t > 0 && (n = n.concat(o.slice(0, t), o.slice(t + 1))),
+        c(n));
+    },
+    T = (e, t) => {
+      u(t);
+    },
+    E = (e) => {
+      (f(parseInt(e.target.value, 10)), u(0));
+    },
+    D = Se(l, d, m.length),
+    O = rt({ inputData: m, comparator: q(t, i) });
+  return (0, X.jsxs)(V, {
+    children: [
+      (0, X.jsx)(tt, {
+        selected: o,
+        handleRebootDevices: x,
+        handleFirmwareUpdates: b,
+        alert: g,
+        setAlert: _,
+      }),
+      (0, X.jsx)(M, {
+        children: (0, X.jsxs)(N, {
+          sx: { minWidth: 750 },
+          "aria-labelledby": `tableTitle`,
+          size: `small`,
+          children: [
+            (0, X.jsx)($e, {
+              numSelected: o.length,
+              order: t,
+              orderBy: i,
+              handleSelectAllClick: C,
+              handleTableSort: S,
+              rowCount: m.length,
+            }),
+            (0, X.jsxs)(ne, {
+              children: [
+                O.slice(l * d, l * d + d).map((e, t) => {
+                  let n = o.includes(e.id);
+                  return (0, X.jsx)(
+                    Qe,
+                    {
+                      row: e,
+                      labelId: `enhanced-table-checkbox-${t}`,
+                      isItemSelected: n,
+                      handleClick: w,
+                      handleRebootDevices: x,
+                      handleFirmwareUpdates: b,
+                      handleUpdateRow: y,
+                    },
+                    e.id,
+                  );
+                }),
+                D > 0 &&
+                  (0, X.jsx)(F, {
+                    style: { height: 33 * D },
+                    children: (0, X.jsx)(I, { colSpan: 10 }),
+                  }),
+              ],
+            }),
+          ],
+        }),
+      }),
+      (0, X.jsx)(te, {
+        rowsPerPageOptions: [5, 10, 25],
+        component: `div`,
+        count: m.length,
+        rowsPerPage: d,
+        page: l,
+        onPageChange: T,
+        onRowsPerPageChange: E,
+      }),
+    ],
+  });
+}
+var at = ({ index: e, devices: t, display: n, getTestDevice: r }) => {
+    let { isTest: i } = s(),
+      a = [`sk`, `ctrl`, `log`, `ws`, `table`][e],
+      o = (0, J.useRef)({});
+    console.log(
+      `ShellyTabs rendered for tab ${a} and received ${t.length} devices`,
+    );
+    let l = (e) => {
+        let t = o.current[e];
+        return t === void 0 ? null : t;
+      },
+      u = (e, t, n) => {
+        o.current[e] = { ts: t, device: n };
+      },
+      d = (e) => {
+        if (i) {
+          let t = r(e);
+          if (t !== void 0) return t;
+        }
+        let t = o.current[e];
+        return t === void 0 || he(Date.now(), new Date(t.ts)) >= 60
+          ? null
+          : t.device;
+      };
+    return a === `table`
+      ? (0, X.jsx)(it, { devices: t }, JSON.stringify(t))
+      : (0, X.jsx)(R, {
+          container: !0,
+          spacing: 2,
+          size: {
+            xs: 12,
+            sm: a === `sk` || a === `ctrl` ? 6 : 12,
+            md: a === `sk` || a === `ctrl` ? 4 : 12,
+            lg: a === `sk` || a === `ctrl` ? 3 : 12,
+            xl: a === `sk` || a === `ctrl` ? 2 : 12,
+          },
+          children: t.map((e) => {
+            let t = e?.switches[0];
+            return a === `sk` ||
+              (a === `ws` && e.gen > 0) ||
+              (a === `log` && e.gen > 1) ||
+              (a === `ctrl` &&
+                e.gen > 0 &&
+                (t?.brightness !== void 0 ||
+                  t?.white !== void 0 ||
+                  t?.rgb !== void 0))
+              ? (0, X.jsx)(
+                  R,
+                  {
+                    sx: { minWidth: a === `sk` || a === `ctrl` ? 0 : 1 },
+                    children: (0, X.jsx)(
+                      Je,
+                      {
+                        deviceId: e.id,
+                        deviceGen: e.gen,
+                        tab: a,
+                        isUpdateNeeded: d,
+                        setDeviceLastUpdate: u,
+                        getDeviceLastUpdate: l,
+                        display: n,
+                      },
+                      e.id,
+                    ),
+                  },
+                  c(),
+                )
+              : null;
+          }),
+        });
+  },
+  $ = [
+    { value: `config`, label: `Config` },
+    { value: `cname`, label: `Name` },
+    { value: `name`, label: `Model` },
+    { value: `gen`, label: `Gen` },
+  ];
+function ot({ handleSort: e }) {
+  let [t, n] = (0, J.useState)(null),
+    [i, a] = (0, J.useState)(0),
+    { t: o } = r(),
+    s = (e) => {
+      n(e.currentTarget);
+    },
+    c = () => {
+      n(null);
+    },
+    u = (t, r) => {
+      (n(null), a(r), e($[r].value));
+    };
+  return (0, X.jsxs)(X.Fragment, {
+    children: [
+      (0, X.jsxs)(l, {
+        "data-testid": `sort_open_button`,
+        disableRipple: !0,
+        color: `inherit`,
+        onClick: s,
+        endIcon: (0, X.jsx)(G, {
+          icon: t ? `eva:chevron-up-fill` : `eva:chevron-down-fill`,
+        }),
+        children: [
+          o(`_sortby_`),
+          `:\xA0`,
+          (0, X.jsx)(h, {
+            component: `span`,
+            variant: `subtitle2`,
+            sx: { color: `text.secondary` },
+            children: o($[i].label),
+          }),
+        ],
+      }),
+      (0, X.jsx)(T, {
+        open: !!t,
+        anchorEl: t,
+        onClose: c,
+        anchorOrigin: { vertical: `bottom`, horizontal: `right` },
+        transformOrigin: { vertical: `top`, horizontal: `right` },
+        slotProps: { paper: { sx: { [`& .${y.root}`]: { p: 0 } } } },
+        children: $.map((e, t) =>
+          (0, X.jsx)(
+            f,
+            {
+              "data-testid": `sort_option_${e.label}`,
+              onClick: (e) => u(e, t),
+              selected: t === i,
+              children: o(e.label),
+            },
+            e.value,
+          ),
+        ),
+      }),
+    ],
+  });
+}
+function st({
+  openFilter: e,
+  onOpenFilter: t,
+  onCloseFilter: n,
+  filter: i,
+  handleDeviceFilter: a,
+}) {
+  let [o, s] = (0, J.useState)([]),
+    [c, u] = (0, J.useState)([]),
+    { t: f } = r();
+  if (
+    ((0, J.useEffect)(() => {
+      (s(Array.from(i.mChecked)), u(Array.from(i.gChecked)));
+    }, [i]),
+    i === void 0)
+  )
+    return null;
+  let p = (e) => {
+      s(o.map((t, n) => (n === e ? !t : t)));
+    },
+    m = (e) => {
+      u(c.map((t, n) => (n === e ? !t : t)));
+    },
+    g = (0, X.jsxs)(k, {
+      spacing: 1,
+      children: [
+        (0, X.jsx)(h, { variant: `subtitle2`, children: f(`Model`) }),
+        (0, X.jsx)(W, {
+          children: i.models.map((e, t) =>
+            (0, X.jsx)(
+              H,
+              {
+                "data-testid": `filter_model_checkbox_${t}`,
+                control: (0, X.jsx)(B, {
+                  checked: !!o[t],
+                  onChange: () => p(t),
+                }),
+                label: e,
+              },
+              e,
+            ),
+          ),
+        }),
+      ],
+    }),
+    _ = (0, X.jsxs)(k, {
+      spacing: 1,
+      children: [
+        (0, X.jsx)(h, { variant: `subtitle2`, children: f(`Generation`) }),
+        (0, X.jsx)(W, {
+          children: i.generations.map((e, t) =>
+            (0, X.jsx)(
+              H,
+              {
+                "data-testid": `filter_gen_checkbox_${t}`,
+                value: e,
+                control: (0, X.jsx)(B, {
+                  checked: !!c[t],
+                  onChange: () => m(t),
+                }),
+                label: e === `` ? `no Gen` : `Gen ${e}`,
+              },
+              e,
+            ),
+          ),
+        }),
+      ],
+    }),
+    v = () => {
+      (s(Array(i.mChecked.length).fill(!1)),
+        u(Array(i.gChecked.length).fill(!1)));
+    };
+  return (0, X.jsxs)(X.Fragment, {
+    children: [
+      (0, X.jsxs)(l, {
+        "data-testid": `filter_open_button`,
+        disableRipple: !0,
+        color: i.isFilter ? `success` : `inherit`,
+        endIcon: (0, X.jsx)(G, { icon: `ic:round-filter-list` }),
+        onClick: t,
+        children: [f(`Filters`), `\xA0`],
+      }),
+      (0, X.jsxs)(L, {
+        anchor: `right`,
+        open: e,
+        onClose: n,
+        slotProps: {
+          paper: { sx: { width: 300, border: `none`, overflow: `hidden` } },
+        },
+        children: [
+          (0, X.jsxs)(k, {
+            direction: `row`,
+            alignItems: `center`,
+            justifyContent: `space-between`,
+            sx: { px: 1, py: 2 },
+            children: [
+              (0, X.jsx)(h, {
+                variant: `h6`,
+                sx: { ml: 1 },
+                children: f(`Filters`),
+              }),
+              (0, X.jsx)(d, {
+                onClick: n,
+                children: (0, X.jsx)(G, { icon: `eva:close-fill` }),
+              }),
+            ],
+          }),
+          (0, X.jsx)(z, {}),
+          (0, X.jsx)(se, {
+            children: (0, X.jsxs)(k, {
+              spacing: 3,
+              sx: { p: 3 },
+              children: [g, _],
+            }),
+          }),
+          (0, X.jsx)(E, {
+            sx: { p: 3 },
+            children: (0, X.jsxs)(k, {
+              direction: `row`,
+              spacing: 2,
+              children: [
+                (0, X.jsx)(l, {
+                  "data-testid": `filter_submit_button`,
+                  fullWidth: !0,
+                  size: `large`,
+                  color: `inherit`,
+                  variant: `outlined`,
+                  startIcon: (0, X.jsx)(G, { icon: `formkit:submit` }),
+                  onClick: () => a(o, c),
+                  children: f(`Submit`),
+                }),
+                (0, X.jsx)(l, {
+                  "data-testid": `filter_clear_button`,
+                  fullWidth: !0,
+                  size: `large`,
+                  color: `inherit`,
+                  variant: `outlined`,
+                  startIcon: (0, X.jsx)(G, { icon: `ic:round-clear-all` }),
+                  onClick: () => v(),
+                  children: f(`Clear`),
+                }),
+              ],
+            }),
+          }),
+        ],
+      }),
+    ],
+  });
+}
+function ct() {
+  let { user: e, request: t, isTest: n } = s(),
+    [i, a] = (0, J.useState)([]),
+    [o, c] = (0, J.useState)([]),
+    [l, u] = (0, J.useState)(!1),
+    [f, p] = (0, J.useState)(0),
+    [m, g] = (0, J.useState)(`config`),
+    [_, v] = (0, J.useState)(`maximized`),
+    [y, x] = (0, J.useState)({
+      models: [],
+      generations: [],
+      mChecked: [],
+      gChecked: [],
+      isFilter: !1,
+      deviceFilters: {},
+    }),
+    { t: S } = r(),
+    C = (0, J.useCallback)((e) => {
+      let t = [],
+        n = [],
+        r = e.data.devices;
+      r.forEach((e) => {
+        (t.includes(e.name) || t.push(e.name),
+          n.includes(e.gen.toString()) || n.push(e.gen.toString()));
+      });
+      let i = {
+        models: t,
+        generations: n,
+        mChecked: Array(t.length).fill(!1),
+        gChecked: Array(n.length).fill(!1),
+        isFilter: !1,
+        deviceFilters: {},
+      };
+      (a(r), c(r), x(i));
+    }, []);
+  (0, J.useEffect)(() => {
+    e !== null &&
+      t(
+        {
+          event: `devices-get-all`,
+          source: `Shelly View`,
+          message: `Shelly View needs the list of devices`,
+          data: { userid: e.roleid == 1 ? void 0 : e.userid, istest: n },
+        },
+        C,
+      );
+  }, [C, t, e, n]);
+  let w = (e) => o.find((t) => t.id === e),
+    T = (e, t) => {
+      (t !== 0 && v(`maximized`), p(t));
+    },
+    O = () => {
+      u(!0);
+    },
+    A = () => {
+      u(!1);
+    },
+    j = (e, t) => {
+      g(e);
+      let n = i.length !== o.length,
+        r = [];
+      switch (e) {
+        case `config`:
+          r = [...i];
+          break;
+        case `gen`:
+          r = nt({ inputData: i, comparator: q(`asc`, `gen`) });
+          break;
+        default:
+          r = nt({ inputData: i, comparator: q(`asc`, e) });
+      }
+      return t ? r : (n && (r = M(y.deviceFilters, r)), c(() => r), null);
+    },
+    M = (e, t) =>
+      t.filter((t) => {
+        for (let n in e)
+          if (
+            (n === `name` && e[n].includes(t[n])) ||
+            (n === `gen` && e[n].includes(t[n].toString()))
+          )
+            return !0;
+        return !1;
+      }),
+    N = (e, t) => {
+      let n = !1,
+        r = { name: [], gen: [] };
+      if (
+        (y.models.forEach((t, i) => {
+          e[i] &&
+            ((n = !0), r.name === void 0 && (r.name = []), r.name.push(t));
+        }),
+        y.generations.forEach((e, i) => {
+          t[i] && ((n = !0), r.gen === void 0 && (r.gen = []), r.gen.push(e));
+        }),
+        x({
+          models: y.models,
+          generations: y.generations,
+          mChecked: e,
+          gChecked: t,
+          isFilter: n,
+          deviceFilters: r,
+        }),
+        n)
+      ) {
+        let e = [];
+        if (m !== `config`) {
+          let t = j(m, !0);
+          t !== null && (e = t);
+        } else e = [...i];
+        ((e = M(r, e)), c(e));
+      } else {
+        let e = j(m, !0);
+        e !== null && c(e);
+      }
+      u(!1);
+    },
+    P = (e) => {
+      v(e);
+    };
+  return (0, X.jsxs)(me, {
+    maxWidth: `xl`,
+    children: [
+      (0, X.jsx)(h, { variant: `h4`, children: `Shellies` }),
+      (0, X.jsx)(k, {
+        direction: `row`,
+        alignItems: `center`,
+        flexWrap: `wrap-reverse`,
+        justifyContent: `flex-end`,
+        children: (0, X.jsxs)(k, {
+          direction: `row`,
+          spacing: 1,
+          flexShrink: 0,
+          sx: { my: 1 },
+          children: [
+            f === 0 &&
+              _ === `minimized` &&
+              (0, X.jsx)(d, {
+                onClick: () => P(`maximized`),
+                children: (0, X.jsx)(G, {
+                  icon: `solar:maximize-square-2-outline`,
+                }),
+              }),
+            f === 0 &&
+              _ === `maximized` &&
+              (0, X.jsx)(d, {
+                onClick: () => P(`minimized`),
+                children: (0, X.jsx)(G, {
+                  icon: `solar:minimize-square-2-outline`,
+                }),
+              }),
+            (0, X.jsx)(st, {
+              openFilter: l,
+              onOpenFilter: O,
+              onCloseFilter: A,
+              filter: y,
+              handleDeviceFilter: N,
+            }),
+            (0, X.jsx)(ot, { handleSort: (e) => j(e, !1) }),
+          ],
+        }),
+      }),
+      (0, X.jsx)(E, {
+        children: (0, X.jsxs)(b, {
+          value: f,
+          onChange: T,
+          variant: `scrollable`,
+          scrollButtons: `auto`,
+          "aria-label": `shelly tabs`,
+          children: [
+            (0, X.jsx)(D, {
+              "data-testid": `shellies_script_tab`,
+              label: `Script / KVS`,
+            }),
+            (0, X.jsx)(D, {
+              "data-testid": `shellies_control_tab`,
+              label: S(`Control`),
+            }),
+            (0, X.jsx)(D, {
+              "data-testid": `shellies_logs_tab`,
+              label: `Logs`,
+            }),
+            (0, X.jsx)(D, {
+              "data-testid": `shellies_ws_tab`,
+              label: `WS Inspector`,
+            }),
+            (0, X.jsx)(D, {
+              "data-testid": `shellies_list_tab`,
+              label: `List / Batch`,
+            }),
+          ],
+        }),
+      }),
+      (0, X.jsx)(
+        at,
+        { index: f, devices: o, display: _, getTestDevice: w },
+        `shelliesTab`,
+      ),
+    ],
+  });
+}
+function lt() {
+  let { user: e } = s();
+  return (0, X.jsxs)(X.Fragment, {
+    children: [
+      (0, X.jsx)(i, {
+        children: (0, X.jsx)(`title`, { children: ` Shellies` }),
+      }),
+      e ? (0, X.jsx)(ct, {}) : null,
+    ],
+  });
+}
+export { lt as default };

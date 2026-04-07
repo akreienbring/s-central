@@ -40,11 +40,13 @@ function handle(msg) {
   } else if (msg.event === "blogpost-create") {
     const createAnswer = {
       event: msg.event,
-      message: "_blogpostcreated_",
+      message: "OK, going to create the Blogpost",
       source: "BlogpostHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -65,18 +67,17 @@ function handle(msg) {
       );
 
       if (info?.changes !== 1) {
-        // something went wrong
-        console.error(info.changes);
-        createAnswer.message = "_blogpostnotcreated_";
-        createAnswer.data.success = false;
+        console.error(
+          `Expected to create 1 blogpost, but created ${info.changes} blogposts.`,
+        );
+        createAnswer.data.requestResult.success = false;
       } else {
         const sql = `SELECT blogposts.id AS blogpostid, title, content, createdAt, public, users.alias, users.firstname, users.lastname, users.id AS userid FROM blogposts INNER JOIN users ON blogposts.userid = users.id ORDER BY createdAt`;
         createAnswer.data.blogposts = db.get(sql);
       }
     } catch (err) {
       console.error(err.message);
-      createAnswer.message = "_blogpostnotcreated_";
-      createAnswer.data.success = false;
+      createAnswer.data.requestResult.success = false;
     }
 
     return createAnswer;
@@ -86,9 +87,7 @@ function handle(msg) {
       message: "Blogpost deleted",
       source: "BlogpostHandler",
       requestID: msg.requestID,
-      data: {
-        success: true,
-      },
+      data: {},
     };
 
     db.del("blogposts", ["id"], msg.data.ids);
@@ -120,19 +119,16 @@ function handle(msg) {
         [blogpostToUpdate.id],
       );
       if (info.changes !== 1) {
-        // something went wrong
-        updateAnswer.message = "_blogpostnotupdated_";
-        updateAnswer.data.success = false;
+        console.error(
+          `Expected to update 1 blogpost, but updated ${info.changes} blogposts.`,
+        );
+        updateAnswer.data.requestResult.success = false;
       } else {
         updateAnswer.id = blogpostToUpdate.id;
       }
     } catch (err) {
       console.error(err.message);
-      updateAnswer.message = db.createMessageFromConflict(
-        err.message,
-        "_blogpostnotupdated_",
-      );
-      updateAnswer.data.success = false;
+      updateAnswer.data.requestResult.success = false;
     }
     return updateAnswer;
   }

@@ -26,13 +26,15 @@ export const languages = [
   },
 ];
 
-/*
+/**
+  Get the default language for the application.
   Order of finding the prefered language:
     1. Language that was selected by the user.
     2. The preferred browser language (used if supported)
     3. Fallback to english
   For testing the 'i18nLanguage' key must be removed from local storage.
-*/
+  @returns {string} Language as: en, es, de
+ */
 const getDefaultLanguage = (): string => {
   // localStorage.removeItem('i18nLanguage'); // enable for testing
   const selectedLang = localStorage.getItem('i18nLanguage');

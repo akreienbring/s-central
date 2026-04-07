@@ -41,14 +41,15 @@ interface ShellyTableRowProps {
 
 /**
   A single row in the Shelly table that shows information about a Shelly device.
-  It also provides a menu for actions on the device.   
-  @param {object} row Device data for this row
-  @param {string} labelId The id of the label for the checkbox 
-  @param {boolean} isItemSelected Indicates that the row is selected
-  @param {function} handleClick Called when the row is clicked on
-  @param {function} handleRebootDevices Called when a single device must be rebooted
-  @param {function} handleFirmwareUpdates Called when a firmware update must be performed on a single device
-  @param {function} updateRow Called when the row must be updated with new data (e.g. after receiving a websocket update)
+  It also provides a menu for actions on the device.
+  @param {ShellyTableRowProps} props   
+  @param {object} props.row Device data for this row
+  @param {string} props.labelId The id of the label for the checkbox 
+  @param {boolean} props.isItemSelected Indicates that the row is selected
+  @param {Function} props.handleClick Called when the row is clicked on
+  @param {Function} props.handleRebootDevices Called when a single device must be rebooted
+  @param {Function} props.handleFirmwareUpdates Called when a firmware update must be performed on a single device
+  @param {Function} props.updateRow Called when the row must be updated with new data (e.g. after receiving a websocket update)
   @returns {JSX.Element} A table row with device information and a menu for actions on the device
 */
 export default function ShellyTableRow({
@@ -67,24 +68,26 @@ export default function ShellyTableRow({
   const [openWifi, setOpenWifi] = useState({ open: false });
 
   /**
-    Open / Close the Wifi update Dialog
+    Open the Wifi update Dialog
   */
   const handleOpenWifi = () => {
-    // handleCloseMenu();
     setOpenWifi({ open: true });
   };
 
+  /**
+    Close the Wifi update Dialog
+  */
   const handleCloseWifi = () => {
     setOpenWifi({ open: false });
   };
 
   /**
-      Open / Close the Menue
-      @param {object} event is the click event
-    */
-  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setOpenMenue(event.currentTarget);
+    Open / Close the Menue with the actions for a device
+    @param {object} e is the click event
+  */
+  const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setOpenMenue(e.currentTarget);
   };
 
   /**

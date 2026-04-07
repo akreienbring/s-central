@@ -22,12 +22,12 @@ export type ParamsSwitch = {
   brightness?: number;
   white?: number;
 };
+
 /*
   The Type of Switch stored in the switches array of a device
 */
 export type DeviceSwitch = {
-  deviceIP?: string; // added in ShellySwitchList to determine the device
-  deviceId?: string; // used for the copy of switch settings
+  deviceId: string;
   id: number;
   output: boolean;
   key: string;
@@ -36,7 +36,6 @@ export type DeviceSwitch = {
   brightness?: number;
   white?: number;
   ts?: number;
-  index?: number; // added in ShellySwitchList to determine which switch was toggled
 };
 
 /*
@@ -105,7 +104,7 @@ export type Params = {
   mqtt?: { connected: boolean };
   matter?: { num_fabrics: number };
   ws?: { connected: boolean };
-  events?: Event[];
+  events?: EventStatus[];
   sys?: Sys;
   ts: number;
   'switch:0'?: ParamsSwitch;
@@ -148,7 +147,7 @@ export type NotifyEvent = {
 /*
   Events of a NotifyEvent status message
 */
-export type Event = {
+export type EventStatus = {
   id?: number;
   component: string;
   event: string;
@@ -200,7 +199,7 @@ export type Device = {
 };
 
 /**
-  Tabpanel buffers all devices with their last update timestamp. This index signature is used
+  ShellyTabs buffers all devices with their last update timestamp. This index signature is used
   to access buffered devices by the deviceId (string).
  */
 export type DeviceLastUpdateBuffer = {
@@ -249,17 +248,6 @@ export type Filter = {
 };
 
 /*
-  Displays information to the user when running batch tasks (e.g. update, rebooot)
-*/
-export type BatchAlert = {
-  open?: boolean;
-  text: string;
-  severity: 'info' | 'success' | 'error' | 'warning';
-  visible: boolean;
-  title: string;
-};
-
-/*
   Used in the shelly table to display / update Wifi settings
 */
 export type WifiSettings = {
@@ -297,7 +285,13 @@ export type DeviceTableRow = {
   Used to copy settings from one device switch to another
 */
 export type SwitchCopySource = {
-  deviceId: string;
   deviceName: string;
   aSwitch: DeviceSwitch;
+};
+
+export type Scene = {
+  inputValue?: string;
+  name: string;
+  id?: number;
+  json?: string;
 };

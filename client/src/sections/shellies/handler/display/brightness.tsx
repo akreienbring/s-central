@@ -18,9 +18,10 @@ interface BrightnessProps {
 }
 /**
   Component that displays the brighness value in percentage
-  @param {string}  elementId The Id of the HTML Element that contains the message.
-  @param {string} scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
-  @param {object} brightness The brightness property of a 'NotifyFullStatus' websocket message.
+  @param {BrightnessProps} props
+  @param {string} props.elementId The Id of the HTML Element that contains the message.
+  @param {string} props.scrollableElementId The Id of a scrollable HTML Element that constains the HTML Element with the elemenId.
+  @param {object} props.brightness The brightness property of a 'NotifyFullStatus' websocket message.
   @returns {JSX.Element} The brightness value in percentage with an icon.
 */
 const Brightness = ({
