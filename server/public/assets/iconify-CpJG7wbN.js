@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-DF2fYuay.js";import{a as t}from"./react-vendor-uT1liFik.js";import{ft as n}from"./ui-vendor-CAv3cVkj.js";import{a as r}from"./large-libs-DUXPrv28.js";var i=e(t()),a=({icon:e,width:t=25,sx:a,...o})=>(0,i.jsx)(n,{component:r,className:`component-iconify`,icon:e,sx:{width:t,height:t,...a},...o});export{a as t};
