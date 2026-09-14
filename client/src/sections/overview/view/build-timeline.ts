@@ -98,8 +98,8 @@ export function buildTimeline(
     } else {
       if (timeline.data === 'Minute' && rows[index - 1].device_id === row.device_id) {
         let previousTS = rows[index - 1].ts;
-        while (row.ts - previousTS >= 120) {
-          // Fill missing minutes with null values, if the difference between the current and previous timestamp is >= 2 minutes
+        while (row.ts - previousTS >= 180) {
+          // Fill missing minutes with null values, if the difference between the current and previous timestamp is >= 3 minutes
           const missingCategory = fUnixTime(previousTS + 60, timeline.catformat);
 
           /*

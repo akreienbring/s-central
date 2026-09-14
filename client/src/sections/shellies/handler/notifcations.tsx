@@ -59,7 +59,7 @@ const Notifications = ({
 
   const params: Params = wsMessage.params;
 
-  const elements = [];
+  const elements: JSX.Element[] = [];
 
   if (wsMessage.method === 'NotifyEvent') {
     // Create HTML from NotifyEvent

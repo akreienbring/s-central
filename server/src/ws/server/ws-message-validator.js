@@ -132,11 +132,14 @@ function validateMessage(message, ws) {
         const validateAnswer = {
           event: "user-validate",
           source: "WSMessageValidator",
-          message:
-            typeof dbUser === "undefined" ? "_usernotexists_" : "_wrongpw_",
+
           requestID: msg.requestID,
           data: {
-            success: false,
+            requestResult: {
+              success: false,
+              message:
+                typeof dbUser === "undefined" ? "_usernotexists_" : "_wrongpw_",
+            },
           },
         };
         ws.send(JSON.stringify(validateAnswer));

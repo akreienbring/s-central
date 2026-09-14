@@ -71,8 +71,10 @@ export default function ShelliesView(): JSX.Element {
 
     newDevices.forEach((device) => {
       // console.log(JSON.stringify(device));
-      if (!models.includes(device.name)) models.push(device.name);
-      if (!generations.includes(device.gen.toString())) generations.push(device.gen.toString());
+      if (device && device.name && device.gen) {
+        if (!models.includes(device.name)) models.push(device.name);
+        if (!generations.includes(device.gen.toString())) generations.push(device.gen.toString());
+      }
     });
 
     // init the filter checkboxes with false

@@ -19,8 +19,8 @@ import WifiForm from '@src/sections/shellies/wifi-form';
 import { type JSX, useState, useEffect, useCallback } from 'react';
 import CircularProgressCount from '@src/components/userinfo/circular-progress-count';
 
+import Menu from '@mui/material/Menu';
 import { Typography } from '@mui/material';
-import Popover from '@mui/material/Popover';
 import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
@@ -166,8 +166,8 @@ export default function ShellyTableRow({
     //Although the device data is already passed to the row, we request it again to have the latest data
     const requestMsg: CliRequestMsg = {
       event: 'device-get',
-      source: 'ShellyCard',
-      message: 'ShellyCard needs a device',
+      source: 'ShellyTableRow',
+      message: 'ShellyTableRow needs a device',
       data: {
         deviceId: row.id,
       },
@@ -281,7 +281,7 @@ export default function ShellyTableRow({
           </IconButton>
         </TableCell>
       </TableRow>
-      <Popover
+      <Menu
         open={!!openMenue}
         anchorEl={openMenue}
         onClose={handleAction}
@@ -326,7 +326,7 @@ export default function ShellyTableRow({
           <Iconify icon="material-symbols:wifi" sx={{ mr: 2 }} />
           Wifi
         </MenuItem>
-      </Popover>
+      </Menu>
       <WifiForm
         type="single"
         title={`Wifi ${myRow.name}`}

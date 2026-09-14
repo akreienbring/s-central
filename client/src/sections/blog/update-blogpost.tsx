@@ -58,14 +58,12 @@ export default function UpdateBlogpost({
     >
       <Stack
         direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ px: 1, py: 2 }}
+        sx={{ px: 1, py: 2, alignItems: 'center', justifyContent: 'space-between' }}
       >
         <Typography variant="h6" sx={{ ml: 1 }}>
           {t('_editpost_')}
         </Typography>
-        <IconButton onClick={onCloseUpdate}>
+        <IconButton data-testid="blogpost_update_close_button" onClick={onCloseUpdate}>
           <Iconify icon="eva:close-fill" />
         </IconButton>
       </Stack>

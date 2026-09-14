@@ -28,7 +28,7 @@ function open(dbName) {
   });
 
   // deleteTables(["blogposts", "users", "roles"]); // FOR TESTING
-  // deleteTables(["scenes"]);
+  //deleteTables(["rules"]);
   init.initDB(db);
 
   const password = config.get("db.standardpw");

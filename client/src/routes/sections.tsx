@@ -9,6 +9,8 @@ const UserPage = lazy(() => import('@src/pages/user'));
 const LoginPage = lazy(() => import('@src/pages/login'));
 const LandingPage = lazy(() => import('@src/pages/landing'));
 const ShelliesPage = lazy(() => import('@src/pages/shellies'));
+const RulePage = lazy(() => import('@src/pages/rule'));
+
 const Page404 = lazy(() => import('@src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -42,6 +44,7 @@ export default function Router(): JSX.Element | null {
               { path: 'user', element: <UserPage /> },
               { path: 'shellies', element: <ShelliesPage /> },
               { path: 'blog', element: <BlogPage /> },
+              { path: 'rule', element: <RulePage /> },
             ]
           : [
               { path: 'dashboard', element: <AppPage />, index: true },

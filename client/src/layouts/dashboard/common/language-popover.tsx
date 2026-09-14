@@ -18,7 +18,7 @@ import { type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Box from '@mui/material/Box';
-import Popover from '@mui/material/Popover';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 
@@ -85,7 +85,7 @@ export default function LanguagePopover(): JSX.Element {
         />
       </IconButton>
 
-      <Popover
+      <Menu
         open={!!open}
         anchorEl={open}
         onClose={handleClose}
@@ -119,7 +119,7 @@ export default function LanguagePopover(): JSX.Element {
             {t(option.label)}
           </MenuItem>
         ))}
-      </Popover>
+      </Menu>
     </>
   );
 }

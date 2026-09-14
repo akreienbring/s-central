@@ -280,6 +280,7 @@ const ShellyCard = ({
     Further updates on single devices are received and handled accordingly.
   */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkIfUpdate();
 
     // don't subcribe to the ws server, if the device is not capable of sending updates or a test is running
@@ -359,11 +360,15 @@ const ShellyCard = ({
   */
   const handleScriptToggle = (index: number) => {
     const changedScripts = [...device!.scripts];
-    const script: DeviceScript = device!.scripts[index];
+    const script: DeviceScript = changedScripts[index];
     script.running = !script.running;
+    changedScripts[index].running = script.running;
+
+    const newDevice = { ...device } as Device;
+    newDevice.scripts = changedScripts;
+    setDevice(newDevice);
 
     // rerender the scriptlist
-    changedScripts[index].running = script.running;
     setScripts(changedScripts);
 
     /*
@@ -410,7 +415,7 @@ const ShellyCard = ({
           {tab === 'sk' && display === 'maximized' && (
             <>
               <CardContent sx={{ minWidth: 200, pt: 0, pb: 0 }}>
-                <Stack justifyContent="left" alignItems="flex-start">
+                <Stack sx={{ justifyContent: 'left', alignItems: 'flex-start' }}>
                   <ShellyScriptList
                     deviceIP={device.ip}
                     deviceOnline={device.online}
@@ -444,7 +449,7 @@ const ShellyCard = ({
               </CardActions>
               <Collapse in={expanded} timeout="auto" mountOnEnter unmountOnExit>
                 <CardContent sx={{ pt: 0 }}>
-                  <Stack justifyContent="left" alignItems="flex-start">
+                  <Stack sx={{ justifyContent: 'left', alignItems: 'flex-start' }}>
                     <ShellyKVSList deviceIp={device.ip} kvs={kvs} />
                   </Stack>
                 </CardContent>

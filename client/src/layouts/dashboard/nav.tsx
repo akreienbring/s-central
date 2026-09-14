@@ -98,7 +98,10 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
 
   const renderOpenSource = (
     <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-      <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+      <Stack
+        spacing={3}
+        sx={{ pt: 5, borderRadius: 2, position: 'relative', alignItems: 'center' }}
+      >
         <Box sx={{ width: 100, position: 'absolute', top: -50 }}>
           <Avatar src="/assets/illustrations/avatar_main.jpg" sx={{ width: 100, height: 100 }} />
         </Box>
@@ -117,9 +120,19 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
           href="https://github.com/akreienbring/s-central"
           target="_blank"
           variant="contained"
+          sx={{ width: 180 }}
           color="inherit"
         >
-          {t('_gotogithub_')}
+          S-Central GitHub
+        </Button>
+        <Button
+          href="https://github.com/akreienbring/RuleEngineUI"
+          target="_blank"
+          variant="contained"
+          color="inherit"
+          sx={{ width: 180 }}
+        >
+          RuleEngineUI GitHub
         </Button>
       </Stack>
     </Box>
@@ -200,7 +213,7 @@ function NavItem({ item }: { item: NavItem }) {
 
   return (
     <ListItemButton
-      data-testid={`nav_item_${item.title}`}
+      data-testid={item.dataTestId}
       component={RouterLink}
       href={item.path}
       sx={{
@@ -208,7 +221,6 @@ function NavItem({ item }: { item: NavItem }) {
         borderRadius: 0.75,
         typography: 'body2',
         color: 'text.secondary',
-        textTransform: 'capitalize',
         fontWeight: 'fontWeightMedium',
         ...(active && {
           color: 'primary.main',
@@ -226,7 +238,7 @@ function NavItem({ item }: { item: NavItem }) {
         {item.icon}
       </Box>
 
-      <Box component="span">{item.title === 'user' ? t('Users') : item.title} </Box>
+      <Box component="span">{t(`${item.title}`)} </Box>
     </ListItemButton>
   );
 }

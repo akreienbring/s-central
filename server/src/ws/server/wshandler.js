@@ -26,6 +26,7 @@ const wsNotificationHandler = require("./ws-notification-handler.js");
 const wsBlogpostHandler = require("./ws-blogpost-handler.js");
 const wsTimelineHandler = require("./ws-timeline-handler.js");
 const wsSceneHandler = require("./ws-scene-handler.js");
+const wsRuleHandler = require("./ws-rule-handler.js");
 
 /*
   An interval that pings the clients. If a client not responds it will be deleted
@@ -46,6 +47,8 @@ const PING_MESSAGE = {
   in this object. The value is the websocket the client uses.
 */
 const dashboardClients = {};
+
+wsRuleHandler.loadRules();
 
 /**
   Add a websocket to the internal list.
@@ -100,22 +103,23 @@ function deleteSocket(ws) {
 */
 function handleMessage(msg, ws) {
   //------------- Message Handling---------------------------
-  if (typeof msg.src === "undefined") {
-    if (typeof msg.channelID !== "undefined") {
-      ws.channelID = msg.channelID;
-      addSocket(ws);
-    }
+  if (typeof msg.src === "undefined" && typeof msg.channelID !== "undefined") {
+    ws.channelID = msg.channelID;
+    addSocket(ws);
   }
 
   if (typeof msg.src !== "undefined") {
     /*
       Websocket message from a Shelly device.
-      The device is identified by its Shelly ID, retrived from the internal list and 
-      enriched with the websocket message from the Shelly.
-      The updated device is forwarded to the Dashboard application
+      The device is identified by its Shelly ID, and retrived from the internal list
     */
+
     let device = shellyDevices.findDeviceById(msg.src);
     if (typeof device !== "undefined") {
+      if (msg.method === "NotifyStatus") {
+        wsRuleHandler.evaluateRules(msg, device, broadcast);
+      }
+
       if (msg.method === "NotifyFullStatus" && msg.dst === "request") {
         updateConsumption.update(device, msg.params);
         delete device.rebootPending;
@@ -123,51 +127,61 @@ function handleMessage(msg, ws) {
 
       // Do the reload check with all messages because depending on the result a device-update is sent or not
       reloadCheck.check(device, msg).then((reloadedDevice) => {
-        if (reloadedDevice !== null) {
-          device = reloadedDevice;
-          console.log(`Device ${device.cname} was reloaded`);
+        try {
+          if (reloadedDevice !== null) {
+            device = reloadedDevice;
+            console.log(`Device ${device.cname} was reloaded`);
 
-          const reloadMessage = {
-            event: "device-update",
-            eventType: "device",
-            source: "WSHandler",
-            message: "Device was reloaded",
-            subscriptionID: msg.src,
-            data: {
-              device,
-            },
-          };
-          broadcast(reloadMessage);
+            const reloadMessage = {
+              event: "device-update",
+              eventType: "device",
+              source: "WSHandler",
+              message: "Device was reloaded",
+              subscriptionID: msg.src,
+              data: {
+                device,
+              },
+            };
+            broadcast(reloadMessage);
 
-          // don't send any further message to the client, if a device was reloaded
-          return;
-        }
+            // don't send any further message to the client, if a device was reloaded
+            return;
+          }
 
-        if (
-          ((msg.dst === "ws" && msg.method !== "NotifyFullStatus") ||
-            (msg.dst === "request" && msg.method === "NotifyFullStatus")) &&
-          typeof msg.params !== "undefined"
-        ) {
-          /*
+          if (
+            ((msg.dst === "ws" && msg.method !== "NotifyFullStatus") ||
+              (msg.dst === "request" && msg.method === "NotifyFullStatus")) &&
+            typeof msg.params !== "undefined"
+          ) {
+            /*
             Only forward requested NotifyFullStatus or
             other messages (NotifyStatus, NotifyEvent...) directly send by the device,
           */
-          updateDeviceValues.update(device, msg);
-          device[
-            `${msg.method.charAt(0).toLowerCase()}${msg.method.slice(1)}`
-          ] = msg;
+            updateDeviceValues.update(device, msg);
+            device[
+              `${msg.method.charAt(0).toLowerCase()}${msg.method.slice(1)}`
+            ] = msg;
+            /*
+            Now the device is enriched with the websocket message from the Shelly.
+            The updated device is forwarded to the Dashboard application
+          */
 
-          const updateMessage = {
-            event: "device-update",
-            eventType: "ws",
-            source: "WSHandler",
-            message: "new WS message",
-            subscriptionID: msg.src,
-            data: {
-              device: device,
-            },
-          };
-          broadcast(updateMessage);
+            const updateMessage = {
+              event: "device-update",
+              eventType: "ws",
+              source: "WSHandler",
+              message: "new WS message",
+              subscriptionID: msg.src,
+              data: {
+                device,
+              },
+            };
+            broadcast(updateMessage);
+          }
+        } catch (e) {
+          console.error(
+            `wshandler: Couldn't reload devic with id ${msg.src}. Error: ${e.message}`,
+          );
         }
       }); // reloadCheck
     } else {
@@ -225,6 +239,9 @@ function handleMessage(msg, ws) {
     } else if (msg.event.startsWith("blog")) {
       const blogAnswer = wsBlogpostHandler.handle(msg);
       if (blogAnswer !== null) ws.send(JSON.stringify(blogAnswer));
+    } else if (msg.event.startsWith("rule")) {
+      const ruleAnswer = wsRuleHandler.handle(msg);
+      if (ruleAnswer !== null) ws.send(JSON.stringify(ruleAnswer));
     } else {
       console.log(
         "wshandler: received unhandled message (event unknown): " +

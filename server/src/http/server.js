@@ -16,6 +16,26 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
+// Handle client disconnect
+server.use((req, res, next) => {
+  req.on("close", () => {
+    if (!res.headersSent) {
+      console.log("Client disconnected before response");
+    }
+  });
+
+  next();
+});
+
+// Handle connection errors after routes
+server.use((err, req, res, next) => {
+  if (err.code === "ECONNRESET") {
+    console.log("Client connection reset");
+    return; // Don't send response
+  }
+  next(err);
+});
+
 const SECRET = config.get("ws-server.secret");
 const ACCESS_DENIED = {
   status: 401,
@@ -122,7 +142,7 @@ server.post("/ws/v1/SetScript", (req, res) => {
     typeof req.query.id != "undefined"
   ) {
     return res.json(
-      endpoints.setScript(req.body, req.query.ip, Number(req.query.id))
+      endpoints.setScript(req.body, req.query.ip, Number(req.query.id)),
     );
   } else {
     return res.json({

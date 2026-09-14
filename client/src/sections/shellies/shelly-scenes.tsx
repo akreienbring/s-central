@@ -283,7 +283,7 @@ export default function ShellyScenes({
   };
 
   return (
-    <Stack direction="row" alignItems="center">
+    <Stack direction="row" sx={{ alignItems: 'center' }}>
       <Tooltip title={t('_selectall_')}>
         <IconButton onClick={() => handleSetSelection(true)}>
           <Iconify icon="tabler:copy-check" />
@@ -372,10 +372,15 @@ export default function ShellyScenes({
         renderInput={(params) => (
           <TextField
             {...params}
+            slotProps={{
+              ...params.slotProps,
+              htmlInput: {
+                ...params.slotProps.htmlInput,
+                maxLength: 20,
+              },
+            }}
             size="small"
             label={selectedDevices.length > 0 ? t('_selectcreatescene_') : t('_selectscene_')}
-            // see: https://github.com/mui/material-ui/issues/43869 why slotProps are not used here for the TextField component in the Autocomplete component.
-            inputProps={{ ...params.inputProps, maxLength: 20 }}
           />
         )}
       />

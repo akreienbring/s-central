@@ -43,20 +43,24 @@ export default function LandingView(): JSX.Element {
       isBlogpostsLoaded.current = true;
 
       if (msg.data.blogposts && msg.data.blogposts.length > 0) {
-        const allBlogposts: Blogpost[] = msg.data.blogposts.map(
-          (blogpost, index) =>
-            // add a chart color to the device that depends on its index in the array
-            ({
+        const allBlogposts: Blogpost[] = msg.data.blogposts.map((blogpost, index) =>
+          // add a chart color to the device that depends on its index in the array
+          {
+            const userBlogpost: Blogpost = {
               id: blogpost.blogpostid,
               cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
               title: blogpost.title,
               content: blogpost.content,
               createdAt: blogpost.createdAt,
+              public: blogpost.public,
+              userid: blogpost.userid,
               author: {
-                name: blogpost.alias,
+                alias: blogpost.alias,
                 avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(blogpost.userid, 25)}.jpg`,
               },
-            }) as Blogpost
+            };
+            return userBlogpost;
+          }
         );
 
         setBlogposts(allBlogposts);

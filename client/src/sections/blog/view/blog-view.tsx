@@ -37,21 +37,23 @@ export default function BlogView(): JSX.Element {
       isBlogpostsLoaded.current = true;
 
       if (typeof msg.data.blogposts !== 'undefined') {
-        const allBlogposts: Blogpost[] = msg.data.blogposts.map(
-          (blogpost, index) =>
-            ({
-              id: blogpost.blogpostid,
-              cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
-              title: blogpost.title,
-              content: blogpost.content,
-              createdAt: blogpost.createdAt,
-              public: blogpost.public,
-              author: {
-                name: blogpost.alias,
-                avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(blogpost.userid, 25)}.jpg`,
-              },
-            }) as Blogpost
-        );
+        const allBlogposts: Blogpost[] = msg.data.blogposts.map((blogpost, index) => {
+          const userBlogpost: Blogpost = {
+            id: blogpost.blogpostid,
+            userid: blogpost.userid,
+            cover: `/assets/images/covers/cover_${mapNumberToMax(index + 1, 24)}.jpg`,
+            title: blogpost.title,
+            content: blogpost.content,
+            createdAt: blogpost.createdAt,
+            public: blogpost.public,
+            author: {
+              alias: blogpost.alias,
+              avatarUrl: `/assets/images/avatars/avatar_${mapNumberToMax(blogpost.userid, 25)}.jpg`,
+            },
+          };
+
+          return userBlogpost;
+        });
 
         setBlogposts(allBlogposts);
       }
@@ -108,8 +110,8 @@ export default function BlogView(): JSX.Element {
 
   return (
     <Container maxWidth="xl">
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Blog</Typography>
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 5 }}>
+        <Typography variant="h4">Blogs</Typography>
         {user!.roleid < 3 && (
           <CreateBlogpost
             openCreate={openCreate}

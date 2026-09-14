@@ -7,6 +7,7 @@
 */
 import type { User } from './user';
 import type { Blogpost } from './blogpost';
+import type { SCentralRule } from './rule';
 import type { AuthError } from './digest-auth';
 import type { Notification } from '@src/types/scnotification';
 import type { Scene, Device, DeviceSwitch, DeviceScript, WifiSettings } from '@src/types/device';
@@ -41,17 +42,19 @@ declare global {
 
   /*
     Used for subscriptions when receiving unrequested events from the server.
-    Consumed in ShellyCard, ShellyTableRow, NotificationsPopover, Appview
+    Consumed in ShellyCard, ShellyTableRow, NotificationsPopover, AppView, ruleView
   */
   type SrvEventMsg = {
-    event: 'device-update' | 'notification-create';
-    eventType?: 'kvs' | 'log' | 'script' | 'device' | 'ws';
+    event: 'device-update' | 'notification-create | rule-update';
+    eventType?: 'kvs' | 'log' | 'script' | 'device' | 'ws' | 'rule';
     message: string;
     source: string;
     subscriptionId: string;
     data: {
       device?: Device;
       notification?: Notification;
+      rule?: SCentralRule;
+      rules?: SCentralRule[];
     };
   };
 
@@ -110,6 +113,7 @@ declare global {
       switch?: DeviceSwitch;
       script?: DeviceScript;
       scriptIndex?: number;
+      rule?: SCentralRule;
     };
   };
 
@@ -119,6 +123,7 @@ declare global {
     successful?: number;
     total?: number;
     ids?: number[] | string[];
+    id?: number;
   };
 
   /*
@@ -147,6 +152,7 @@ declare global {
       successful?: number;
       total?: number;
       success?: boolean;
+      rules?: SCentralRule[];
     };
   };
 
@@ -167,7 +173,10 @@ declare global {
     | 'blogpost-create'
     | 'scene-create'
     | 'scene-delete'
-    | 'scene-update';
+    | 'scene-update'
+    | 'rule-create'
+    | 'rule-delete'
+    | 'rule-update';
 
   type CliRequestEvent =
     | 'notifications-get-all'
@@ -194,7 +203,8 @@ declare global {
     | 'scene-select'
     | 'toggle-switch'
     | 'set-switch'
-    | 'toggle-script';
+    | 'toggle-script'
+    | 'rules-get-all';
 
   // Further ideas to specialise types. CURRENTLY UNUSED
 

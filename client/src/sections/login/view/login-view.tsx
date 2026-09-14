@@ -22,8 +22,7 @@ export default function LoginView(): JSX.Element {
   return (
     <Container maxWidth="xl">
       <Box
-        display="flex"
-        sx={{ justifyContent: 'center', alignItems: 'center', minHeight: '100%' }}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100%' }}
       >
         <Card
           sx={{

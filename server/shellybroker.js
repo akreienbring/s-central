@@ -21,18 +21,20 @@
   Such as system information, scripts and KVS.
 */
 require("module-alias/register");
-
 const config = require("config");
 const db = require("@db/db.js");
+
+// open the db as early as possible to be able to use it in the websocket handlers and other modules
+const dbName = config.get("db.dbname");
+db.open(dbName);
+console.log(`Database ${dbName} was opened`);
+
 const WebSocket = require("faye-websocket");
 const dgram = require("dgram");
 const expressServer = require("@http/server");
 const requestIp = require("request-ip");
 const util = require("util");
 const fs = require("fs");
-
-const wsHandler = require("@ws/server/wshandler.js");
-const wsMessageValidator = require("@ws/server/ws-message-validator.js");
 
 const shellyDevices = require("@devices/shellyDevices.js");
 
@@ -41,11 +43,10 @@ console.log(`Starting Shellybroker with config ${process.env.NODE_ENV}`);
 const httpPort = config.get("http-server.port");
 const updHost = config.get("udp-server.host");
 const udpPort = config.get("udp-server.port");
-const dbName = config.get("db.dbname");
-
 const udpServer = dgram.createSocket("udp4");
-// express is used to handle the http endpoints and serves the static public folder
-const httpserver = expressServer.listen(httpPort);
+const httpServer = expressServer.listen(httpPort);
+const wsHandler = require("@ws/server/wshandler.js");
+const wsMessageValidator = require("@ws/server/ws-message-validator.js");
 
 /*
  * Delete the test.db if it exists
@@ -56,15 +57,13 @@ fs.unlink("test.db", (err) => {
   } else {
     console.log("Deleted the test.db");
   }
-  db.open(dbName);
-  console.log(`Database ${dbName} was opened`);
 });
 
 /* 
   when a websocket clients connects he sends an 'upgrade' request.
   Further messages and events are handled by 'wsHandler'
 */
-httpserver.on("upgrade", function (request, socket, body) {
+httpServer.on("upgrade", function (request, socket, body) {
   if (WebSocket.isWebSocket(request)) {
     const clientIP = requestIp.getClientIp(request);
     console.log(`${clientIP} just requested a ws upgrade`);

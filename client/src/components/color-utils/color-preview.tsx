@@ -23,7 +23,11 @@ export default function ColorPreview({ colors, limit = 3, sx }: ColorPreviewProp
   const remainingColor = colors.length - limit;
 
   return (
-    <Stack component="span" direction="row" alignItems="center" justifyContent="flex-end" sx={sx}>
+    <Stack
+      component="span"
+      direction="row"
+      sx={{ alignItems: 'center', justifyContent: 'flex-end' }}
+    >
       {renderColors.map((color, index) => (
         <Box
           key={color + index}

@@ -17,6 +17,7 @@ const MuiBackdrop: Components<Theme>['MuiBackdrop'] = {
   },
 };
 
+/*
 const MuiButton: Components<Theme>['MuiButton'] = {
   defaultProps: {
     disableElevation: true,
@@ -35,6 +36,7 @@ const MuiButton: Components<Theme>['MuiButton'] = {
     },
   },
 };
+*/
 
 const MuiCard: Components<Theme>['MuiCard'] = {
   styleOverrides: {
@@ -47,6 +49,7 @@ const MuiCard: Components<Theme>['MuiCard'] = {
   },
 };
 
+/*
 const MuiCardHeader: Components<Theme>['MuiCardHeader'] = {
   defaultProps: {
     titleTypographyProps: { variant: 'h6' },
@@ -58,6 +61,7 @@ const MuiCardHeader: Components<Theme>['MuiCardHeader'] = {
     }),
   },
 };
+*/
 
 const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
   styleOverrides: {
@@ -160,12 +164,12 @@ export const components = {
   MuiLink,
   MuiPaper,
   MuiRadio,
-  MuiButton,
+  //MuiButton,
   MuiBackdrop,
   MuiMenuItem,
   MuiCheckbox,
   MuiTableCell,
-  MuiCardHeader,
+  //MuiCardHeader,
   MuiOutlinedInput,
   MuiFormControlLabel,
 };

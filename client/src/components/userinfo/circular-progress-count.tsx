@@ -13,21 +13,23 @@ import CircularProgress from '@mui/material/CircularProgress';
  * @param {number} props.max The value of max to display
  */
 const CircularProgressLabel = ({ count, max }: { count: number; max: number }) => (
-  <Box position="relative" display="inline-flex">
+  <Box sx={{ display: 'inline-flex', position: 'relative' }}>
     <CircularProgress
       size={40}
       variant="indeterminate"
       color={count >= max - 1 ? 'error' : 'success'}
     />
     <Box
-      top={0}
-      left={0}
-      bottom={0}
-      right={0}
-      position="absolute"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      sx={{
+        position: 'absolute',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+      }}
     >
       <Typography variant="caption" component="div" sx={{ color: 'text.primary' }}>
         {`${count}/${max}`}

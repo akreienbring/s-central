@@ -2,18 +2,16 @@
   Author: André Kreienbring
   Represents a BlogPost
 */
-export type Blogpost = {
+export interface Blogpost {
   id: number;
-  blogpostid?: number;
   title: string;
   content: string;
   createdAt: number;
   public: number;
-  alias: string;
   userid: number;
-  cover?: string;
-  author?: {
-    name: string;
+  cover: string;
+  author: {
+    alias: string;
     avatarUrl: string;
   };
-};
+}

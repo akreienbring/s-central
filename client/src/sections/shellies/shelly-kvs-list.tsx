@@ -57,11 +57,10 @@ function ShellyKVSList({ deviceIp, kvs }: ShellyKVSListProps): JSX.Element[] {
     return (
       <Stack
         direction="row"
-        justifyContent="space-between"
         style={{ gap: 20 }}
         useFlexGap
-        flexWrap="wrap"
         key={createUUID()}
+        sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}
       >
         <Link
           href={`http://${deviceIp}/#/key-value-store/edit?key=${kvsentry.key}`}

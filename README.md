@@ -27,6 +27,8 @@ S-Central supports English, Spanish and German.
   Enable additional users to log in to the appplication and assign specific Shellies to them.
 - **Blog**<br/>
   A simple interface to write internal articles or notes to be displayed on the landing page.
+- **Rules**<br/>
+  (since v3.0.0) Initial support for the automation based on a rule engine. (see [Creating Rules](#creating rules) below)
 - **Webservices**<br/>
   An API to call essential functions, e.g. from within your scripts.
 - **General**<br/>
@@ -46,7 +48,7 @@ Managing / Monitoring many Shellies in a network is a challenge. With S-Central 
 ## How to install the server with the included Client release
 
 - **Prerequisites**<br/>
-  Install nodejs. Normally it includes the NPM packet manager. The version must be nodejs 20.19.0 and above.
+  Install nodejs. Normally it includes the NPM packet manager. The server was tested with version 22.19.0.
 - **Server (Client included)** <br/>
   Download the server release and unzip it in a directory of your choice. E.g. _/sb_ (Shelly Broker). Normally you run the server on a dedicated always-on-system. Like a NAS, a Rasberry or any other OS that can run nodejs. Navigate to that directory and type _npm install --force_. It might take a while untill all modules are downloaded. In the meantime you could...
 
@@ -72,6 +74,14 @@ Managing / Monitoring many Shellies in a network is a challenge. With S-Central 
 - Windows: _node shellybroker.js_ / CTRL-C
 
   Thats it! Navigate your browser to \[YOURSERVERIP]:3031 and log in with *admin@sc.com* and password _undlos_
+
+## Creating Rules
+
+Since version 3.0.0 S-Central supports the creation of rules with an UI on the client side. These rules will then be triggered on the server side and execute previously configured commands.<br/>
+See [RuleEngineUI](https://github.com/akreienbring/RuleEngineUI) for more information.
+
+However, up to now only the received _NotifyStatus_ with the value of the device _output_ (true / false) can be used to switch devices on off.
+If you have ideas how to use this new feature with other events / actions, let me now by writing an issue with a feature request.
 
 ## Be carefull using the WIFI settings update!
 
@@ -281,6 +291,10 @@ Once forked here are some usefull tips:
 ![Users](screens/Users.png)
 
 ![Users](screens/List_Batch.png)
+
+![Rules](screens/Rules.png)
+
+![Rules](screens/Rules_SimpleUI.png)
 
 ## Thanks!
 

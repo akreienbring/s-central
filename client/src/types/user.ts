@@ -6,7 +6,7 @@
 export type User = {
   userid: number;
   alias: string;
-  role: 'Admin' | 'User' | 'Blogger';
+  role: UserRole;
   roleid: number;
   email: string;
   password?: string;

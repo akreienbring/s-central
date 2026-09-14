@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "src": {
+      "enum": [{ "name": "dummy", "value": "0" }]
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "rgbw:0": {
+          "type": "object",
+          "properties": {
+            "current": {
+              "type": "integer"
+            }
+          },
+          "required": ["current"]
+        }
+      },
+      "required": ["rgbw:0"]
+    }
+  },
+  "required": ["src", "method", "params"]
+}

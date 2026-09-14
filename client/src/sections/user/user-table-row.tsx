@@ -24,9 +24,9 @@ import UpdateUser from '@src/sections/user/update-user';
 import AddDevices from '@src/sections/user/add-devices';
 import { type JSX, useState, useEffect, useCallback } from 'react';
 
+import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import { Typography } from '@mui/material';
-import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
@@ -269,7 +269,7 @@ export default function UserTableRow({
         </TableCell>
       </TableRow>
 
-      <Popover
+      <Menu
         open={!!openMenue}
         anchorEl={openMenue}
         onClose={handleCloseMenu}
@@ -320,7 +320,7 @@ export default function UserTableRow({
             {t('_reallydelete_')}
           </MenuItem>
         )}
-      </Popover>
+      </Menu>
       <UpdateUser
         title={t('_edituserprofile_')}
         openUpdate={openUpdate}

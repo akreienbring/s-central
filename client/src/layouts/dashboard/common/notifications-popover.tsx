@@ -16,12 +16,12 @@ import { useRef, type JSX, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
+import Menu from '@mui/material/Menu';
 import Stack from '@mui/material/Stack';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
-import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -121,7 +121,6 @@ export default function NotificationsPopover(): JSX.Element {
     The useEffect is only triggered once and lives as long the page is mounted.
   */
   useEffect(() => {
-    // don't request or update the devices if a test is running
     const currentSubscriptionID = subscriptionID.current;
 
     if (!isNotificationLoaded.current) {
@@ -135,11 +134,12 @@ export default function NotificationsPopover(): JSX.Element {
     }
 
     const subscription: Subscription = {
-      subscriptionID: subscriptionID.current,
+      subscriptionID: currentSubscriptionID,
       callback: handleNotificationUpdate,
       all: true,
     };
     subscribe(subscription, ['notification-create']);
+
     /*
       Clean up the websocket subscription when unmounting the component.
     */
@@ -244,7 +244,7 @@ export default function NotificationsPopover(): JSX.Element {
         </Badge>
       </IconButton>
 
-      <Popover
+      <Menu
         open={!!open}
         anchorEl={open}
         onClose={handleClose}
@@ -327,7 +327,7 @@ export default function NotificationsPopover(): JSX.Element {
               ))}
           </List>
         </Scrollbar>
-      </Popover>
+      </Menu>
     </>
   );
 }

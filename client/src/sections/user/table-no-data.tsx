@@ -26,9 +26,7 @@ export default function TableNoData({ query }: { query: string }): JSX.Element {
             textAlign: 'center',
           }}
         >
-          <Typography variant="h6" paragraph>
-            {t('_notfound_')}
-          </Typography>
+          <Typography variant="h6">{t('_notfound_')}</Typography>
 
           <Typography variant="body2">
             {t('_noresultsfor_')} &nbsp;

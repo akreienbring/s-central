@@ -14,6 +14,7 @@ function initDB(db) {
   createNotificationTable(db);
   createBlogpostTable(db);
   createSceneTable(db);
+  createRulesTable(db);
 }
 
 /**
@@ -205,6 +206,29 @@ function createBlogpostTable(db) {
       public INTEGER NOT NULL,
       userid NOT NULL,
       FOREIGN KEY(userid) REFERENCES users(id)
+    )`;
+
+  db.exec(sql);
+}
+
+/**
+ * Creates the table for rules
+ * @param {object} db The (already open) database
+ */
+function createRulesTable(db) {
+  const sql = `CREATE TABLE IF NOT EXISTS rules (
+      id INTEGER PRIMARY KEY,
+      name NOT NULL,
+      description NOT NULL,
+      schemaId INTEGER NOT NULL,
+      operator NOT NULL,
+      rule NOT NULL,
+      isEnabled NOT NULL,
+      commandsDevices NOT NULL,
+      createdAt NOT NULL,
+      triggeredAt,
+      firstEval NOT NULL,
+      triggerDeviceId TEXT
     )`;
 
   db.exec(sql);

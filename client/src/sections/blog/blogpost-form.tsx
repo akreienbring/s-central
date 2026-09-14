@@ -198,6 +198,7 @@ const BlogpostForm = ({
             <FormControlLabel
               control={
                 <Switch
+                  data-testid="blogpost_public_switch"
                   name="public"
                   size="medium"
                   checked={currentBlogpost.public === 1}
@@ -222,7 +223,7 @@ const BlogpostForm = ({
             variant="outlined"
             startIcon={<Iconify icon="formkit:submit" />}
           >
-            {t('Save')}
+            {type === 'create' ? t('_newpost_') : t('_editpost_')}
           </Button>
         </Stack>
       </FormControl>

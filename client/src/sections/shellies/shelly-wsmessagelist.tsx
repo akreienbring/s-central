@@ -47,10 +47,9 @@ const WSMessageList = ({
       <Fragment key={createUUID()}>
         <Stack
           direction="row"
-          justifyContent="left"
-          alignItems="center"
           spacing={2}
           key={createUUID()}
+          sx={{ justifyContent: 'left', alignItems: 'center' }}
         >
           {typeof wsMessage?.params?.ts !== 'undefined' && (
             <SystemTime ts={wsMessage.params.ts} key={createUUID()} />

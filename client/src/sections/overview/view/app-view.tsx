@@ -10,6 +10,7 @@
   - Only if a device currently consumes power, the timeline is requested again to update the chart
   - The timeline chart can be changed by the user to show different time ranges (Minute, Hour, Day, Month, Year) (see handleTimelineChange)
 */
+import type { JSX } from 'react';
 import type { Device } from '@src/types/device';
 import type { Subscription } from '@src/types/context';
 import type { TimelineData } from '@src/types/timeline';
@@ -41,7 +42,7 @@ import { buildTimeline, getTimelineOptions } from './build-timeline';
   of the shelly devices.
   @returns {JSX.Element | null} The rendered Dashboard View of the application
  */
-export default function AppView() {
+export default function AppView(): JSX.Element | null {
   const [totalPower, setTotalPower] = useState(0);
   const [scripts, setScripts] = useState({ running: 0, count: 0 });
   const [cloudCount, setCloudCount] = useState(0);

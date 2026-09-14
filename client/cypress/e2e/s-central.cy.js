@@ -117,7 +117,7 @@ describe('Just visit e2e test', () => {
       cy.getBySel('nav_open_button').click();
 
       //*****Dashboard page*****
-      cy.getBySel('nav_item_dashboard').click();
+      cy.getBySel('nav_item_Dashboard').click();
       cy.getBySel('info_lastUpdate_button');
       cy.testHeader();
       cy.getBySel('dashboard_shellies_component').should('exist');
@@ -131,7 +131,7 @@ describe('Just visit e2e test', () => {
 
       //*****User page*****
       cy.getBySel('nav_open_button').click();
-      cy.getBySel('nav_item_user').click();
+      cy.getBySel('nav_item_Users').click();
       cy.testHeader();
       cy.getBySel('user_tablerow_component'); //default admin user
       cy.contains('Admin');
@@ -185,9 +185,9 @@ describe('Just visit e2e test', () => {
 
       //*****Blog page*****
       cy.getBySel('nav_open_button').click();
-      cy.getBySel('nav_item_blog').click();
+      cy.getBySel('nav_item_Blogs').click();
       cy.testHeader();
-      cy.contains('Blog');
+      cy.contains('Blogs');
       cy.getBySel('blog_newblog_button').click();
       cy.getBySel('blogpost_submit_button').should('be.disabled');
       cy.getBySel('blogpost_title_input').should('exist');
@@ -195,20 +195,47 @@ describe('Just visit e2e test', () => {
       cy.getBySel('text-editor-input').should('exist');
       //create a new blogpost
       cy.getBySel('blogpost_title_input').type('Test Title');
+      cy.getBySel('blogpost_public_switch').click();
       cy.getBySel('text-editor-input').type('Test Content');
       cy.getBySel('blogpost_submit_button').should('not.be.disabled');
       cy.getBySel('blogpost_submit_button').click();
       cy.wait(waitTime);
-      cy.getBySel('blogpost_close_button').click();
+      cy.getBySel('blogpost_create_close_button').click();
       cy.contains('Test Title');
       cy.contains('Test Content');
-      //delete the created blogpost
-      cy.getBySel('blog_openmenue_button_0').click();
-      cy.getBySel('blog_delete_button_0').click();
-      cy.getBySel('blog_reallydelete_button_0').click();
-      cy.contains('Test Title').should('not.exist');
-      cy.contains('Test Content').should('not.exist');
 
+      //*****Rules page*****
+      cy.getBySel('nav_open_button').click();
+      cy.getBySel('nav_item_Rules').click();
+      cy.testHeader();
+
+      // open the simple ui and create a new rule
+      cy.getBySel('rule_newrule_button').click();
+
+      // activate the two properties of the NotifyStatus schema
+      cy.getBySel('schema_property_src').click();
+      cy.getBySel('schema_property_output').click();
+      cy.getBySel('operator_select_output').click();
+      cy.getBySel('output_operator_changedFrom').click();
+
+      // open the accordian with the rule name and description
+      cy.getBySel('accordion_1').click();
+      cy.getBySel('rule_name').type('Test Rule Name');
+      cy.getBySel('rule_description').type('Test Rule Description');
+
+      // save the rule
+      cy.getBySel('rule_save_button').click();
+
+      cy.contains('Test Rule Name');
+      cy.contains('Test Rule Description');
+
+      //delete the rule
+      cy.getBySel('rule_menu_button').click();
+      cy.getBySel('rule_delete_button').click();
+      cy.getBySel('rule_really_delete_button').click();
+
+      cy.contains('Test Rule Name').should('not.exist');
+      cy.contains('Test Rule Description').should('not.exist');
       //*****Accout popover*****
       cy.getBySel('open_account_popover_button').click();
       cy.getBySel('accountpopover_home_item');
@@ -296,16 +323,26 @@ describe('Just visit e2e test', () => {
 
       //*****Navigation*****
       cy.getBySel('nav_open_button').click();
-      cy.getBySel('nav_item_user').should('not.exist'); //because test user has the user role
+      cy.getBySel('nav_item_Users').should('not.exist'); //because test user has the user role
 
       //*****Shellies Page*****
-      cy.getBySel('nav_item_shellies').click();
+      cy.getBySel('nav_item_Shellies').click();
       cy.getBySel('shelly_card_Test').should('exist');
       //because only the device with the name test was assigned:
       cy.getBySel('shelly_card_Test2').should('not.exist');
       //check for the created scene
       cy.getBySel('scene_autocomplete_component').click();
       cy.contains('testscene').should('not.exist');
+
+      //*****Navigation*****
+      cy.getBySel('nav_open_button').click();
+      cy.getBySel('nav_item_Users').should('not.exist'); //because test user has the user role
+      cy.getBySel('nav_item_Rules').should('not.exist');
+
+      //*****Blogpost Page*****
+      cy.getBySel('nav_item_Blogs').click();
+      //testuser can not edit admin post
+      cy.getBySel('blog_update_button_0').should('not.exist');
 
       //*****logout*****
       cy.getBySel('open_account_popover_button').click();
@@ -329,7 +366,7 @@ describe('Just visit e2e test', () => {
 
       //*****Navigation*****
       cy.getBySel('nav_open_button').click();
-      cy.getBySel('nav_item_user').click();
+      cy.getBySel('nav_item_Users').click();
 
       //delete the created testuser
       cy.getBySel('testuser_openmenue_button').click();
@@ -339,7 +376,7 @@ describe('Just visit e2e test', () => {
 
       //*****Navigation to Shellies Page*****
       cy.getBySel('nav_open_button').click();
-      cy.getBySel('nav_item_shellies').click();
+      cy.getBySel('nav_item_Shellies').click();
       //delete the created scene
       cy.getBySel('scene_autocomplete_component').click();
       cy.getBySel('scene_option').should('exist');
@@ -347,6 +384,32 @@ describe('Just visit e2e test', () => {
       cy.getBySel('scene_delete_button').should('exist');
       cy.getBySel('scene_delete_button').click();
       cy.wait(waitTime);
+
+      //*****Navigation to Blog Page*****
+      cy.getBySel('nav_open_button').click();
+      cy.getBySel('nav_item_Blogs').click();
+      //update the created blogpost
+      cy.getBySel('blog_openmenue_button_0').click();
+      cy.getBySel('blog_update_button_0').click();
+      cy.getBySel('blogpost_submit_button').should('be.disabled');
+      cy.getBySel('blogpost_title_input').should('exist');
+      cy.getBySel('text-editor-input').should('exist');
+      cy.getBySel('blogpost_title_input').clear();
+      cy.getBySel('blogpost_title_input').type('Test Title new');
+      cy.getBySel('text-editor-input').clear();
+      cy.getBySel('text-editor-input').type('Test Content new');
+      cy.getBySel('blogpost_submit_button').should('not.be.disabled');
+      cy.getBySel('blogpost_submit_button').click();
+      cy.wait(waitTime);
+      cy.getBySel('blogpost_update_close_button').click();
+      cy.contains('Test Title new');
+      cy.contains('Test Content new');
+      //delete the created blogpost
+      cy.getBySel('blog_openmenue_button_0').click();
+      cy.getBySel('blog_delete_button_0').click();
+      cy.getBySel('blog_reallydelete_button_0').click();
+      cy.contains('Test Title new').should('not.exist');
+      cy.contains('Test Content new').should('not.exist');
 
       //*****logout*****
       cy.getBySel('open_account_popover_button').click();

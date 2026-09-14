@@ -38,11 +38,10 @@ const Scripts = ({ elementId, scrollableElementId, params }: ScriptsProps): JSX.
       const script: ParamsScript | undefined = params[`script:${Number(key.split(':')[1])}`]; //e.g. 'script:1'
       elements.push(
         <Stack
-          justifyContent="flex-start"
-          alignItems="center"
           spacing={0.5}
           direction="row"
           key={createUUID()}
+          sx={{ justifyContent: 'flex-start', alignItems: 'center' }}
         >
           <Highlighter
             key={createUUID()}
@@ -52,7 +51,7 @@ const Scripts = ({ elementId, scrollableElementId, params }: ScriptsProps): JSX.
           >
             <Typography
               variant="subtitle2"
-              color={script!.running ? 'green' : 'red'}
+              color={script!.running ? 'success' : 'error'}
               key={createUUID()}
               sx={{ mb: 1 }}
             >

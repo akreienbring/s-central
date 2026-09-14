@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /*
   Author: André Kreienbring
   The components implements the filter dialog. After selecting divers filters
@@ -5,10 +6,10 @@
 */
 import type { Filter } from '@src/types/device';
 
-import { useState, useEffect } from 'react';
 import Iconify from '@src/components/iconify';
 import { useTranslation } from 'react-i18next';
 import Scrollbar from '@src/components/scrollbar';
+import { useState, type JSX, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -33,10 +34,8 @@ interface ShellyFiltersProps {
   The Component is used to filter the shelly devices in the ShellyView
   @param {ShellyFiltersProps} props
   @param {boolean} props.openFilter To determine if the dialog is shown or not
-  @param {Function} props.onOpenFilter This will be called when the dialog was 
-    opened to maintain the state in the parent component (ShellyView)
-  @param {Function} props.onCloseFilter This will be called when the dialog was 
-    closed to maintain the state in the parent component (ShellyView)
+  @param {Function} props.onOpenFilter This will be called when the dialog was opened to maintain the state in the parent component (ShellyView)
+  @param {Function} props.onCloseFilter This will be called when the dialog was closed to maintain the state in the parent component (ShellyView)
   @param {Filter} props.filter An object that contains filter options and current states about their settings (checked or not)
   @param {Function} props.handleDeviceFilter Will be called when a filter was selected and must be applied in the ShellyView.
   @returns {JSX.Element} A button to open the filter dialog and the dialog itself with all filter options.
@@ -47,12 +46,13 @@ export default function ShellyFilters({
   onCloseFilter,
   filter,
   handleDeviceFilter,
-}: ShellyFiltersProps) {
+}: ShellyFiltersProps): JSX.Element | null {
   const [mChecked, setMChecked] = useState<boolean[]>([]);
   const [gChecked, setGChecked] = useState<boolean[]>([]);
   const { t } = useTranslation();
 
-  // init the state of checked states for the filter options
+  /*  init the state of checked states for the filter options
+   */
   useEffect(() => {
     setMChecked(Array.from(filter.mChecked));
     setGChecked(Array.from(filter.gChecked));
@@ -92,10 +92,7 @@ export default function ShellyFilters({
             data-testid={`filter_model_checkbox_${index}`}
             key={model}
             control={
-              <Checkbox
-                checked={!!mChecked[index]}
-                onChange={() => handleModelFilterChange(index)}
-              />
+              <Checkbox checked={mChecked[index]} onChange={() => handleModelFilterChange(index)} />
             }
             label={model}
           />
@@ -115,7 +112,7 @@ export default function ShellyFilters({
             key={gen}
             value={gen}
             control={
-              <Checkbox checked={!!gChecked[index]} onChange={() => handleGenFilterChange(index)} />
+              <Checkbox checked={gChecked[index]} onChange={() => handleGenFilterChange(index)} />
             }
             label={gen !== '' ? `Gen ${gen}` : 'no Gen'}
           />
@@ -156,9 +153,7 @@ export default function ShellyFilters({
       >
         <Stack
           direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ px: 1, py: 2 }}
+          sx={{ px: 1, py: 2, alignItems: 'center', justifyContent: 'space-between' }}
         >
           <Typography variant="h6" sx={{ ml: 1 }}>
             {t('Filters')}

@@ -53,7 +53,7 @@ const UserForm = ({
   handleUsersReceived,
   handleUpdateUser,
 }: UserFormProps): JSX.Element => {
-  const { login, user, request } = useShelly();
+  const { login, user, request, isTest } = useShelly();
   const { t } = useTranslation();
 
   const [currentUser, setCurrentUser] = useState<User>(
@@ -89,10 +89,11 @@ const UserForm = ({
         setCurrentUser(msg.data.user);
         login(msg.data.user, true);
       } else {
-        setRequestResult({ success: false, message: '_usernotexists_' });
+        const message = isTest ? 'Restart Test Server!' : msg.data.requestResult!.message;
+        setRequestResult({ success: false, message });
       }
     },
-    [login]
+    [login, isTest]
   );
 
   /**

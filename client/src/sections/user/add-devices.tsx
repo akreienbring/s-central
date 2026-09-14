@@ -71,9 +71,7 @@ export default function AddDevices({
     >
       <Stack
         direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ px: 1, py: 2 }}
+        sx={{ px: 1, py: 2, alignItems: 'center', justifyContent: 'space-between' }}
       >
         <Typography variant="h6" sx={{ ml: 1 }}>
           {title}

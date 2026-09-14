@@ -174,7 +174,7 @@ const ShellyControls = ({ device, handleSwitchSet }: ShellyControlsProps): JSX.E
   };
 
   return (
-    <Stack alignItems="flex-start">
+    <Stack sx={{ alignItems: 'flex-start' }}>
       {typeof aSwitch.brightness !== 'undefined' && (
         <>
           <Typography variant="subtitle2">{t('Brightness')}</Typography>

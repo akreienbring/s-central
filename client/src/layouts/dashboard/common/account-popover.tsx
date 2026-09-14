@@ -21,10 +21,10 @@ import { mapNumberToMax } from '@src/utils/general';
 import UpdateUser from '@src/sections/user/update-user';
 
 import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Popover from '@mui/material/Popover';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -136,7 +136,7 @@ export default function AccountPopover() {
         />
       </IconButton>
 
-      <Popover
+      <Menu
         open={open.open}
         anchorEl={open.target}
         onClose={handleClose}
@@ -219,7 +219,7 @@ export default function AccountPopover() {
         >
           {t('Logout')}
         </Button>
-      </Popover>
+      </Menu>
       <UpdateUser
         title={getTitle(openUpdate.type)}
         updateuser={user}

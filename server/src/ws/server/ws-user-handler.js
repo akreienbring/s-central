@@ -60,6 +60,7 @@ function handle(msg, ws) {
       validateAnswer.secret = msg.secret;
     } else {
       validateAnswer.requestResult.success = false;
+      validateAnswer.requestResult.message = "_usernotexists_";
     }
     ws.send(JSON.stringify(validateAnswer));
   } else if (msg.event === "user-resetpw") {
@@ -357,7 +358,7 @@ function handle(msg, ws) {
 
     if (info.changes !== msg.data.ids.length) {
       console.error(
-        `Expected to create ${msg.data.ids.length} users, but users ${info.changes} users.`,
+        `Expected to delete ${msg.data.ids.length} users, but deleted ${info.changes} users.`,
       );
       deleteAnswer.data.requestResult.message = "_usernotdeleted_";
       deleteAnswer.data.requestResult.success = false;
@@ -382,9 +383,7 @@ function handle(msg, ws) {
       message: "Ok, here are all the user devices",
       source: "WSUserHandler",
       requestID: msg.requestID,
-      data: {
-        success: true,
-      },
+      data: {},
     };
     const sql = `SELECT device_id FROM user_devices WHERE user_id = ?`;
     const userdevices = db.get(sql, [msg.data.userid]);

@@ -226,6 +226,8 @@ const UserFormDisplay = ({
                 }}
               />
               {type === 'login' && (
+                // For testing: Is checked by cypress and indicates that a test is running
+
                 <FormControlLabel
                   data-testid="login_test_checkbox"
                   control={
@@ -342,7 +344,11 @@ const UserFormDisplay = ({
               </MenuItem>
             </TextField>
           )}
-          <Stack direction="row" alignItems="baseline" justifyContent="space-between" spacing={1}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ alignItems: 'baseline', justifyContent: 'space-between' }}
+          >
             <Typography variant="subtitle2" color={requestResult.success ? 'success' : 'error'}>
               {t(requestResult.message)}
             </Typography>
@@ -382,7 +388,7 @@ const UserFormDisplay = ({
               variant="outlined"
               startIcon={<Iconify icon="formkit:submit" />}
             >
-              {t('Save')}
+              {type === 'create' ? t('_newuser_') : t('Save')}
             </Button>
           )}
         </Stack>

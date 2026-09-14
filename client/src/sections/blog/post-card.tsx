@@ -16,9 +16,9 @@ import { TextEditorReadOnly } from 'mui-tiptap-editor';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
+import Menu from '@mui/material/Menu';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
 import Tooltip from '@mui/material/Tooltip';
 import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
@@ -35,7 +35,7 @@ interface PostCardProps {
 
 /**
  * A Component to display one single blogpost object with
- * available functions like e.g. a menue.
+ * available functions like e.g. a menue to edit or delete the post
  * @param {PostCardProps} props
  * @param {Blogpost} props.blogpost The blogpost to display in the card
  * @param {number} props.index The index of the post in the blogpost array (determines size and design)
@@ -110,10 +110,10 @@ export default function PostCard({
   };
 
   const renderAvatar = (
-    <Tooltip title={currentBlogpost?.author?.name}>
+    <Tooltip title={currentBlogpost.author.alias}>
       <Avatar
-        alt={currentBlogpost?.author?.name}
-        src={currentBlogpost?.author?.avatarUrl}
+        alt={currentBlogpost.author.alias}
+        src={currentBlogpost.author.avatarUrl}
         sx={{
           zIndex: 9,
           width: 32,
@@ -295,22 +295,24 @@ export default function PostCard({
             }),
           }}
         >
-          {user !== null && user.roleid < 3 && (
-            <IconButton
-              data-testid={`blog_openmenue_button_${index}`}
-              onClick={handleOpenMenu}
-              sx={{
-                zIndex: 9,
-                position: 'absolute',
-                top: 24,
-                right: 20,
-                width: 40,
-                height: 40,
-              }}
-            >
-              <Iconify icon="eva:more-vertical-fill" color="white" />
-            </IconButton>
-          )}
+          {user !== null &&
+            user.roleid < 3 &&
+            (blogpost.userid === user.userid || user.roleid === 1) && (
+              <IconButton
+                data-testid={`blog_openmenue_button_${index}`}
+                onClick={handleOpenMenu}
+                sx={{
+                  zIndex: 9,
+                  position: 'absolute',
+                  top: 24,
+                  right: 20,
+                  width: 40,
+                  height: 40,
+                }}
+              >
+                <Iconify icon="eva:more-vertical-fill" color="white" />
+              </IconButton>
+            )}
           {renderShape}
 
           {renderAvatar}
@@ -319,7 +321,7 @@ export default function PostCard({
         {renderPost}
       </Card>
       {user !== null && user.roleid < 3 && (
-        <Popover
+        <Menu
           open={!!openMenue}
           anchorEl={openMenue}
           onClose={handleCloseMenu}
@@ -331,7 +333,7 @@ export default function PostCard({
             },
           }}
         >
-          <MenuItem onClick={handleOpenUpdate}>
+          <MenuItem data-testid={`blog_update_button_${index}`} onClick={handleOpenUpdate}>
             <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
             {t('Edit')}
           </MenuItem>
@@ -357,7 +359,7 @@ export default function PostCard({
               {t('_reallydelete_')}
             </MenuItem>
           )}
-        </Popover>
+        </Menu>
       )}
       <UpdateBlogpost
         openUpdate={openUpdate}

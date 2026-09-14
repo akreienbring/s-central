@@ -14,27 +14,38 @@ const icon = (name: string) => (
 
 const navConfig: NavItem[] = [
   {
-    title: 'dashboard',
+    title: 'Dashboard',
+    dataTestId: 'nav_item_Dashboard',
     path: '/dashboard',
     icon: icon('ic_analytics'),
     minRole: 'User',
   },
   {
-    title: 'shellies',
+    title: 'Shellies',
+    dataTestId: 'nav_item_Shellies',
     path: '/shellies',
     icon: icon('ic_device'),
     minRole: 'User',
   },
   {
-    title: 'blog',
+    title: 'Blogs',
+    dataTestId: 'nav_item_Blogs',
     path: '/blog',
     icon: icon('ic_blog'),
     minRole: 'User',
   },
   {
-    title: 'user',
+    title: 'Users',
+    dataTestId: 'nav_item_Users',
     path: '/user',
     icon: icon('ic_user'),
+    minRole: 'Admin',
+  },
+  {
+    title: 'Rules',
+    dataTestId: 'nav_item_Rules',
+    path: '/rule',
+    icon: icon('ic_rule'),
     minRole: 'Admin',
   },
 ];

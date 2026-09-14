@@ -62,7 +62,7 @@ const commonRules = () => ({
       checkDestructuredRoots: false,
     },
   ],
-  'jsdoc/require-description': 'error',
+  'jsdoc/require-description': 'warn',
   'jsdoc/check-values': 'warn',
   'jsdoc/check-types': 'warn',
   'jsdoc/check-param-names': 'warn',
@@ -114,7 +114,7 @@ const sortImportsRules = () => ({
   'perfectionist/sort-named-imports': ['warn', { type: 'line-length', order: 'asc' }],
   'perfectionist/sort-named-exports': ['warn', { type: 'line-length', order: 'asc' }],
   'perfectionist/sort-imports': [
-    2,
+    'warn',
     {
       order: 'asc',
       ignoreCase: true,

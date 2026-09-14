@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "src": {
+      "enum": [{ "name": "dummy", "value": "0" }]
+    },
+    "output": {
+      "type": "boolean"
+    }
+  },
+  "required": ["src", "output"]
+}

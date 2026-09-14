@@ -30,10 +30,9 @@ interface SystemValuesProps {
 const SystemValues = ({ elementId, scrollableElementId, sys }: SystemValuesProps): JSX.Element => (
   <Stack
     direction="row"
-    justifyContent="flex-start"
-    alignItems="center"
     spacing={0.5}
     key={createUUID()}
+    sx={{ justifyContent: 'flex-start', alignItems: 'center' }}
   >
     <Highlighter
       key={createUUID()}

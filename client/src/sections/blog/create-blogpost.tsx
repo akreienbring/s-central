@@ -72,14 +72,12 @@ export default function CreateBlogpost({
       >
         <Stack
           direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ px: 1, py: 2 }}
+          sx={{ px: 1, py: 2, alignItems: 'center', justifyContent: 'space-between' }}
         >
           <Typography variant="h6" sx={{ ml: 1 }}>
             {t('_newpost_')}
           </Typography>
-          <IconButton data-testid="blogpost_close_button" onClick={onCloseCreate}>
+          <IconButton data-testid="blogpost_create_close_button" onClick={onCloseCreate}>
             <Iconify icon="eva:close-fill" />
           </IconButton>
         </Stack>

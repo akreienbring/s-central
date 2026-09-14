@@ -60,7 +60,7 @@ export default function UserView(): JSX.Element {
 
   /**
    * Will be called when devices were received via websocket from shellybroker.
-   * @param {object} msg The message with a 'devices-get-all' event.
+   * @param {SrvAnswerMsg} msg The message with a 'devices-get-all' event.
    */
   const handleDevicesReceived = useCallback((msg: SrvAnswerMsg) => {
     if (typeof msg.data.devices !== 'undefined') setDevices(msg.data.devices);
@@ -340,7 +340,7 @@ export default function UserView(): JSX.Element {
 
   return (
     <Container maxWidth="xl">
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+      <Stack direction="row" sx={{ mb: 5, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4">{t('Users')}</Typography>
         <CreateUser
           openCreate={openCreate}

@@ -6,12 +6,11 @@ import type { DeviceScript } from '@src/types/device';
 
 import { type JSX } from 'react';
 import { createUUID } from '@src/utils/general';
+import ScriptSwitch from '@src/components/custom/script-switch';
 
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-import ScriptSwitch from './script-switch';
 
 interface ShellyScriptListProps {
   deviceIP: string;
@@ -38,7 +37,7 @@ const ShellyScriptList = ({
   // extend to three scripts
   const extendedScripts = Array(3);
   for (let i = 0; i <= 2; i += 1) {
-    if (typeof scripts[i] === 'undefined') {
+    if (typeof scripts === 'undefined' || typeof scripts[i] === 'undefined') {
       extendedScripts[i] = {
         name: 'n/a',
         id: null,
@@ -54,7 +53,13 @@ const ShellyScriptList = ({
   return (
     <Stack key={createUUID()}>
       {extendedScripts.map((script) => (
-        <Stack direction="row" style={{ gap: 20 }} useFlexGap flexWrap="wrap" key={createUUID()}>
+        <Stack
+          direction="row"
+          style={{ gap: 20 }}
+          useFlexGap
+          key={createUUID()}
+          sx={{ flexWrap: 'wrap' }}
+        >
           <Link
             href={
               script.id !== null

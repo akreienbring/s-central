@@ -1,12 +1,13 @@
 /*
   Author: André Kreienbring
-  A custom styled switch component used to start / stop scripts of a device on the ShellyCard component.
+  A custom styled switch component 
 */
 
 import { Switch, styled } from '@mui/material';
 
 /**
  * A custom styled switch component used to start / stop scripts of a device on the ShellyCard component.
+ * Also used in the rules table to enable / disable rules
  * @param {Switch}
  */
 const ScriptSwitch = styled(Switch)(({ theme }) => ({

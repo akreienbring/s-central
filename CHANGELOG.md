@@ -1,3 +1,18 @@
+### Release v3.0.0
+
+##### 14.09.2026
+
+**Client (3.0.0)**
+
+- feature: Initial Support for automating actions by rules
+- fixed: Wrong color for script values in WSExplorer
+- fixed: Wrong translation in Nav Bar
+
+**Server (3.0.0)**
+
+- BREAKING: Not supporting node.js v20 anymore, because end of live (EOL) was reached. Now tested with v22.19.0
+- fixed: Wrong message displayed when a blog entry was saved
+
 ### Release v2.5.0
 
 ##### 07.04.2026

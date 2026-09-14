@@ -98,11 +98,13 @@ function handle(msg) {
   } else if (msg.event === "blogpost-update") {
     const updateAnswer = {
       event: msg.event,
-      message: "_blogpostupdated_",
+      message: "OK, going to update the Blogpost",
       source: "BlogpostHandler",
       requestID: msg.requestID,
       data: {
-        success: true,
+        requestResult: {
+          success: true,
+        },
       },
     };
 
@@ -123,8 +125,6 @@ function handle(msg) {
           `Expected to update 1 blogpost, but updated ${info.changes} blogposts.`,
         );
         updateAnswer.data.requestResult.success = false;
-      } else {
-        updateAnswer.id = blogpostToUpdate.id;
       }
     } catch (err) {
       console.error(err.message);
