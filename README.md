@@ -28,7 +28,7 @@ S-Central supports English, Spanish and German.
 - **Blog**<br/>
   A simple interface to write internal articles or notes to be displayed on the landing page.
 - **Rules**<br/>
-  (since v3.0.0) Initial support for the automation based on a rule engine. (see [Creating Rules](#creating rules) below)
+  (since v3.0.0) Initial support for the automation based on a rule engine. see [Creating Rules](#creating-rules) below
 - **Webservices**<br/>
   An API to call essential functions, e.g. from within your scripts.
 - **General**<br/>
