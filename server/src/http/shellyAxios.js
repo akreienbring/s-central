@@ -24,7 +24,7 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     throw error;
-  }
+  },
 );
 /*
   A predefined standard body with the RPC channel that will be used for the communication
@@ -186,12 +186,13 @@ async function postRPCMethod(device, method, params) {
     "POST",
     method,
     params,
-    device.password
+    device.password,
   );
 }
 
 /**
-  Called when axios produced an error and can be used to output error information
+  Called when axios produced an error and can be used to output error information.
+  TODO Implement this?: https://oneuptime.com/blog/post/2026-01-22-nodejs-econnreset-error/view
   @param {object} err mandatory The axis error
   @returns {object} A response object with error information
 */
@@ -201,7 +202,7 @@ function handleAxiosError(err) {
     // that falls out of the range of 2xx
     throw new Error(
       `Response Status Error: ${err.response.status}. Message: ${err.message}`,
-      { cause: err }
+      { cause: err },
     );
   } else if (err.request) {
     // The request was made but no response was received

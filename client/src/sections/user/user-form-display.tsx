@@ -213,7 +213,11 @@ const UserFormDisplay = ({
                 onChange={handleInputChange}
                 type={showPassword ? 'text' : 'password'}
                 slotProps={{
-                  htmlInput: { 'data-testid': 'security_password_input', maxLength: 15 },
+                  htmlInput: {
+                    'data-testid': 'security_password_input',
+                    maxLength: 15,
+                    autoComplete: 'new-password',
+                  },
                   input: {
                     endAdornment: (
                       <InputAdornment position="end">
@@ -252,7 +256,11 @@ const UserFormDisplay = ({
               onChange={handleInputChange}
               type={showPassword ? 'text' : 'password'}
               slotProps={{
-                htmlInput: { 'data-testid': 'security_password2_input', maxLength: 15 },
+                htmlInput: {
+                  'data-testid': 'security_password2_input',
+                  maxLength: 15,
+                  autoComplete: 'new-password',
+                },
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
